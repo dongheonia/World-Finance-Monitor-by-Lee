@@ -48,7 +48,23 @@ const WAR_EVENTS = [
     { ko: "말리·사헬 지역", en: "Mali / Sahel region", coords: [-3.0, 17.0], radius: 350,
       date: "2012-01-16", ongoing: true,
       reasonKo: "이슬람 극단주의 무장세력과 정부군 간 전투가 이어지며 민간인 피해가 발생하는 지역입니다.",
-      reasonEn: "Ongoing fighting between jihadist armed groups and government forces, with civilian casualties." }
+      reasonEn: "Ongoing fighting between jihadist armed groups and government forces, with civilian casualties." },
+    { ko: "홍해·바브엘만데브 해협 (예멘 후티 반군 선박 공격)", en: "Red Sea / Bab-el-Mandeb (Houthi attacks on shipping)", coords: [43.6, 13.0], radius: 120,
+      date: "2023-11-19", ongoing: true,
+      reasonKo: "예멘 후티 반군이 홍해와 바브엘만데브 해협을 지나는 상선을 미사일과 드론, 나포로 무차별 공격하면서 선원 인명 피해가 이어지고 있습니다.",
+      reasonEn: "Yemen's Houthi rebels have indiscriminately attacked merchant ships transiting the Red Sea and Bab-el-Mandeb Strait with missiles, drones, and boardings, causing continued crew casualties." },
+    { ko: "시리아 내전 국지적 재발발 (스웨이다·해안지역)", en: "Syria: localized civil-war flare-ups (Sweida / coast)", coords: [36.57, 32.71], radius: 100,
+      date: "2025-03-06", ongoing: true,
+      reasonKo: "아사드 정권 붕괴 이후 해안 지역 알라위파 학살과 남부 스웨이다의 드루즈-베두인족 충돌이 반복되며 지역별 유혈 사태가 이어지고 있습니다.",
+      reasonEn: "Since the fall of the Assad regime, sectarian violence has recurred locally — massacres of Alawites on the coast and Druze-Bedouin clashes in southern Sweida." },
+    { ko: "소말리아 알샤바브 공세 강화", en: "Somalia: al-Shabaab offensive resurgence", coords: [46.2, 4.5], radius: 250,
+      date: "2025-02-01", ongoing: true,
+      reasonKo: "알샤바브가 2025년 초부터 대공세를 벌여 중남부 소말리아 상당 지역에서 정부군의 반군 소탕 성과를 되돌리며 세력을 재확장하고 있습니다.",
+      reasonEn: "Al-Shabaab has waged a major offensive since early 2025, reversing government counterterrorism gains and reasserting control across swathes of central and southern Somalia." },
+    { ko: "남중국해 중국-필리핀·베트남 해상 충돌", en: "South China Sea: China vs Philippines/Vietnam clashes", coords: [117.75, 15.15], radius: 80,
+      date: "2026-07-23", ongoing: true,
+      reasonKo: "중국 해경이 스카버러 암초·세컨드 토마스 암초 인근에서 필리핀 선박에 물대포를 발사하고 충돌하는 등 무력 충돌이 반복되고 있으며, 베트남과도 남중국해 긴장이 고조되고 있습니다.",
+      reasonEn: "China's coast guard has repeatedly fired water cannons at and collided with Philippine vessels near Scarborough and Second Thomas Shoals, while tensions with Vietnam over contested waters are also rising." }
 ];
 
 // Manually curated, best-effort snapshot of structural/breaking economic risk —
@@ -130,7 +146,23 @@ const DISASTER_EVENTS = [
     { ko: "유타 산불·홍수 (미국)", en: "Utah wildfires and flooding, US", coords: [-112.4, 38.3], radius: 90,
       date: "2026-06-22", ongoing: true,
       reasonKo: "몬순 폭우와 산불이 겹치며 비버·퓨트·세비어 카운티에 비상사태가 선포됐습니다.",
-      reasonEn: "Utah's governor declared a state of emergency across Beaver, Piute, and Sevier counties after wildfires and monsoon flooding." }
+      reasonEn: "Utah's governor declared a state of emergency across Beaver, Piute, and Sevier counties after wildfires and monsoon flooding." },
+    { ko: "배빌론 화재 (미국, 유타)", en: "Babylon Fire, Utah, US", coords: [-109.35, 37.87], radius: 40,
+      date: "2026-07-20", ongoing: true,
+      reasonKo: "유타주 산후안 카운티의 배빌론 화재가 9만 6,594에이커까지 번지며 미국 내 가장 큰 산불로 성장했고 진화율은 0%에 머물러 있습니다.",
+      reasonEn: "The Babylon Fire in San Juan County, Utah has grown to 96,594 acres, becoming the largest active wildfire in the US, with containment still at 0%." },
+    // Drawn before (so underneath) Dunwich Heath below — DISASTER_EVENTS renders as one
+    // GeoJSON layer where later entries paint on top, and this circle is broad enough to
+    // fully cover Dunwich's; without that ordering the tiny Dunwich circle would never be
+    // clickable, since every pixel of it also falls inside this one.
+    { ko: "유럽 폭염 (이베리아·프랑스·중부유럽)", en: "European heatwave (Iberia / France / Central Europe)", coords: [8.0, 46.0], radius: 1300,
+      date: "2026-07-24", ongoing: true,
+      reasonKo: "이베리아반도와 프랑스를 중심으로 형성된 열돔이 독일·발트해 연안·중부유럽·지중해까지 확산되며 최고기온이 40~45도까지 치솟는 기록적 폭염이 유럽 대륙 대부분을 덮고 있습니다.",
+      reasonEn: "A heat dome centered over the Iberian Peninsula and France has spread across Germany, the Baltic region, Central Europe, and the Mediterranean, pushing peak temperatures to a record-challenging 40-45°C across most of the continent." },
+    { ko: "던위치 히스 산불 (영국, 서퍽)", en: "Dunwich Heath wildfire, Suffolk, UK", coords: [1.63, 52.27], radius: 15,
+      date: "2026-07-30", ongoing: true,
+      reasonKo: "서퍽 던위치 히스에서 산불이 축구장 210개 면적(약 370에이커)까지 번지며 '메이저 인시던트'가 선포됐고, 인근 대형 원전 부지를 지키기 위해 소방대가 총력 대응하고 있습니다.",
+      reasonEn: "A wildfire at Dunwich Heath in Suffolk grew to roughly 370 acres (the size of 210 soccer pitches), prompting a 'major incident' declaration as fire crews battled to protect nearby major nuclear power sites." }
 ];
 
 // Manually curated, best-effort snapshot of major social-impact incidents — crime,
@@ -162,7 +194,27 @@ const SOCIAL_EVENTS = [
     { ko: "이스탄불 이스라엘 총영사관 공격 (튀르키예)", en: "Attack on Israeli consulate, Istanbul, Turkey", coords: [28.98, 41.01],
       date: "2026-04-07", ongoing: false,
       reasonKo: "미국·이스라엘의 이란 공격 이후 고조된 긴장 속에 이스탄불 주재 이스라엘 총영사관이 공격 대상이 됐습니다.",
-      reasonEn: "The Israeli consulate in Istanbul was targeted amid heightened tensions following the US-Israeli strikes on Iran." }
+      reasonEn: "The Israeli consulate in Istanbul was targeted amid heightened tensions following the US-Israeli strikes on Iran." },
+    { ko: "'노킹스' 반정부 시위 (미국)", en: "\"No Kings\" protests, US", coords: [-77.03, 38.90],
+      date: "2026-03-28", ongoing: false,
+      reasonKo: "트럼프 대통령의 이민 단속 강화와 행정권 확대, 이란 전쟁 등에 반대하는 '노킹스' 시위가 미국 전역 약 3,300곳에서 동시다발적으로 열렸습니다.",
+      reasonEn: "\"No Kings\" protests against President Trump's immigration crackdown, expansion of executive power, and the Iran war were held simultaneously at roughly 3,300 locations across the US." },
+    { ko: "멕시코·에콰도르 마약 카르텔의 국가 기능 마비", en: "Mexico/Ecuador: cartels paralyzing state functions", coords: [-103.35, 20.66],
+      date: "2026-02-01", ongoing: true,
+      reasonKo: "카르텔 데 할리스코 누에바 헤네라시온(CJNG) 수장 사살 이후 보복으로 전국 약 250곳에서 화물차 방화 도로 봉쇄가 발생하는 등 카르텔이 지방정부 기능을 사실상 무력화하고 있으며, 에콰도르도 카르텔 간 마약 루트 쟁탈전으로 최악의 치안 위기를 겪고 있습니다.",
+      reasonEn: "After Mexico's army killed CJNG's leader, retaliatory violence set off roughly 250 burning-truck roadblocks nationwide, with cartels exerting de facto control over local government functions; Ecuador is meanwhile suffering its worst-ever security crisis as rival Mexican cartels fight over trafficking routes." },
+    { ko: "아이티 갱단 연합의 치안 붕괴 ('비방상블')", en: "Haiti: gang coalition security collapse ('Viv Ansanm')", coords: [-72.34, 18.59],
+      date: "2024-02-29", ongoing: true,
+      reasonKo: "갱단 연합 '비방상블'이 수도 포르토프랭스 대부분과 10개 주 중 3개 주까지 장악하며 학살과 아동 강제동원이 이어지고, 국내 실향민은 140만 명에 달합니다.",
+      reasonEn: "The 'Viv Ansanm' gang coalition has seized control of most of the capital Port-au-Prince and expanded into three of Haiti's ten departments, driving massacres and forced child recruitment, with 1.4 million people internally displaced." },
+    { ko: "뉘른베르크 극우 방화 테러 (독일)", en: "Nuremberg far-right arson attacks, Germany", coords: [11.08, 49.45],
+      date: "2025-03-01", ongoing: false,
+      reasonKo: "극우 성향 방화범들이 뉘른베르크에서 난민 신청자 수용 예정 건물 3곳에 방화를 저질러, 유럽 내 극우 극단주의의 반이민 강력범죄 사례로 지목됐습니다.",
+      reasonEn: "Suspected far-right arsonists set fire to three buildings designated to house asylum seekers in Nuremberg, one of several anti-migrant hate crimes tied to far-right extremism in Europe." },
+    { ko: "베를린 극좌 전력망 방화 테러 (독일)", en: "Berlin far-left power-grid arson attack, Germany", coords: [13.31, 52.43],
+      date: "2026-01-03", ongoing: false,
+      reasonKo: "극좌 성향 단체 '불칸그루페'가 리히터펠데 가스발전소 인근 전력 케이블에 방화해 베를린에서 2차대전 이후 최장인 5일간 정전을 일으켰고, 시장은 이를 테러로 규정했습니다.",
+      reasonEn: "The far-left Vulkangruppe set fire to power cables near a gas plant in Berlin's Lichterfelde district, causing the city's longest blackout since World War II (5 days) and prompting the mayor to call it terrorism." }
 ];
 
 // ============================ MARKET DATA ============================
