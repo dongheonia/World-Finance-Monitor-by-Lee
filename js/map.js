@@ -48,19 +48,24 @@ function formatEventDateLabel(w, lang) {
     return startStr;
 }
 
-// Shared popup for both war circles (GL layer click) and economy dots (DOM marker
-// click) — both hand it an event with clientX/clientY plus a { ko, en, reasonKo,
-// reasonEn, date, ongoing, endDate } item.
-function showRiskPopup(event, w) {
+// The popup is a plain DOM overlay, not something MapLibre itself tracks — so it has
+// to be repositioned by hand on every 'move' (pan, zoom, and rotate all fire it) or it
+// stays put in screen space while the map (and the event it's attached to) scrolls out
+// from under it. popupAnchorLngLat is the map-space point the open popup is pinned to;
+// positionRiskPopup() re-projects it to pixels each time the map moves. null means no
+// popup is open, so the 'move' handler has nothing to do.
+let popupAnchorLngLat = null;
+
+function positionRiskPopup() {
+    if (!popupAnchorLngLat || !mapInstance) return;
     const popup = document.getElementById('warzone-popup');
     const wrapper = document.getElementById('map-wrapper');
+    const mapContainer = document.getElementById('world-map');
     const wrapperRect = wrapper.getBoundingClientRect();
-    const x = event.clientX - wrapperRect.left;
-    const y = event.clientY - wrapperRect.top;
-    document.getElementById('warzone-popup-title').innerText = currentLang === 'ko' ? w.ko : w.en;
-    document.getElementById('warzone-popup-date').innerText = formatEventDateLabel(w, currentLang);
-    document.getElementById('warzone-popup-reason').innerText = currentLang === 'ko' ? w.reasonKo : w.reasonEn;
-    popup.style.display = 'block';
+    const mapRect = mapContainer.getBoundingClientRect();
+    const pt = mapInstance.project(popupAnchorLngLat);
+    const x = (mapRect.left - wrapperRect.left) + pt.x;
+    const y = (mapRect.top - wrapperRect.top) + pt.y;
     const popupWidth = 270;
     const left = Math.min(Math.max(x + 12, 8), Math.max(wrapper.clientWidth - popupWidth, 8));
     const top = Math.min(Math.max(y - 10, 8), Math.max(wrapper.clientHeight - 90, 8));
@@ -68,7 +73,22 @@ function showRiskPopup(event, w) {
     popup.style.top = `${top}px`;
 }
 
+// Shared popup for both war/disaster circles (GL layer click, anchored at the clicked
+// lngLat) and economy/social dots (DOM marker click, anchored at the marker's own
+// coords) — lngLat is the map-space point to pin the popup to, w is a { ko, en,
+// reasonKo, reasonEn, date, ongoing, endDate } item.
+function showRiskPopup(lngLat, w) {
+    popupAnchorLngLat = lngLat;
+    const popup = document.getElementById('warzone-popup');
+    document.getElementById('warzone-popup-title').innerText = currentLang === 'ko' ? w.ko : w.en;
+    document.getElementById('warzone-popup-date').innerText = formatEventDateLabel(w, currentLang);
+    document.getElementById('warzone-popup-reason').innerText = currentLang === 'ko' ? w.reasonKo : w.reasonEn;
+    popup.style.display = 'block';
+    positionRiskPopup();
+}
+
 function hideRiskPopup() {
+    popupAnchorLngLat = null;
     const popup = document.getElementById('warzone-popup');
     if (popup) popup.style.display = 'none';
 }
@@ -212,7 +232,7 @@ function addWarLayer() {
     });
     mapInstance.on('click', 'war-fill', (e) => {
         e.originalEvent.stopPropagation();
-        showRiskPopup(e.originalEvent, e.features[0].properties);
+        showRiskPopup(e.lngLat, e.features[0].properties);
     });
     mapInstance.on('mouseenter', 'war-fill', () => { mapInstance.getCanvas().style.cursor = 'pointer'; });
     mapInstance.on('mouseleave', 'war-fill', () => { mapInstance.getCanvas().style.cursor = ''; });
@@ -246,7 +266,7 @@ function addDisasterLayer() {
     });
     mapInstance.on('click', 'disaster-fill', (e) => {
         e.originalEvent.stopPropagation();
-        showRiskPopup(e.originalEvent, e.features[0].properties);
+        showRiskPopup(e.lngLat, e.features[0].properties);
     });
     mapInstance.on('mouseenter', 'disaster-fill', () => { mapInstance.getCanvas().style.cursor = 'pointer'; });
     mapInstance.on('mouseleave', 'disaster-fill', () => { mapInstance.getCanvas().style.cursor = ''; });
@@ -263,7 +283,7 @@ function addEconomyMarkers() {
         wrapper.innerHTML = '<span class="econ-dot"></span>';
         wrapper.addEventListener('click', (e) => {
             e.stopPropagation();
-            showRiskPopup(e, ev);
+            showRiskPopup(ev.coords, ev);
         });
         new maplibregl.Marker({ element: wrapper, anchor: 'center' }).setLngLat(ev.coords).addTo(mapInstance);
         return wrapper;
@@ -286,7 +306,7 @@ function addSocialMarkers() {
         wrapper.innerHTML = '<span class="social-dot"></span>';
         wrapper.addEventListener('click', (e) => {
             e.stopPropagation();
-            showRiskPopup(e, ev);
+            showRiskPopup(ev.coords, ev);
         });
         new maplibregl.Marker({ element: wrapper, anchor: 'center' }).setLngLat(ev.coords).addTo(mapInstance);
         return wrapper;
@@ -454,6 +474,10 @@ function initMap() {
     mapInstance.dragRotate.disable();
     mapInstance.touchZoomRotate.disableRotation();
     applyWorldFitMinZoom(true);
+    // Keeps an open risk popup pinned to its map-space anchor through pan/zoom instead
+    // of sitting fixed in screen space while the event underneath it scrolls away.
+    // No-op (see positionRiskPopup) when no popup is open.
+    mapInstance.on('move', positionRiskPopup);
 
     mapInstance.on('load', () => {
         onMapStyleReady();
