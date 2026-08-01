@@ -30,6 +30,8 @@ body.light-mode .map-style-btn.map-style-active { background-color: #bbf7d0; bor
 body.light-mode .warzone-popup { background: rgba(255,255,255,0.97); color: #111827; border-color: #dc2626; }
 .warzone-popup .wp-title { color: #ff5c5c; font-weight: 700; font-size: 12px; margin-bottom: 4px; }
 body.light-mode .warzone-popup .wp-title { color: #dc2626; }
+.warzone-popup .wp-date { color: #9ca3af; font-size: 10px; margin-bottom: 5px; }
+body.light-mode .warzone-popup .wp-date { color: #6b7280; }
 
 .econ-dot {
     display: block; width: 9px; height: 9px; border-radius: 50%;

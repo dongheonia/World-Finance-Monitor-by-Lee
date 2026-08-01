@@ -1,7 +1,56 @@
 
+// Formats a "YYYY-MM-DD" into the locale's short date form. Parsed/rendered in UTC
+// throughout so the date shown never shifts by a day depending on the viewer's
+// timezone (the source dates are calendar dates, not timestamps).
+function formatShortDate(isoDate, lang) {
+    const d = new Date(isoDate + 'T00:00:00Z');
+    if (lang === 'ko') {
+        return `${d.getUTCFullYear()}.${String(d.getUTCMonth() + 1).padStart(2, '0')}.${String(d.getUTCDate()).padStart(2, '0')}`;
+    }
+    return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' });
+}
+
+// "How long has this been going on" — computed at render time (not baked into the
+// data) so it stays correct no matter when the page is viewed. Sub-month durations
+// fall back to a day count since "0개월째"/"0mo" would read as broken.
+function formatDurationSince(isoDate, lang) {
+    const start = new Date(isoDate + 'T00:00:00Z');
+    const now = new Date();
+    let months = (now.getUTCFullYear() - start.getUTCFullYear()) * 12 + (now.getUTCMonth() - start.getUTCMonth());
+    if (now.getUTCDate() < start.getUTCDate()) months--;
+    if (months < 1) {
+        const days = Math.max(0, Math.floor((now - start) / 86400000));
+        return lang === 'ko' ? `${days}일째` : `${days}d`;
+    }
+    const years = Math.floor(months / 12);
+    const remMonths = months % 12;
+    if (lang === 'ko') {
+        if (years > 0) return remMonths > 0 ? `${years}년 ${remMonths}개월째` : `${years}년째`;
+        return `${remMonths}개월째`;
+    }
+    if (years > 0) return remMonths > 0 ? `${years}y ${remMonths}mo` : `${years}y`;
+    return `${remMonths}mo`;
+}
+
+// Ongoing events (still-active wars, structural economic risk, etc.) show
+// "start date ~ (duration so far)"; resolved multi-day events show "start ~ end";
+// single-day events (most disasters/social incidents) just show the date.
+function formatEventDateLabel(w, lang) {
+    if (!w.date) return '';
+    const startStr = formatShortDate(w.date, lang);
+    if (w.ongoing) {
+        const duration = formatDurationSince(w.date, lang);
+        return lang === 'ko' ? `${startStr} ~ (${duration} 진행 중)` : `${startStr} ~ (ongoing, ${duration})`;
+    }
+    if (w.endDate) {
+        return `${startStr} ~ ${formatShortDate(w.endDate, lang)}`;
+    }
+    return startStr;
+}
+
 // Shared popup for both war circles (GL layer click) and economy dots (DOM marker
 // click) — both hand it an event with clientX/clientY plus a { ko, en, reasonKo,
-// reasonEn } item.
+// reasonEn, date, ongoing, endDate } item.
 function showRiskPopup(event, w) {
     const popup = document.getElementById('warzone-popup');
     const wrapper = document.getElementById('map-wrapper');
@@ -9,6 +58,7 @@ function showRiskPopup(event, w) {
     const x = event.clientX - wrapperRect.left;
     const y = event.clientY - wrapperRect.top;
     document.getElementById('warzone-popup-title').innerText = currentLang === 'ko' ? w.ko : w.en;
+    document.getElementById('warzone-popup-date').innerText = formatEventDateLabel(w, currentLang);
     document.getElementById('warzone-popup-reason').innerText = currentLang === 'ko' ? w.reasonKo : w.reasonEn;
     popup.style.display = 'block';
     const popupWidth = 270;
@@ -144,7 +194,7 @@ function addWarLayer() {
             type: 'FeatureCollection',
             features: WAR_EVENTS.map(w => ({
                 type: 'Feature',
-                properties: { ko: w.ko, en: w.en, reasonKo: w.reasonKo, reasonEn: w.reasonEn },
+                properties: { ko: w.ko, en: w.en, reasonKo: w.reasonKo, reasonEn: w.reasonEn, date: w.date, ongoing: w.ongoing, endDate: w.endDate || null },
                 geometry: { type: 'Polygon', coordinates: [circlePolygon(w.coords, w.radius)] }
             }))
         }
@@ -178,7 +228,7 @@ function addDisasterLayer() {
             type: 'FeatureCollection',
             features: DISASTER_EVENTS.map(d => ({
                 type: 'Feature',
-                properties: { ko: d.ko, en: d.en, reasonKo: d.reasonKo, reasonEn: d.reasonEn },
+                properties: { ko: d.ko, en: d.en, reasonKo: d.reasonKo, reasonEn: d.reasonEn, date: d.date, ongoing: d.ongoing, endDate: d.endDate || null },
                 geometry: { type: 'Polygon', coordinates: [circlePolygon(d.coords, d.radius)] }
             }))
         }
