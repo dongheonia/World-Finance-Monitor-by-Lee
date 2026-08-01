@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WORLD FINANCE MONITOR</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4/dist/maplibre-gl.css" />
+    <script src="https://unpkg.com/maplibre-gl@4/dist/maplibre-gl.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Generic `monospace` resolves to a different OS font per user (Consolas, DejaVu Sans
+         Mono, ...), several of which draw a slashed zero with no way to turn it off via
+         font-feature-settings (that only works if the font itself exposes a "zero" OpenType
+         feature — most don't). Courier Prime is loaded explicitly because its zero glyph is a
+         plain, fully open oval (no slash, no dot) at every weight, guaranteeing the same look
+         for every visitor regardless of OS. -->
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Inter — used for all English/Latin text site-wide (labels, headings, article titles).
+         Loaded alongside, not instead of, Courier Prime: per-glyph font fallback means Korean
+         characters (which Inter doesn't cover) transparently fall through to Courier Prime/the
+         system default exactly as before, so this only affects Latin text. -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="p-6 light-mode">
+
+    <!-- Top bar: timezone boxes left, brand title centered, theme/lang toggles right — all one row -->
+    <div class="flex items-center mb-4 border-b border-gray-800 pb-2">
+        <div class="flex-1 flex space-x-6 text-xs font-mono">
+            <div class="tz-box px-2 py-1 border rounded font-bold">
+                <span id="lbl-nyc" class="clock-label">NEW YORK:</span> <span id="time-nyc" class="tz-time">00:00</span>
+            </div>
+            <div class="tz-box px-2 py-1 border rounded font-bold">
+                <span id="lbl-lon" class="clock-label">LONDON:</span> <span id="time-lon" class="tz-time">00:00</span>
+            </div>
+            <div class="tz-box px-2 py-1 border rounded font-bold">
+                <span id="lbl-tyo" class="clock-label">TOKYO:</span> <span id="time-tyo" class="tz-time">00:00</span>
+            </div>
+        </div>
+        <div class="flex-1 text-center">
+            <span class="brand-title" id="brand-title">World Finance Monitor</span>
+        </div>
+        <div class="flex-1 flex justify-end space-x-2">
+            <button id="theme-btn" onclick="toggleTheme()" class="w-[130px] text-center py-1 bg-gray-900 border border-gray-700 text-white text-xs rounded hover:bg-gray-800 cursor-pointer font-bold">Dark Mode</button>
+            <button id="lang-btn" onclick="toggleLanguage()" class="w-[130px] text-center py-1 bg-gray-900 border border-gray-700 text-white text-xs rounded hover:bg-gray-800 cursor-pointer font-bold">한국어</button>
+        </div>
+    </div>
+
+    <div id="map-wrapper" class="terminal-box rounded p-0 mb-4 relative terminal-grid overflow-hidden select-none">
+        <div class="absolute top-2 left-2 z-20 bg-black/85 border border-gray-800 p-2 rounded text-[11px] font-mono flex flex-col space-y-1.5 shadow-lg backdrop-blur">
+            <div class="text-gray-500 border-b border-gray-800 pb-1 font-bold" id="risk-filter-title">GLOBAL IMPACT</div>
+            <label class="flex items-center space-x-2 cursor-pointer text-gray-300 hover:text-white">
+                <input type="checkbox" id="chk-war" checked onchange="toggleRiskCategory('war')" class="accent-red-500 cursor-pointer">
+                <span id="lbl-chk-war">War</span>
+            </label>
+            <label class="flex items-center space-x-2 cursor-pointer text-gray-300 hover:text-white">
+                <input type="checkbox" id="chk-disaster" checked onchange="toggleRiskCategory('disaster')" class="accent-yellow-500 cursor-pointer">
+                <span id="lbl-chk-disaster">Disaster</span>
+            </label>
+            <label class="flex items-center space-x-2 cursor-pointer text-gray-300 hover:text-white">
+                <input type="checkbox" id="chk-economy" checked onchange="toggleRiskCategory('economy')" class="accent-blue-500 cursor-pointer">
+                <span id="lbl-chk-economy">Economy</span>
+            </label>
+        </div>
+        <div class="absolute bottom-2 left-2 z-20 bg-black/85 border border-gray-800 p-2 rounded text-[11px] font-mono flex flex-col space-y-1.5 shadow-lg backdrop-blur">
+            <div class="text-gray-500 border-b border-gray-800 pb-1 font-bold" id="mapstyle-title">MAP STYLE</div>
+            <div class="flex space-x-1">
+                <button id="btn-style-map" onclick="switchMapStyle('map')" class="map-style-btn map-style-active px-2 py-1 rounded border border-gray-700 text-gray-300 hover:text-white cursor-pointer">Map</button>
+                <button id="btn-style-satellite" onclick="switchMapStyle('satellite')" class="map-style-btn px-2 py-1 rounded border border-gray-700 text-gray-300 hover:text-white cursor-pointer">Satellite</button>
+            </div>
+        </div>
+        <div id="map-instructions" class="absolute top-2 right-2 text-[10px] text-gray-600 font-mono pointer-events-none z-10">
+            * WHEEL TO ZOOM / DRAG TO MOVE (UN 193 MEMBER STATES)
+        </div>
+        <div id="world-map" class="w-full relative"></div>
+        <div id="warzone-popup" class="warzone-popup">
+            <div class="wp-title" id="warzone-popup-title"></div>
+            <div id="warzone-popup-reason"></div>
+        </div>
+    </div>
+
+    <!-- Continuous scrolling news ticker -->
+    <div class="ticker-wrapper">
+        <div id="ticker-track" class="ticker-track">
+            <div class="ticker-item text-gray-400">Loading...</div>
+        </div>
+    </div>
+
+    <!-- Economic calendar: central bank rate decisions/speeches/minutes, CPI, PCE, employment,
+         GDP, PMI and trade data for the US, UK, Eurozone, Korea, China and Japan. Month grid on
+         the left, that month's events listed chronologically on the right. -->
+    <div id="econ-calendar" class="terminal-box rounded p-4 mb-6 flex flex-col lg:flex-row gap-4">
+        <div id="cal-left-panel" class="flex-[2] min-w-0">
+            <div class="flex items-center justify-between border-b border-gray-800 pb-1 mb-3 h-[21px]">
+                <button id="cal-prev-btn" onclick="calendarShiftMonth(-1)" class="px-2 text-gray-500 hover:text-white cursor-pointer text-sm disabled:hover:text-gray-500 disabled:cursor-not-allowed disabled:opacity-30">&#8249;</button>
+                <div id="cal-month-label" class="text-sm font-bold"></div>
+                <button id="cal-next-btn" onclick="calendarShiftMonth(1)" class="px-2 text-gray-500 hover:text-white cursor-pointer text-sm disabled:hover:text-gray-500 disabled:cursor-not-allowed disabled:opacity-30">&#8250;</button>
+            </div>
+            <div id="cal-grid" class="cal-grid"></div>
+        </div>
+        <div id="cal-right-panel" class="flex-1 min-w-0 lg:border-l lg:border-gray-800 lg:pl-4">
+            <div class="flex items-center justify-between border-b border-gray-800 pb-1 mb-3 h-[21px]">
+                <div id="cal-list-title" class="text-xs font-bold"></div>
+                <button id="cal-today-btn" onclick="goToTodayCalendar()" class="map-style-btn map-style-active px-1.5 py-0.5 text-[10px] rounded border border-gray-700 text-gray-300 hover:text-white cursor-pointer font-bold"></button>
+            </div>
+            <div id="cal-event-list" class="space-y-2 overflow-y-auto pr-1"></div>
+        </div>
+    </div>
+
+    <div id="main-grid" class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+
+        <!-- LEFT: single tabbed news box (World / Economic). Height is set by JS to match the
+             taller of the middle/right columns, so it never falls short of that line; content
+             beyond that scrolls inside the box instead of pushing the card taller. -->
+        <div class="space-y-6">
+            <div id="news-card" class="terminal-box rounded p-4 flex flex-col">
+                <div class="flex items-center mb-4 border-b border-gray-800 pb-1 flex-none">
+                    <button id="tab-world-news" onclick="switchNewsTab('world')" class="flex-1 text-center text-xs section-title cursor-pointer pb-1"></button>
+                    <button id="tab-econ-news" onclick="switchNewsTab('economy')" class="flex-1 text-center text-xs section-title cursor-pointer pb-1"></button>
+                </div>
+                <div id="news-container" class="space-y-3 text-sm text-gray-300 flex-1 min-h-0 overflow-y-auto pr-1">
+                    <div class="text-gray-600 text-sm">Loading news...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MIDDLE: FX Rates, Policy Rate, Bond Yield — each its own box -->
+        <div class="space-y-6">
+            <div class="terminal-box rounded p-4">
+                <div class="flex items-center justify-between border-b border-gray-800 pb-1 mb-3">
+                    <div id="section-forex-title" class="text-xs text-gray-500 section-title">FX RATES<span class="section-unit" id="unit-forex"></span></div>
+                    <div id="forex-base-toggle" class="hidden space-x-1">
+                        <button id="btn-fx-usd" onclick="setForexBase('USD')" class="fx-base-btn map-style-btn map-style-active px-1.5 py-0.5 text-[10px] rounded border border-gray-700 text-gray-300 hover:text-white cursor-pointer">USD</button>
+                        <button id="btn-fx-gbp" onclick="setForexBase('GBP')" class="fx-base-btn map-style-btn px-1.5 py-0.5 text-[10px] rounded border border-gray-700 text-gray-300 hover:text-white cursor-pointer">GBP</button>
+                    </div>
+                </div>
+                <div id="forex-container" class="space-y-3">
+                    <div class="text-gray-600 text-sm">Loading...</div>
+                </div>
+            </div>
+            <div class="terminal-box rounded p-4">
+                <div class="flex items-center justify-between border-b border-gray-800 pb-1 mb-3">
+                    <div id="section-policy-title" class="text-xs text-gray-500 section-title">POLICY RATE</div>
+                    <span class="section-unit" id="unit-policy"></span>
+                </div>
+                <div id="policy-rate-container" class="space-y-3">
+                    <div class="text-gray-600 text-sm">Loading...</div>
+                </div>
+            </div>
+            <div class="terminal-box rounded p-4">
+                <div id="section-bond-title" class="text-xs text-gray-500 border-b border-gray-800 pb-1 mb-3 section-title">GOVERNMENT BOND YIELD<span class="section-unit" id="unit-bond"></span></div>
+                <div id="bond-yield-container" class="space-y-3">
+                    <div class="text-gray-600 text-sm">Loading...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: Stock exchange, Commodities, Crypto — each its own box -->
+        <div class="space-y-6">
+            <div class="terminal-box rounded p-4">
+                <div class="flex items-center justify-between border-b border-gray-800 pb-1 mb-3">
+                    <div id="section-market-title" class="text-xs text-gray-500 section-title">STOCK EXCHANGE<span class="section-unit" id="unit-market"></span></div>
+                    <!-- Volatility alert toggle — off by default on every load (see
+                         marketAlertsEnabled). Roughly the same size as the FX RATES USD/GBP
+                         toggle buttons, so this row's height still lines up with FX RATES' even
+                         though this button (unlike that toggle) stays visible in both languages. -->
+                    <button id="market-alerts-btn" onclick="toggleMarketAlerts()" class="px-1.5 py-0.5 text-[10px] rounded border border-gray-700 text-gray-300 hover:text-white cursor-pointer font-bold"></button>
+                </div>
+                <div id="market-container" class="space-y-3">
+                    <div class="text-gray-600 text-sm">Loading...</div>
+                </div>
+            </div>
+            <div class="terminal-box rounded p-4">
+                <div id="section-commodities-title" class="text-xs text-gray-500 border-b border-gray-800 pb-1 mb-3 section-title">COMMODITIES & ENERGY<span class="section-unit" id="unit-commodities">(USD)</span></div>
+                <div id="commodities-container" class="space-y-3">
+                    <div class="text-gray-600 text-sm">Loading...</div>
+                </div>
+            </div>
+            <div class="terminal-box rounded p-4">
+                <div id="section-crypto-title" class="text-xs text-gray-500 border-b border-gray-800 pb-1 mb-3 section-title">CRYPTOCURRENCY<span class="section-unit" id="unit-crypto">(USD)</span></div>
+                <div id="crypto-container" class="space-y-3">
+                    <div class="text-gray-600 text-sm">Loading...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/data/market-instruments.js"></script>
+    <script src="js/data/calendar-events.js"></script>
+    <script src="js/data/calendar-config.js"></script>
+    <script src="js/data/commodities-crypto.js"></script>
+    <script src="js/data/news-feeds.js"></script>
+    <script src="js/data/korean-names.js"></script>
+    <script src="js/data/translations.js"></script>
+    <script src="js/state.js"></script>
+    <script src="js/news.js"></script>
+    <script src="js/translate.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/render.js"></script>
+    <script src="js/calendar.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/market-data.js"></script>
+    <script src="js/main.js"></script>
+</body>

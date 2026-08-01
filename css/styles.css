@@ -1,0 +1,229 @@
+body {
+    font-family: 'Inter', 'Courier Prime', monospace; background-color: #000000; color: #00ff00;
+}
+/* Tailwind's `.font-mono` utility (used all over the clock/price/map-panel markup)
+   carries higher specificity than the plain `body` rule above and was silently
+   winning, resolving to the OS's own mono stack (still slashed-zero on plenty of
+   systems) instead of Courier Prime. !important guarantees this wins regardless of
+   which order Tailwind's CDN build happens to inject its generated CSS in. */
+.font-mono { font-family: 'Courier Prime', monospace !important; }
+.terminal-box { border: 1px solid #222222; background-color: #050505; }
+.terminal-grid {
+    background-color: #6b7280;
+    background-image: radial-gradient(rgba(0, 255, 0, 0.12) 1px, transparent 1px);
+    background-size: 15px 15px;
+}
+/* z-index:0 (not just position:relative) makes this establish its own stacking
+   context — otherwise MapLibre's internal canvas/control panes leak out and
+   paint over the sibling filter/map-style control panels, which only sit at z-20. */
+#world-map { aspect-ratio: 6.2 / 2.976; background-color: #6b7280; position: relative; z-index: 0; }
+.maplibregl-ctrl-attrib { font-size: 10px; }
+.map-style-btn.map-style-active { background-color: #14532d; border-color: #22c55e !important; color: #ffffff !important; }
+body.light-mode .map-style-btn.map-style-active { background-color: #bbf7d0; border-color: #16a34a !important; color: #111827 !important; }
+
+.warzone-popup {
+    position: absolute; z-index: 30; max-width: 260px; display: none;
+    background: rgba(0,0,0,0.92); border: 1px solid #ff4646; border-radius: 6px;
+    padding: 10px 12px; font-family: 'Courier Prime', monospace; font-size: 11px; line-height: 1.5;
+    color: #ffffff; box-shadow: 0 4px 14px rgba(0,0,0,0.5); pointer-events: none;
+}
+body.light-mode .warzone-popup { background: rgba(255,255,255,0.97); color: #111827; border-color: #dc2626; }
+.warzone-popup .wp-title { color: #ff5c5c; font-weight: 700; font-size: 12px; margin-bottom: 4px; }
+body.light-mode .warzone-popup .wp-title { color: #dc2626; }
+
+.econ-dot {
+    display: block; width: 9px; height: 9px; border-radius: 50%;
+    background: #3b82f6; border: 1.5px solid #ffffff; cursor: pointer;
+    box-shadow: 0 0 4px rgba(0,0,0,0.6);
+}
+body.hide-economy-risk .econ-marker { display: none; }
+
+body.light-mode {
+    background-color: rgb(143, 168, 191); color: #111827;
+}
+body.light-mode .terminal-box { border: 1px solid #d1d5db; background-color: #ffffff; }
+body.light-mode #econ-calendar { background-color: rgb(188, 191, 196); }
+body.light-mode #news-card { background-color: rgb(224, 201, 166); }
+/* Theme/language toggles stay gray-box + white text in BOTH modes — ID specificity here
+   beats the light-mode .bg-gray-900/.text-white overrides above without needing !important. */
+#theme-btn, #lang-btn { background-color: #1f2937 !important; color: #ffffff !important; border-color: #374151 !important; }
+#theme-btn:hover, #lang-btn:hover { background-color: #374151 !important; }
+body.light-mode .terminal-grid {
+    background-color: #e5e7eb;
+    background-image: radial-gradient(rgba(0, 0, 0, 0.08) 1px, transparent 1px);
+}
+body.light-mode .text-white { color: #1f2937 !important; }
+body.light-mode .text-gray-600,
+body.light-mode .text-gray-500,
+body.light-mode .text-gray-400,
+body.light-mode .text-gray-300 { color: #4b5563 !important; }
+body.light-mode .border-gray-800,
+body.light-mode .border-gray-900,
+body.light-mode .border-gray-950 { border-color: #d1d5db !important; }
+body.light-mode .bg-black\/85 { background-color: rgba(255, 255, 255, 0.9) !important; border-color: #d1d5db !important; }
+body.light-mode .hover\:bg-gray-800:hover { background-color: #e5e7eb !important; }
+body.light-mode .bg-gray-900 { background-color: #f3f4f6 !important; border-color: #d1d5db !important; color: #111827 !important; }
+
+.news-item { border-left: 2px solid #4b5563; padding-left: 8px; }
+.news-item a { color: inherit; text-decoration: none; }
+.news-item a:hover { text-decoration: underline; }
+.news-topic { font-size: 10px; font-weight: 700; letter-spacing: 0.5px; color: #eab308; margin-right: 6px; }
+body.light-mode .news-topic { color: #b45309; }
+/* Section headings (News tabs, FX/Policy/Bond/Market/Commodities/Crypto titles) at 2x
+   their original text-xs (12px) size, in both themes. The adjacent .section-unit spans
+   ("(USD)", dates, etc.) are excluded automatically — they set their own explicit
+   font-size/color below, which isn't overridden just because the parent's changed. */
+.section-title { font-weight: 700; font-size: 21.6px !important; }
+/* Color only in light mode — rgb(30,41,59) is a near-black slate that would be
+   unreadable against this site's near-black dark-mode backgrounds, so dark mode keeps
+   its existing (already-legible) heading colors instead of inheriting this literally.
+   Scoped to .text-gray-500 specifically so it hits only the 6 plain section titles, not
+   the News tabs below (which use a different active/inactive scheme). */
+body.light-mode .section-title.text-gray-500 { color: rgb(30, 41, 59) !important; }
+/* News tabs: active tab gets the same rgb(30,41,59) in light mode; inactive gets an even
+   lighter gray than the site's usual muted-text shade (overriding the shared
+   body.light-mode .text-gray-600 rule, which is too dark here for the contrast wanted
+   against the active tab). */
+body.light-mode #tab-world-news.text-white, body.light-mode #tab-econ-news.text-white { color: rgb(30, 41, 59) !important; }
+body.light-mode #tab-world-news.text-gray-600, body.light-mode #tab-econ-news.text-gray-600 { color: #9ca3af !important; }
+/* News article titles (not the [topic] tag, which keeps its own amber color) — black in
+   light mode, overriding the container's inherited muted-gray text color. */
+body.light-mode #news-container.text-gray-300 { color: #000000 !important; }
+/* Dark-mode counterpart — same idea, different (lighter) shade so it stays legible
+   against the near-black dark backgrounds. */
+body:not(.light-mode) .section-title.text-gray-500 { color: rgb(177, 179, 181) !important; }
+body:not(.light-mode) #tab-world-news.text-white, body:not(.light-mode) #tab-econ-news.text-white { color: rgb(177, 179, 181) !important; }
+
+/* Exchange open/closed indicator: pulsing green while its regular session is live,
+   static red otherwise. */
+.market-dot { display: inline-block; width: 11px; height: 11px; border-radius: 50%; margin-right: 7px; vertical-align: middle; }
+.market-dot.open { background: #22c55e; animation: market-pulse 1.6s ease-in-out infinite; }
+.market-dot.closed { background: #ef4444; }
+
+/* Pinned rows (Dollar Index, VIX) keep a dark box + white label/value in BOTH themes —
+   unlike everything else, which flips via the body.light-mode .text-white override
+   below, this box's background never changes, so its text must stay white always. */
+.pinned-white { color: #ffffff !important; }
+@keyframes market-pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.55); }
+    50% { opacity: 0.55; box-shadow: 0 0 0 4px rgba(34, 197, 94, 0); }
+}
+
+/* Stock Exchange volatility alerts (see marketAlertsEnabled) — pale yellow flash for the
+   warning tier regardless of direction; the emergency tier is direction-aware (pale red
+   for a decline, pale green for a rise — at that severity the direction IS the story).
+   rgba backgrounds (not solid colors) so the row's own light/dark background still
+   shows through underneath the tint. */
+@keyframes market-alert-warning-flash {
+    0%, 100% { background-color: rgba(250, 204, 21, 0.12); }
+    50% { background-color: rgba(250, 204, 21, 0.45); }
+}
+@keyframes market-alert-emergency-down-flash {
+    0%, 100% { background-color: rgba(248, 113, 113, 0.15); }
+    50% { background-color: rgba(248, 113, 113, 0.55); }
+}
+@keyframes market-alert-emergency-up-flash {
+    0%, 100% { background-color: rgba(74, 222, 128, 0.15); }
+    50% { background-color: rgba(74, 222, 128, 0.55); }
+}
+/* Bleed the tint out to the card's full edge-to-edge width (matching the same
+   px-2/-mx-2 trick the pinned Dollar Index/VIX rows use) and drop the row's own
+   border-bottom for the duration of the alert — left in place, that dark border cut a
+   visible line across the middle of an otherwise solid-looking colored block. The gap
+   directly above each row (from #market-container's space-y-3) is deliberately left
+   uncolored — a ::before fill was tried there and looked like a separate floating chip
+   stacked above the row instead of one seamless block, worse than the plain gap.
+   padding-bottom:0 overrides the row's own pb-2 (8px bottom-only padding, meant to give
+   the plain border-bottom line some breathing room) — on a solid colored block instead
+   of a thin line, that bottom-only padding instead read as the label/chart/value sitting
+   noticeably above center, since items-center was only ever centering within a
+   bottom-padded sub-box, not the row's full visible height. */
+.market-alert-warning, .market-alert-emergency-down, .market-alert-emergency-up {
+    border-radius: 11px; padding-left: 8px; padding-right: 8px; padding-bottom: 0 !important;
+    margin-left: -8px; margin-right: -8px; border-bottom-color: transparent !important;
+}
+.market-alert-warning { animation: market-alert-warning-flash 1.2s ease-in-out infinite; }
+.market-alert-emergency-down { animation: market-alert-emergency-down-flash 1.2s ease-in-out infinite; }
+.market-alert-emergency-up { animation: market-alert-emergency-up-flash 1.2s ease-in-out infinite; }
+
+/* FX/Market/Commodities/Crypto row sparklines */
+.spark-svg { width: 76px; height: 26px; display: block; }
+.spark-empty { color: #4b5563; font-size: 11px; }
+
+/* Timezone boxes: city-name and time colors move together. Light mode matches the rest
+   of the light theme (white card, dark text) rather than the dark gray box it used to
+   be, which read as an unwanted "black box" against the light background. */
+body.light-mode .tz-box { background-color: #000000; border-color: #000000; }
+body.light-mode .tz-time, body.light-mode .clock-label { color: #ffffff; }
+body:not(.light-mode) .tz-box { background-color: #ffffff; border-color: #ffffff; }
+body:not(.light-mode) .tz-time, body:not(.light-mode) .clock-label { color: #000000; }
+
+.brand-title {
+    font-family: 'Courier Prime', monospace; font-weight: 700;
+    font-size: 18px; color: #111827; letter-spacing: 0.5px;
+}
+body:not(.light-mode) .brand-title { color: #ffffff; }
+.section-unit { font-size: 10px; font-weight: 400; color: #6b7280; margin-left: 6px; }
+body.light-mode .section-unit { color: #6b7280; }
+
+.ticker-wrapper {
+    overflow: hidden; white-space: nowrap; padding: 10px 0; margin-bottom: 24px;
+    background: #000000; color: #ffffff; border-top: 1px solid #333; border-bottom: 1px solid #333;
+}
+body.light-mode .ticker-wrapper { background: #000000; color: #ffffff; }
+body:not(.light-mode) .ticker-wrapper { background: rgb(126, 128, 130); color: #000000; }
+.ticker-track { display: inline-flex; }
+.ticker-item { display: inline-block; padding: 0 70px; font-size: 13px; }
+.ticker-item .news-topic { font-size: 13px; }
+body.light-mode .ticker-item .news-topic { color: #eab308; }
+body:not(.light-mode) .ticker-item .news-topic { color: rgb(94, 25, 36); }
+
+/* Economic calendar */
+/* #cal-month-label/#cal-list-title otherwise inherit body's base green terminal text
+   color, which reads wrong for a heading against the calendar's own dark cells — pin
+   both white in dark mode specifically (light mode already gets a sensible dark color
+   from body.light-mode's own color override, since neither has its own color class). */
+body:not(.light-mode) #cal-month-label, body:not(.light-mode) #cal-list-title { color: #ffffff; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: #1a1a1a; border: 1px solid #222222; }
+body.light-mode .cal-grid { background: rgb(163, 166, 171); border-color: #9199a1; }
+.cal-weekday { background: #050505; color: #6b7280; font-size: 10px; font-weight: 700; text-align: center; padding: 4px 0; }
+body.light-mode .cal-weekday { background: rgb(188, 191, 196); }
+.cal-weekday.cal-sun { color: #f87171; }
+.cal-weekday.cal-sat { color: #60a5fa; }
+.cal-day { background: #050505; min-height: 108px; padding: 3px; font-size: 9px; }
+body.light-mode .cal-day { background: rgb(188, 191, 196); }
+.cal-day.other-month { opacity: 0.3; }
+/* Weekend fills — only applied to in-month cells (see renderCalendarGrid, which omits
+   these classes entirely for other-month cells so they stay the plain gray blank look).
+   !important because body.light-mode .cal-day above outranks a plain two-class selector
+   on specificity alone (extra `body` element bumps it up) despite being declared first.
+   Declared before .cal-day.today below so today's green still wins if today is a
+   weekend — that rule uses !important too, so source order breaks the tie. */
+.cal-day.cal-sat-cell { background: rgba(59, 130, 246, 0.2) !important; }
+.cal-day.cal-sun-cell { background: rgba(239, 68, 68, 0.2) !important; }
+.cal-day.today { box-shadow: inset 0 0 0 2px #22c55e; background: rgba(34, 197, 94, 0.12) !important; }
+.cal-day-num { color: #6b7280; margin-bottom: 2px; font-family: 'Courier Prime', monospace; }
+.cal-day.today .cal-day-num { color: #22c55e; font-weight: 700; }
+/* Plain, uniform tags — no per-category highlight color, just a neutral chip so it stays
+   readable in both themes with flat black text. */
+.cal-tag { display: block; font-size: 9px; line-height: 1.5; padding: 0 3px; margin-bottom: 1px; border-radius: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: #d1d5db; color: #000000; }
+.cal-tag.cat-rate { background: #dc2626; color: #ffffff; }
+.cal-tag-more { display: block; font-size: 9px; color: #6b7280; padding: 0 3px; }
+
+.cal-list-item { display: flex; gap: 8px; align-items: flex-start; border-left: 2px solid #4b5563; padding: 2px 0 2px 8px; font-size: 11px; }
+.cal-list-item.cal-today { border: 1px solid #a3e635; border-left: 2px solid #a3e635; border-radius: 3px; padding: 2px 6px; background: rgba(163, 230, 53, 0.08); }
+.cal-list-date { font-family: 'Courier Prime', monospace; font-size: 10px; white-space: nowrap; padding-top: 1px; }
+.cal-list-body { flex: 1; min-width: 0; }
+.cal-list-title { font-weight: 700; }
+.cal-list-detail { font-size: 10px; }
+.cal-list-value { text-align: right; font-family: 'Courier Prime', monospace; white-space: nowrap; }
+.cal-list-prev { font-size: 9px; }
+/* Today/future: black in light mode, white in dark mode. Past: gray in BOTH modes
+   (overrides the above with !important since it needs to win over the dark-mode rule). */
+.cal-list-date, .cal-list-title, .cal-list-detail, .cal-list-value, .cal-list-prev { color: #111827; }
+body:not(.light-mode) .cal-list-date, body:not(.light-mode) .cal-list-title, body:not(.light-mode) .cal-list-detail, body:not(.light-mode) .cal-list-value, body:not(.light-mode) .cal-list-prev { color: #ffffff; }
+.cal-list-item.cal-past .cal-list-date, .cal-list-item.cal-past .cal-list-title, .cal-list-item.cal-past .cal-list-detail, .cal-list-item.cal-past .cal-list-value, .cal-list-item.cal-past .cal-list-prev { color: #6b7280 !important; }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+body.light-mode ::-webkit-scrollbar-thumb { background: #ccc; }

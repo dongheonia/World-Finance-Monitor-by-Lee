@@ -1,0 +1,565 @@
+// ============================ LIVE DATA FETCHING ============================
+// Three independent live sources, each refreshed every 1 minute:
+//  - Stock indices / commodities / bond yields: Yahoo Finance's unofficial chart API,
+//    which has no CORS headers of its own, so it's fetched through a CHAIN of public
+//    CORS proxies (tried in order until one works — a single proxy going down or
+//    rate-limiting no longer means stale numbers).
+//  - FX: the Frankfurter API (ECB reference rates) — CORS-native, no proxy or key
+//    needed, so it never fails the way the proxied Yahoo calls can. It publishes once
+//    per business day rather than tick-by-tick, but it is always the accurate latest
+//    official rate, which is what was actually wrong before.
+//  - Crypto: the CoinGecko public API — also CORS-native, true real-time pricing.
+
+// Verified against Yahoo's chart endpoint and several RSS feeds directly (curl,
+// checking both HTTP status and actual Access-Control-Allow-Origin headers) on
+// 2026-08-01:
+//  - corsproxy.io now requires a paid plan (403 on any server-side-style request) — dead.
+//  - api.codetabs.com is returning Cloudflare 522s (origin unreachable) — dead.
+//  - api.allorigins.win, the long-time second proxy, is now HARD down (connection
+//    timeouts on every attempt, not just "flaky") — this was silently cutting the news
+//    pool (and file:// users' news pool entirely — see CORS_PROXIES below) whenever
+//    corsfix had even one bad request, since there was no working fallback left.
+//    Replaced with proxy.cors.sh, verified working with real CORS headers.
+//  - proxy.corsfix.com works when it sees a browser-style Origin header (which a real
+//    fetch() always sends), giving a second independent path.
+// Both remaining proxies are still free/anonymous services that can go down or change
+// terms at any time — see the note above fetchYahooQuote for the real fix.
+// Order matters: tried in sequence, first success wins. corsfix is the more reliable of
+// the two under normal load, so it goes first; cors.sh (no API key) rate-limits faster
+// under heavy burst but is otherwise solid, so it's the fallback. Re-test both if this
+// stops working well — their relative reliability drifts over time, it's not fixed.
+const ALL_CORS_PROXIES = [
+    target => `https://proxy.corsfix.com/?${target}`,
+    target => `https://proxy.cors.sh/${target}`
+];
+// corsfix rejects any request with no real Origin header (confirmed via its own
+// response: x-corsfix-status: invalid_origin) — and a page opened as a local file
+// (file://, e.g. double-clicked instead of served over http) sends exactly that, so
+// every corsfix attempt from a file:// page is a guaranteed, wasted failure. Skip it
+// entirely in that case rather than eating its timeout on every single request.
+// (The real fix is serving this over http — see the README/instructions — but this
+// keeps file:// usage from being strictly worse than it has to be.)
+const CORS_PROXIES = window.location.protocol === 'file:'
+    ? ALL_CORS_PROXIES.slice(1)
+    : ALL_CORS_PROXIES;
+
+async function fetchWithTimeout(url, ms) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), ms);
+    try {
+        return await fetch(url, { cache: 'no-store', signal: controller.signal });
+    } finally {
+        clearTimeout(timer);
+    }
+}
+
+// Both CORS_PROXIES are free, independently-flaky services (see the note above
+// ALL_CORS_PROXIES). Trying them one after another means a slow/down proxy eats its
+// full timeout before the other one even gets a turn, and the request only fails if
+// THAT ONE proxy fails. Racing them with Promise.any instead answers as fast as
+// whichever proxy responds first, and only fails if BOTH do — this is a meaningful
+// chunk of what made charts "새로고침 할때마다 랜덤으로" go missing: proxy A having a
+// bad moment while proxy B was perfectly fine to serve the request.
+async function fetchViaProxies(target, timeoutMs) {
+    const attempts = CORS_PROXIES.map(async buildProxyUrl => {
+        const res = await fetchWithTimeout(buildProxyUrl(target), timeoutMs);
+        if (!res.ok) throw new Error('http ' + res.status);
+        return res;
+    });
+    try {
+        return await Promise.any(attempts);
+    } catch (aggregateErr) {
+        throw (aggregateErr.errors && aggregateErr.errors[0]) || aggregateErr;
+    }
+}
+
+// Downsamples an array to at most maxPoints, evenly spaced — used to keep sparkline
+// SVGs light regardless of how many raw bars the source series had. Consecutive
+// duplicate values are collapsed first: thinly-traded pairs (e.g. the KRW crosses)
+// only get a fresh quote every few minutes from Yahoo and repeat the same value in
+// between, so a plain even-index sample can land disproportionately on those flat
+// stretches and under-represent the real moves elsewhere in the series. This doesn't
+// invent anything — it just avoids wasting sample points on redundant repeats of data
+// that's already real.
+function downsample(arr, maxPoints) {
+    const deduped = arr.filter((v, i) => i === 0 || v !== arr[i - 1]);
+    const source = deduped.length >= 2 ? deduped : arr;
+    if (source.length <= maxPoints) return source;
+    const step = source.length / maxPoints;
+    const out = [];
+    for (let i = 0; i < maxPoints; i++) out.push(source[Math.floor(i * step)]);
+    return out;
+}
+
+async function fetchYahooQuote(symbol) {
+    // range=1mo&interval=1d gives ~22 daily closes (a trading month) instead of a single
+    // intraday day — this only changes the SPARKLINE source; the live price/change below
+    // still comes from `meta` (regularMarketPrice/previousClose), which Yahoo populates
+    // the same way regardless of what range/interval the chart itself was requested at,
+    // so switching this doesn't make the quote itself any less current.
+    const target = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1d&range=1mo&_=${Date.now()}`;
+    const res = await fetchViaProxies(target, 5000);
+    const data = await res.json();
+    const result = data.chart && data.chart.result && data.chart.result[0];
+    if (!result) throw new Error('no result');
+    const meta = result.meta;
+    const current = meta.regularMarketPrice;
+    const prevClose = meta.previousClose ?? meta.chartPreviousClose;
+    if (current == null || prevClose == null) throw new Error('missing price');
+    const change = +(current - prevClose).toFixed(4);
+    const changePercent = +(((current - prevClose) / prevClose) * 100).toFixed(2);
+    // The chart endpoint already returns a full month-long close-price series
+    // alongside the current quote — grabbing it here for the row's sparkline
+    // costs nothing extra (same single request), unlike the FMP-covered symbols
+    // which need a dedicated fetch (see fetchChartSeriesOnly).
+    const closes = result.indicators && result.indicators.quote && result.indicators.quote[0] && result.indicators.quote[0].close;
+    const series = Array.isArray(closes) ? downsample(closes.filter(v => v != null), 40) : null;
+    return { current: +current.toFixed(4), change, change_percent: changePercent, series };
+}
+
+// ---------------------------------------------------------------
+// Financial Modeling Prep (FMP) — verified by direct testing on 2026-07-27 against
+// the user's own free-tier key. FMP's free "Basic" plan does NOT support batched
+// multi-symbol requests (each symbol is its own API call) and gates a somewhat
+// arbitrary subset of symbols behind paid tiers, so this list is the specific set
+// that was actually confirmed working, not everything the dashboard shows:
+//  - Indices: S&P 500, Nasdaq COMPOSITE (not Nasdaq 100 — ^NDX is paid-tier only),
+//    Dow, FTSE 100, Euro Stoxx 50, Hang Seng, Nikkei 225.
+//  - Commodities: Gold, Silver, Brent Crude (WTI/nat gas/copper/wheat are paid-tier).
+//  - US Treasury 10Y & 2Y via the dedicated treasury-rates endpoint (1 call covers
+//    both, and includes the prior reading so "change" is a real value, not synthetic).
+// Germany DAX, KOSPI, Shanghai Composite, and every non-US 10Y bond yield have no
+// free-tier source anywhere (FMP or Twelve Data, both checked) — they stay on the
+// best-effort Yahoo-proxy path below.
+//
+// Free-tier quota is a hard 250 calls/day with no batching, so at 10 calls per FMP
+// refresh (7 indices + 3 commodities; treasury-rates is a separate 11th call) the
+// safe sustainable cadence is ~65 min minimum — refreshed every 75 min for buffer.
+// This is categorically slower than the 1-minute cadence everything else uses; there
+// is no free tier of any provider that supports true 1-minute refresh for this data.
+// FMP_API_KEY itself lives in config.js (gitignored, loaded before this file) — see
+// config.example.js for the template a fresh clone needs to copy and fill in.
+const FMP_INDEX_SYMBOLS = ['^GSPC', '^IXIC', '^DJI', '^FTSE', '^STOXX50E', '^HSI', '^N225'];
+const FMP_COMMODITY_MAP = { 'BZ=F': 'BZUSD', 'GC=F': 'GCUSD', 'SI=F': 'SIUSD' };
+const FMP_COVERED_SYMBOLS = new Set([...FMP_INDEX_SYMBOLS, ...Object.keys(FMP_COMMODITY_MAP), '^TNX', 'US2Y=RR']);
+
+async function fetchFmpQuoteShort(fmpSymbol) {
+    const url = `https://financialmodelingprep.com/stable/quote-short?symbol=${encodeURIComponent(fmpSymbol)}&apikey=${FMP_API_KEY}`;
+    const res = await fetchWithTimeout(url, 8000);
+    if (!res.ok) throw new Error('http ' + res.status);
+    const data = await res.json();
+    const row = Array.isArray(data) ? data[0] : null;
+    if (!row || row.price == null) throw new Error('no data (possibly a premium-only symbol)');
+    const current = +row.price;
+    const change = +(row.change ?? 0);
+    const prevVal = current - change;
+    const changePercent = prevVal ? +((change / prevVal) * 100).toFixed(2) : 0;
+    return { current: +current.toFixed(4), change: +change.toFixed(4), change_percent: changePercent };
+}
+
+async function fetchAllFmp() {
+    try {
+        const res = await fetchWithTimeout(`https://financialmodelingprep.com/stable/treasury-rates?apikey=${FMP_API_KEY}`, 8000);
+        if (res.ok) {
+            const rows = await res.json();
+            if (Array.isArray(rows) && rows.length >= 2) {
+                const [latest, prevRow] = rows;
+                const toChange = (cur, prevVal) => {
+                    const change = +(cur - prevVal).toFixed(3);
+                    const changePercent = prevVal ? +((change / prevVal) * 100).toFixed(2) : 0;
+                    return { current: cur, change, change_percent: changePercent };
+                };
+                setQuote('^TNX', toChange(latest.year10, prevRow.year10));
+                setQuote('US2Y=RR', toChange(latest.year2, prevRow.year2));
+            }
+        }
+    } catch (e) {
+        console.warn('FMP treasury-rates fetch failed:', e.message);
+    }
+
+    // Sequential, not parallel — free-tier symbol gating already trims this to ~10
+    // calls, and going one at a time avoids risking an undocumented per-second burst
+    // limit on top of the known 250/day cap.
+    for (const symbol of FMP_INDEX_SYMBOLS) {
+        try {
+            setQuote(symbol, await fetchFmpQuoteShort(symbol));
+        } catch (e) {
+            console.warn('FMP index fetch failed for', symbol, e.message);
+        }
+    }
+    for (const ourSymbol of Object.keys(FMP_COMMODITY_MAP)) {
+        try {
+            setQuote(ourSymbol, await fetchFmpQuoteShort(FMP_COMMODITY_MAP[ourSymbol]));
+        } catch (e) {
+            console.warn('FMP commodity fetch failed for', ourSymbol, e.message);
+        }
+    }
+    renderAll();
+}
+// ---------------------------------------------------------------
+
+function allYahooSymbols() {
+    const set = new Set();
+    [...INDICES, ...PINNED_MARKET, ...COMMODITIES, ...BOND10Y, ...PINNED_FX].forEach(i => set.add(i.symbol));
+    set.delete('DUBAI_CRUDE_MANUAL'); // no live source exists — see COMMODITIES comment
+    FMP_COVERED_SYMBOLS.forEach(s => set.delete(s)); // FMP handles these now — don't burn Yahoo-proxy attempts on them
+    return [...set];
+}
+
+function seedFallbackCache() {
+    [...INDICES, ...PINNED_MARKET, ...FOREX_KO, ...FOREX_EN_USD, ...FOREX_EN_GBP, ...PINNED_FX, ...COMMODITIES, ...CRYPTO, ...BOND10Y].forEach(i => {
+        if (!cachedData[i.symbol]) cachedData[i.symbol] = i.fallback;
+    });
+}
+
+async function fetchOneYahooSymbol(symbol) {
+    try {
+        // Note: ^TNX no longer comes through here — allYahooSymbols() excludes it now
+        // that FMP's treasury-rates endpoint covers it directly in real percent terms
+        // (Yahoo's ^TNX quote is x10 the actual yield, which used to need correcting here).
+        const quote = await fetchYahooQuote(symbol);
+        setQuote(symbol, quote);
+        if (quote.series) setSeries(symbol, quote.series);
+    } catch (e) {
+        console.warn('Yahoo fetch failed for', symbol, e.message);
+    }
+}
+
+// ~20 symbols fired at once at a free/anonymous proxy tends to trip its own rate
+// limiting (observed 429s while testing), which just adds a self-inflicted failure
+// mode on top of the proxy's own flakiness. Batching a few at a time is friendlier to
+// it and empirically raises the overall success rate.
+let yahooFetchInProgress = false;
+async function fetchAllYahoo() {
+    if (yahooFetchInProgress) return; // don't stack a new cycle on top of a slow one
+    yahooFetchInProgress = true;
+    try {
+        const symbols = allYahooSymbols();
+        const batchSize = 6;
+        for (let i = 0; i < symbols.length; i += batchSize) {
+            const batch = symbols.slice(i, i + batchSize);
+            await Promise.allSettled(batch.map(fetchOneYahooSymbol));
+            renderAll(); // render progressively as each batch lands instead of waiting for all ~20
+        }
+        saveSeriesCache();
+    } finally {
+        yahooFetchInProgress = false;
+    }
+}
+
+// The FMP-covered indices/commodities get their PRICE from FMP (see above — it's the
+// more reliable source for them), but FMP's free quote-short endpoint has no history of
+// its own for a sparkline. So these — PLUS every FX pair, whose price comes from
+// Frankfurter (only one point per day, too sparse for a good-looking chart; see
+// fetchAllFX) — get a sparkline-ONLY fetch through the same Yahoo-chart-via-CORS-proxy
+// path fetchYahooQuote uses. Yahoo's FX tickers use exactly the same "USDKRW=X"-style
+// symbols already used throughout this file, and carry real intraday data for FX pairs
+// (spot FX trades ~24/5, unlike exchange hours), giving these charts the same
+// resolution as the Market/Commodities ones instead of Frankfurter's ~5-point weekly
+// line. Decoupled from price so a failed chart fetch never touches the number shown;
+// runs on its own slow cadence (see the setInterval near window.onload) — a 5-40min-old
+// sparkline is fine, unlike price.
+const ALL_FX_SYMBOLS = [...new Set([...FOREX_KO, ...FOREX_EN_USD, ...FOREX_EN_GBP].map(f => f.symbol))];
+// Dollar Index and VIX only otherwise get ONE combined price+chart fetch per 60s cycle
+// (via fetchOneYahooSymbol, 5000ms timeout, no retry) — same as every other pinned/index
+// symbol. Since they have no other data source to fall back on (unlike FMP-covered
+// indices/commodities), they're added here too so they ALSO get this dedicated,
+// longer-timeout chart fetch plus the 45s retry pass below — belt-and-suspenders so a
+// single flaky proxy attempt doesn't leave the pinned rows chartless for a full minute+.
+// '^TNX' (US 10Y) is the only BOND10Y symbol Yahoo actually has a real chart history
+// for — the rest (US2Y=RR, GB10Y=RR, etc.) are synthetic identifiers this file made up
+// for the optional local FRED-backed backend (see fetchLocalBondYields), which has no
+// history endpoint, so those stay chartless (empty "—") rather than faking a series.
+const CHART_ONLY_SYMBOLS = [...FMP_INDEX_SYMBOLS, ...Object.keys(FMP_COMMODITY_MAP), ...ALL_FX_SYMBOLS, ...PINNED_FX.map(f => f.symbol), ...PINNED_MARKET.map(i => i.symbol), '^TNX'];
+
+async function fetchChartSeriesOnly(symbol) {
+    // Same 1-month/daily window as fetchYahooQuote — see the comment there. This
+    // function only ever supplies the sparkline (never the price), so there's no
+    // "current quote" concern to weigh here at all.
+    const target = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1d&range=1mo&_=${Date.now()}`;
+    // Unlike fetchYahooQuote's 5000ms (tuned to fit a 1-minute price cycle), this runs
+    // on its own slow 10-minute cadence with no such budget — a longer timeout here
+    // just means more of the inherently flaky free proxies' slow responses actually get
+    // to finish instead of being cut off early.
+    const res = await fetchViaProxies(target, 9000);
+    const data = await res.json();
+    const result = data.chart && data.chart.result && data.chart.result[0];
+    const closes = result && result.indicators && result.indicators.quote && result.indicators.quote[0] && result.indicators.quote[0].close;
+    if (!Array.isArray(closes)) throw new Error('no series');
+    let clean = closes.filter(v => v != null);
+    if (clean.length < 2) throw new Error('series too short');
+    // Yahoo's ^TNX quote is the actual yield × 10 (a known quirk of that ticker) — the
+    // price itself comes from FMP's treasury-rates endpoint already in real percent
+    // terms (see FMP_COVERED_SYMBOLS), so this chart-only series needs the same ÷10
+    // correction to land on the same scale as the number shown next to it.
+    if (symbol === '^TNX') clean = clean.map(v => v / 10);
+    return downsample(clean, 40);
+}
+
+let sparklineFetchInProgress = false;
+async function fetchProxiedSparklines(symbols) {
+    if (sparklineFetchInProgress) return;
+    sparklineFetchInProgress = true;
+    try {
+        const list = symbols || CHART_ONLY_SYMBOLS;
+        const batchSize = 6;
+        for (let i = 0; i < list.length; i += batchSize) {
+            const batch = list.slice(i, i + batchSize);
+            await Promise.allSettled(batch.map(async symbol => {
+                try {
+                    setSeries(symbol, await fetchChartSeriesOnly(symbol));
+                } catch (e) {
+                    console.warn('Sparkline fetch failed for', symbol, e.message);
+                }
+            }));
+            renderAll();
+        }
+        saveSeriesCache();
+    } finally {
+        sparklineFetchInProgress = false;
+    }
+}
+
+// The free CORS proxies routinely drop a handful of requests in any given burst (see
+// the note above ALL_CORS_PROXIES) — rather than leaving a symbol chartless for the
+// full 10-minute cycle after a bad first attempt, this makes one extra pass shortly
+// after load at just the symbols still missing, which is usually enough to catch
+// whatever failed transiently the first time.
+function retryMissingSparklines() {
+    const missing = CHART_ONLY_SYMBOLS.filter(s => !getSeries(s));
+    if (missing.length) fetchProxiedSparklines(missing);
+}
+
+// Frankfurter returns a { rates: { 'YYYY-MM-DD': { CUR: rate, ... }, ... } } series;
+// fetching a short trailing window lets us compute today-vs-previous-publish change
+// without keeping any history beyond that single prior reading.
+async function fetchFrankfurterSeries(base, quotes) {
+    // 30 days to match the 1-month window every chart on the page now uses (see
+    // fetchYahooQuote) — this is only ever an initial-paint bridge until the richer
+    // Yahoo-sourced monthly series lands (setSeriesIfMissing never overwrites it), but
+    // no reason for the bridge itself to be a different length.
+    const from = new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString().slice(0, 10);
+    const url = `https://api.frankfurter.dev/v1/${from}..?from=${base}&to=${quotes.join(',')}`;
+    const res = await fetch(url, { cache: 'no-store' });
+    if (!res.ok) throw new Error('http ' + res.status);
+    const data = await res.json();
+    const dates = Object.keys(data.rates || {}).sort();
+    if (dates.length === 0) throw new Error('no rates');
+    const latestDate = dates[dates.length - 1];
+    const prevDate = dates.length > 1 ? dates[dates.length - 2] : latestDate;
+    // dates/rates kept (not just latest/prev) so callers can also build a sparkline —
+    // this is real multi-day history already being fetched, not an extra request.
+    return { latest: data.rates[latestDate], prev: data.rates[prevDate], dates, rates: data.rates };
+}
+
+async function fetchAllFX() {
+    try {
+        const krwBases = ['USD', 'EUR', 'JPY', 'GBP', 'CNY'];
+        const [krwResults, usdSeries, gbpSeries] = await Promise.all([
+            Promise.all(krwBases.map(async cur => [cur, await fetchFrankfurterSeries(cur, ['KRW'])])),
+            fetchFrankfurterSeries('USD', ['EUR', 'JPY', 'GBP', 'CNY']),
+            fetchFrankfurterSeries('GBP', ['USD', 'EUR', 'JPY', 'CNY'])
+        ]);
+        krwResults.forEach(([cur, series]) => {
+            const mult = cur === 'JPY' ? 100 : 1; // displayed as "원 / 엔 (100엔)"
+            const current = series.latest.KRW * mult;
+            const prevVal = series.prev.KRW * mult;
+            const change = +(current - prevVal).toFixed(2);
+            const changePercent = prevVal ? +((change / prevVal) * 100).toFixed(2) : 0;
+            setQuote(`${cur}KRW=X`, { current: +current.toFixed(2), change, change_percent: changePercent });
+            // fetchProxiedSparklines fetches a much denser real intraday series for
+            // every FX symbol via Yahoo — this daily-resolution one only fills the gap
+            // until that lands (or as a fallback if it never does), never overwrites it.
+            setSeriesIfMissing(`${cur}KRW=X`, series.dates.map(d => series.rates[d].KRW * mult));
+        });
+        const setCrossSeries = (base, series, quotes) => {
+            quotes.forEach(cur => {
+                const current = series.latest[cur];
+                const prevVal = series.prev[cur];
+                if (current == null || prevVal == null) return;
+                const change = +(current - prevVal).toFixed(4);
+                const changePercent = prevVal ? +((change / prevVal) * 100).toFixed(2) : 0;
+                setQuote(`${base}${cur}=X`, { current: +current.toFixed(4), change, change_percent: changePercent });
+                setSeriesIfMissing(`${base}${cur}=X`, series.dates.map(d => series.rates[d][cur]).filter(v => v != null));
+            });
+        };
+        setCrossSeries('USD', usdSeries, ['EUR', 'JPY', 'GBP', 'CNY']);
+        setCrossSeries('GBP', gbpSeries, ['USD', 'EUR', 'JPY', 'CNY']);
+        saveSeriesCache();
+    } catch (e) {
+        console.warn('Frankfurter FX fetch failed:', e.message);
+    }
+    renderAll();
+}
+
+// The ECB Data Portal's REST API is public, keyless, and genuinely CORS-enabled
+// (access-control-allow-origin: *, verified directly against the endpoint) — unlike
+// Yahoo/every other source in this file, it needs no proxy. FM.D.U2.EUR.4F.KR.MRR_FR.LEV
+// is the daily main-refinancing-rate series (the rate POLICY_RATES' Eurozone row tracks;
+// see the comment above POLICY_RATES for why that one of ECB's three published rates was
+// chosen). The other five central banks here (Fed, BOE, BOJ, BOK, PBOC) do NOT have an
+// equivalent free+keyless+CORS-open API (checked directly): FRED and BOK's ECOS both
+// gate their real API behind a free-registration key this app has no way to hold, and
+// BOE/BOJ/PBOC's own data pages send no CORS header at all, meaning it'd need a CORS
+// proxy — the same flaky, rate-limited pattern already visible in the news fetching
+// below, which is a worse failure mode for a number people might act on financially.
+// So only this one row can safely self-correct; the rest stay on the curated figures
+// above, with the "as of" date next to the section title making that staleness visible
+// instead of silently implying they're as fresh as this one.
+async function fetchECBPolicyRate() {
+    try {
+        const url = `https://data-api.ecb.europa.eu/service/data/FM/D.U2.EUR.4F.KR.MRR_FR.LEV?format=jsondata&lastNObservations=140&_=${Date.now()}`;
+        const res = await fetchWithTimeout(url, 8000);
+        if (!res.ok) throw new Error('http ' + res.status);
+        const data = await res.json();
+        const series = data.dataSets[0].series['0:0:0:0:0:0:0'];
+        const dates = data.structure.dimensions.observation[0].values.map(v => v.id);
+        const points = Object.keys(series.observations)
+            .map(k => ({ date: dates[+k], value: series.observations[k][0] }))
+            .sort((a, b) => a.date.localeCompare(b.date));
+        if (!points.length) throw new Error('no ECB observations returned');
+
+        const latest = points[points.length - 1];
+        // ECB's Governing Council meets roughly every 6 weeks (~42 days) — walking back
+        // that far and taking the level in effect at that point approximates "the rate
+        // set at the previous meeting" (matching a held rate when nothing changed,
+        // exactly like POLICY_RATES' other rows), without needing the exact meeting
+        // calendar.
+        const cutoff = new Date(latest.date);
+        cutoff.setDate(cutoff.getDate() - 42);
+        const cutoffStr = cutoff.toISOString().slice(0, 10);
+        let prevPoint = points[0];
+        for (const p of points) {
+            if (p.date <= cutoffStr) prevPoint = p; else break;
+        }
+
+        const current = latest.value;
+        const prevRate = prevPoint.value;
+        const change = +(current - prevRate).toFixed(2);
+        const changePercent = prevRate ? +((change / prevRate) * 100).toFixed(2) : 0;
+        setQuote('ECB_MRR', { current, change, change_percent: changePercent, prevRate });
+        renderAll();
+    } catch (e) {
+        console.warn('ECB policy-rate fetch failed:', e.message);
+    }
+}
+
+async function fetchAllCrypto() {
+    try {
+        const ids = CRYPTO.map(c => c.symbol).join(',');
+        const url = `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true&_=${Date.now()}`;
+        const res = await fetch(url, { cache: 'no-store' });
+        if (!res.ok) throw new Error('http ' + res.status);
+        const data = await res.json();
+        CRYPTO.forEach(c => {
+            const d = data[c.symbol];
+            if (!d || d.usd == null) return;
+            const current = d.usd;
+            const changePercent = +(d.usd_24h_change ?? 0).toFixed(2);
+            const change = +((current * changePercent) / 100).toFixed(current < 10 ? 4 : 2);
+            setQuote(c.symbol, { current, change, change_percent: changePercent });
+        });
+    } catch (e) {
+        console.warn('CoinGecko crypto fetch failed:', e.message);
+    }
+    renderAll();
+}
+
+// CoinGecko's /coins/{id}/market_chart endpoint (still keyless/free-tier) returns a
+// real price history for whatever day range you ask for — days=30 matches the 1-month
+// window every other chart on the page now shows (see fetchChartSeriesOnly/
+// fetchYahooQuote). Unlike /coins/markets?sparkline=true (the old source here), which
+// only ever returns a fixed 7-day series with no way to ask for more, this needs one
+// request PER coin — fine at just 2 coins. Kept separate from fetchAllCrypto/price
+// (which stays on the lighter /simple/price endpoint used every minute) and run on the
+// slower sparkline cadence instead, since a monthly chart doesn't need per-minute
+// refreshing.
+async function fetchCryptoSparklines() {
+    try {
+        await Promise.all(CRYPTO.map(async c => {
+            try {
+                const url = `https://api.coingecko.com/api/v3/coins/${c.symbol}/market_chart?vs_currency=usd&days=30&_=${Date.now()}`;
+                const res = await fetch(url, { cache: 'no-store' });
+                if (!res.ok) throw new Error('http ' + res.status);
+                const data = await res.json();
+                const prices = Array.isArray(data.prices) ? data.prices.map(p => p[1]) : null;
+                if (prices && prices.length >= 2) setSeries(c.symbol, downsample(prices, 40));
+            } catch (e) {
+                console.warn('CoinGecko market_chart fetch failed for', c.symbol, e.message);
+            }
+        }));
+        saveSeriesCache();
+    } catch (e) {
+        console.warn('CoinGecko sparkline fetch failed:', e.message);
+    }
+    renderAll();
+}
+
+// Optional local backend (main.py) — reliably covers the 7 symbols that are gated on
+// every free cloud API's paid tier but that Yahoo itself has fine: Germany DAX,
+// Shanghai Composite, KOSPI, WTI Crude, Natural Gas, Copper, Wheat. Running it is
+// opt-in (`uvicorn main:app --port 8000`); if it's not running, this just fails
+// silently and those 7 symbols fall back to the existing (flakier) Yahoo-proxy attempt
+// in fetchAllYahoo — no regression either way, this only ever makes things better.
+const LOCAL_BACKEND_URL = 'http://localhost:8000';
+const LOCAL_BACKEND_SYMBOLS = ['000001.SS', '^KS11', 'CL=F', 'NG=F', 'HG=F', 'ZW=F'];
+let localBackendAvailable = null; // null = unknown yet, avoids a console error spray every cycle once we know it's down
+
+async function fetchLocalBackend() {
+    try {
+        const url = `${LOCAL_BACKEND_URL}/api/quotes?symbols=${LOCAL_BACKEND_SYMBOLS.join(',')}`;
+        const res = await fetchWithTimeout(url, 4000);
+        if (!res.ok) throw new Error('http ' + res.status);
+        const data = await res.json();
+        let anySucceeded = false;
+        LOCAL_BACKEND_SYMBOLS.forEach(symbol => {
+            const q = data[symbol];
+            if (q && q.current != null) {
+                setQuote(symbol, { current: q.current, change: q.change, change_percent: q.change_percent });
+                anySucceeded = true;
+            }
+        });
+        if (anySucceeded) {
+            if (localBackendAvailable !== true) console.info('Local backend (main.py) detected — using it for DAX/Shanghai/KOSPI/WTI/NatGas/Copper/Wheat.');
+            localBackendAvailable = true;
+            renderAll();
+        }
+    } catch (e) {
+        if (localBackendAvailable !== false) console.info('Local backend not running (this is fine — falling back to the Yahoo proxy for those 7 symbols). Run `uvicorn main:app --port 8000` to enable it.');
+        localBackendAvailable = false;
+    }
+}
+
+// Non-US 10Y bond yields via the local backend's FRED-backed /api/bond-yields (see
+// main.py) — separate from fetchLocalBackend() above since it's a different endpoint
+// with its own (server-cached, 30min-TTL) freshness characteristics. Same graceful
+// fallback: no backend running or FRED unreachable just leaves the existing value.
+const LOCAL_BOND_SYMBOLS = ['GB10Y=RR', 'FR10Y=RR', 'DE10Y=RR', 'JP10Y=RR', 'KR10Y=RR'];
+
+async function fetchLocalBondYields() {
+    try {
+        const res = await fetchWithTimeout(`${LOCAL_BACKEND_URL}/api/bond-yields`, 4000);
+        if (!res.ok) throw new Error('http ' + res.status);
+        const data = await res.json();
+        let anySucceeded = false;
+        LOCAL_BOND_SYMBOLS.forEach(symbol => {
+            const q = data[symbol];
+            if (q && q.current != null) {
+                setQuote(symbol, { current: q.current, change: q.change, change_percent: q.change_percent });
+                anySucceeded = true;
+            }
+        });
+        if (anySucceeded) renderAll();
+    } catch (e) {
+        // Silent — same "local backend optional" story as fetchLocalBackend.
+    }
+}
+
+function fetchAllMarketData() {
+    fetchAllYahoo();
+    fetchAllFX();
+    fetchAllCrypto();
+    fetchLocalBackend();
+    fetchLocalBondYields();
+}
+

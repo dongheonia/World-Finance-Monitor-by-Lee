@@ -1,0 +1,46 @@
+// ============================ TRANSLATIONS (UI STRINGS) ============================
+
+const translations = {
+    ko: {
+        btn: "English", themeBtnLight: "라이트 모드", themeBtnDark: "다크 모드",
+        brandTitle: "월드 파이낸스 모니터",
+        nyc: "뉴욕:", lon: "런던:", tyo: "도쿄:",
+        tabWorldNews: "세계 뉴스",
+        tabEconNews: "경제 뉴스",
+        secForex: "환율 지표",
+        secPolicy: "기준금리",
+        prevLabel: "이전",
+        heldLabel: "동결",
+        secBond: "국채금리",
+        unitPct: "",
+        secMarket: "증권거래소 지표",
+        unitMarket: "",
+        secCommodities: "원자재 및 에너지",
+        unitUsd: "(달러)",
+        secCrypto: "가상화폐",
+        mapInstructions: "* 휠로 확대/축소, 드래그로 이동 (UN 193개 회원국)",
+        mapStyleTitle: "지도 스타일", styleMap: "지도", styleSatellite: "위성",
+        riskFilterTitle: "글로벌 임팩트", chkWar: "전쟁", chkDisaster: "재난", chkEconomy: "경제"
+    },
+    en: {
+        btn: "한국어", themeBtnLight: "Light Mode", themeBtnDark: "Dark Mode",
+        brandTitle: "World Finance Monitor",
+        nyc: "NEW YORK:", lon: "LONDON:", tyo: "TOKYO:",
+        tabWorldNews: "WORLD NEWS",
+        tabEconNews: "ECONOMIC NEWS",
+        secForex: "FX RATES",
+        secPolicy: "POLICY RATE",
+        prevLabel: "Prev",
+        heldLabel: "Held",
+        secBond: "GOVERNMENT BOND YIELD",
+        unitPct: "",
+        secMarket: "STOCK EXCHANGE",
+        unitMarket: "",
+        secCommodities: "COMMODITIES & ENERGY",
+        unitUsd: "(USD)",
+        secCrypto: "CRYPTOCURRENCY",
+        mapInstructions: "* WHEEL TO ZOOM / DRAG TO MOVE (UN 193 MEMBER STATES)",
+        mapStyleTitle: "MAP STYLE", styleMap: "Map", styleSatellite: "Satellite",
+        riskFilterTitle: "GLOBAL IMPACT", chkWar: "War", chkDisaster: "Disaster", chkEconomy: "Economy"
+    }
+};
