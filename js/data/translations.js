@@ -20,7 +20,7 @@ const translations = {
         secCrypto: "가상화폐",
         mapInstructions: "* 휠로 확대/축소, 드래그로 이동 (UN 193개 회원국)",
         mapStyleTitle: "지도 스타일", styleMap: "지도", styleSatellite: "위성",
-        riskFilterTitle: "글로벌 임팩트", chkWar: "전쟁", chkDisaster: "재난", chkEconomy: "경제"
+        riskFilterTitle: "글로벌 임팩트", chkWar: "전쟁", chkDisaster: "재난", chkEconomy: "경제", chkSocial: "사회 이슈"
     },
     en: {
         btn: "한국어", themeBtnLight: "Light Mode", themeBtnDark: "Dark Mode",
@@ -41,6 +41,6 @@ const translations = {
         secCrypto: "CRYPTOCURRENCY",
         mapInstructions: "* WHEEL TO ZOOM / DRAG TO MOVE (UN 193 MEMBER STATES)",
         mapStyleTitle: "MAP STYLE", styleMap: "Map", styleSatellite: "Satellite",
-        riskFilterTitle: "GLOBAL IMPACT", chkWar: "War", chkDisaster: "Disaster", chkEconomy: "Economy"
+        riskFilterTitle: "GLOBAL IMPACT", chkWar: "War", chkDisaster: "Disaster", chkEconomy: "Economy", chkSocial: "Social Impact"
     }
 };

@@ -134,6 +134,7 @@ function updateStaticLabels() {
     document.getElementById('lbl-chk-war').innerText = t.chkWar;
     document.getElementById('lbl-chk-disaster').innerText = t.chkDisaster;
     document.getElementById('lbl-chk-economy').innerText = t.chkEconomy;
+    document.getElementById('lbl-chk-social').innerText = t.chkSocial;
 }
 
 function updateClocks() {

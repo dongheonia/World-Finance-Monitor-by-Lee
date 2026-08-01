@@ -38,6 +38,13 @@ body.light-mode .warzone-popup .wp-title { color: #dc2626; }
 }
 body.hide-economy-risk .econ-marker { display: none; }
 
+.social-dot {
+    display: block; width: 9px; height: 9px; border-radius: 50%;
+    background: #a855f7; border: 1.5px solid #ffffff; cursor: pointer;
+    box-shadow: 0 0 4px rgba(0,0,0,0.6);
+}
+body.hide-social-risk .social-marker { display: none; }
+
 body.light-mode {
     background-color: rgb(143, 168, 191); color: #111827;
 }

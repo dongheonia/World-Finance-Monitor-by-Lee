@@ -225,6 +225,29 @@ function updateEconomyVisibility() {
     document.body.classList.toggle('hide-economy-risk', !econVisible);
 }
 
+// Social-impact dots (crime/terrorism/mass-migration) — same plain-DOM-marker
+// approach as addEconomyMarkers(), just a separate array/class/body-class so it can
+// be toggled independently.
+let socialMarkerEls = [];
+function addSocialMarkers() {
+    socialMarkerEls = SOCIAL_EVENTS.map(ev => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'social-marker';
+        wrapper.innerHTML = '<span class="social-dot"></span>';
+        wrapper.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showRiskPopup(e, ev);
+        });
+        new maplibregl.Marker({ element: wrapper, anchor: 'center' }).setLngLat(ev.coords).addTo(mapInstance);
+        return wrapper;
+    });
+    updateSocialVisibility();
+}
+
+function updateSocialVisibility() {
+    document.body.classList.toggle('hide-social-risk', !socialVisible);
+}
+
 
 // Called once a style (Map or Satellite) has fully finished loading — hides the
 // basemap's own continent labels, re-applies the current language's label text, and
@@ -257,6 +280,7 @@ function circlePolygon([lon, lat], radiusKm, steps = 64) {
 let warVisible = true;
 let disasterVisible = true;
 let econVisible = true;
+let socialVisible = true;
 function toggleRiskCategory(type) {
     if (type === 'war') {
         warVisible = document.getElementById('chk-war').checked;
@@ -275,6 +299,9 @@ function toggleRiskCategory(type) {
     } else if (type === 'economy') {
         econVisible = document.getElementById('chk-economy').checked;
         updateEconomyVisibility();
+    } else if (type === 'social') {
+        socialVisible = document.getElementById('chk-social').checked;
+        updateSocialVisibility();
     }
 }
 
@@ -381,6 +408,7 @@ function initMap() {
     mapInstance.on('load', () => {
         onMapStyleReady();
         addEconomyMarkers();
+        addSocialMarkers();
         applyThemeColors();
     });
 

@@ -96,6 +96,32 @@ const DISASTER_EVENTS = [
       reasonEn: "Utah's governor declared a state of emergency across Beaver, Piute, and Sevier counties after wildfires and monsoon flooding." }
 ];
 
+// Manually curated, best-effort snapshot of major social-impact incidents — crime,
+// terrorism, and mass-migration events with significant human/social consequences
+// (source-checked 2026-08-01), deliberately excluding war and natural-disaster events
+// already covered by WAR_EVENTS/DISASTER_EVENTS. Shown as purple dots on the map, same
+// single-point approach as ECONOMY_EVENTS.
+const SOCIAL_EVENTS = [
+    { ko: "세우타 난민 위기 (스페인-모로코 국경)", en: "Ceuta migrant crisis (Spain-Morocco border)", coords: [-5.32, 35.89],
+      reasonKo: "모로코발 대규모 월경 시도로 하루 만에 최소 6만 명이 세우타로 진입해 최소 34명이 사망했으며, 스페인은 군을 투입했습니다.",
+      reasonEn: "A mass border rush from Morocco saw at least 60,000 people enter Ceuta in a single day, leaving at least 34 dead; Spain deployed its military in response." },
+    { ko: "베를린 프라이드 차량 돌진 테러 (독일)", en: "Berlin Pride car-ramming attack, Germany", coords: [13.405, 52.52],
+      reasonKo: "베를린 프라이드 행진에 차량이 돌진해 1명이 숨지고 20명이 다쳤으며, 용의자는 과거 IS 가담을 시도한 전력이 있습니다.",
+      reasonEn: "A car rammed into Berlin's Pride march, killing one and injuring 20; the suspect had a prior record of attempting to join ISIS." },
+    { ko: "빈터투어 흉기 난동 (스위스)", en: "Winterthur stabbing attack, Switzerland", coords: [8.72, 47.50],
+      reasonKo: "빈터투어 기차역에서 IS에 영감을 받은 흉기 난동으로 3명이 찔려 당국이 테러로 규정했습니다.",
+      reasonEn: "An ISIS-inspired stabbing spree at Winterthur railway station wounded three people; authorities classified it as a terrorist attack." },
+    { ko: "리에주 시나고그 폭발 (벨기에)", en: "Liège synagogue explosion, Belgium", coords: [5.57, 50.63],
+      reasonKo: "이란과 연계된 것으로 추정되는 조직이 시나고그 앞에서 폭발물을 터뜨려 반유대주의 테러로 규정됐고, 벨기에는 유대인 시설에 군을 배치했습니다.",
+      reasonEn: "A suspected Iran-linked group detonated an IED outside a synagogue, prompting Belgium to brand it antisemitic terrorism and deploy troops to Jewish sites." },
+    { ko: "골더스 그린 흉기 테러 (영국)", en: "Golders Green attack, UK", coords: [-0.194, 51.572],
+      reasonKo: "런던 골더스 그린에서 유대인 남성 2명이 흉기에 찔리는 반유대주의 테러가 발생해 정부가 긴급 대책회의를 열었습니다.",
+      reasonEn: "Two Jewish men were stabbed in an antisemitic terror attack in London's Golders Green, prompting an emergency government response meeting." },
+    { ko: "이스탄불 이스라엘 총영사관 공격 (튀르키예)", en: "Attack on Israeli consulate, Istanbul, Turkey", coords: [28.98, 41.01],
+      reasonKo: "미국·이스라엘의 이란 공격 이후 고조된 긴장 속에 이스탄불 주재 이스라엘 총영사관이 공격 대상이 됐습니다.",
+      reasonEn: "The Israeli consulate in Istanbul was targeted amid heightened tensions following the US-Israeli strikes on Iran." }
+];
+
 // ============================ MARKET DATA ============================
 
 // `hours` drives the open/closed dot next to each exchange name — local trading-day
