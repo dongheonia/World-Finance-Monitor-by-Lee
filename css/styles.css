@@ -300,7 +300,15 @@ body.light-mode ::-webkit-scrollbar-thumb { background: #ccc; }
    chip so Google's multi-color mark and Naver's white-on-green mark both stay legible)
    and the input's focus ring. */
 .footer-search-google input:focus { border-color: #4285F4; }
-.footer-search-google button { border-color: #dadce0; }
+/* Google's mark reads cramped at a true edge-to-edge fill (unlike Naver's solid-color
+   square icon) — override the general button/svg rule above to center it at 70% size
+   with a little breathing room instead. */
+.footer-search-google button { border-color: #dadce0; display: flex; align-items: center; justify-content: center; }
+.footer-search-google button svg { width: 70%; height: 70%; }
 .footer-search-naver input:focus { border-color: #03C75A; }
 .footer-search-naver button { border-color: #03C75A; }
+/* GitHub id (plain text, no link) stacked above the copyright line, both bottom-pinned
+   and right-aligned together while the search stack above stays pinned to the top. */
+.footer-bottom-text { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+#footer-account-text { color: #cbd5e1; font-size: 12px; }
 #footer-copyright { color: #6b7999; font-size: 11px; }
