@@ -190,43 +190,55 @@
         </div>
     </div>
 
-    <!-- Footer: full-bleed navy band below the bottom-aligned 3-column grid, split into 3
-         columns — major site links, live-data refresh cadence reference, and
-         account/copyright. Background spans the full viewport width (see #site-footer's
-         negative-margin rule in styles.css) rather than sitting inset inside body's own
-         p-6 padding like every other section on the page. -->
+    <!-- Footer: full-bleed navy band below the bottom-aligned 3-column grid. Major-site
+         links and the data-refresh-interval reference share ONE bordered 4-column table
+         (2 cols per topic, under a shared header row) rather than sitting as two
+         separate stacked lists; account/copyright sits to its right. Background spans
+         the full viewport width (see #site-footer's negative-margin rule in
+         styles.css) rather than sitting inset inside body's own p-6 padding like every
+         other section on the page. -->
     <div id="site-footer" class="mt-6">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div>
-                <div class="footer-title" id="footer-links-title">MAJOR SITES</div>
-                <div class="footer-links-grid">
-                    <a href="https://www.bbc.com/news" target="_blank" rel="noopener noreferrer">BBC News</a>
-                    <a href="https://www.bloomberg.com" target="_blank" rel="noopener noreferrer">Bloomberg</a>
-                    <a href="https://www.cnn.com" target="_blank" rel="noopener noreferrer">CNN</a>
-                    <a href="https://www.ft.com" target="_blank" rel="noopener noreferrer">Financial Times</a>
-                    <a href="https://www.reuters.com" target="_blank" rel="noopener noreferrer">Reuters</a>
-                    <a href="https://www.investing.com" target="_blank" rel="noopener noreferrer">Investing.com</a>
-                    <a href="https://apnews.com" target="_blank" rel="noopener noreferrer">AP News</a>
-                    <a href="https://www.google.com/finance" target="_blank" rel="noopener noreferrer">Google Finance</a>
-                    <a href="https://finance.yahoo.com" target="_blank" rel="noopener noreferrer">Yahoo Finance</a>
-                    <a href="https://www.theguardian.com" target="_blank" rel="noopener noreferrer">The Guardian</a>
-                </div>
-            </div>
-            <div>
-                <div class="footer-title" id="footer-refresh-title">DATA REFRESH INTERVALS</div>
-                <div class="footer-refresh-list">
-                    <div id="footer-refresh-1"></div>
-                    <div id="footer-refresh-2"></div>
-                    <div id="footer-refresh-3"></div>
-                    <div id="footer-refresh-4"></div>
-                    <div id="footer-refresh-5"></div>
-                    <div id="footer-refresh-6"></div>
-                    <div id="footer-refresh-7"></div>
-                    <div id="footer-refresh-8"></div>
-                    <div id="footer-refresh-9"></div>
-                    <div id="footer-refresh-10"></div>
-                </div>
-            </div>
+        <div class="footer-outer-grid">
+            <table class="footer-table">
+                <thead>
+                    <tr>
+                        <th colspan="2" id="footer-links-title">MAJOR SITES</th>
+                        <th colspan="2" id="footer-refresh-title">DATA REFRESH INTERVALS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><a href="https://www.bbc.com/news" target="_blank" rel="noopener noreferrer">BBC News</a></td>
+                        <td><a href="https://www.bloomberg.com" target="_blank" rel="noopener noreferrer">Bloomberg</a></td>
+                        <td id="footer-refresh-1"></td>
+                        <td id="footer-refresh-2"></td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.cnn.com" target="_blank" rel="noopener noreferrer">CNN</a></td>
+                        <td><a href="https://www.ft.com" target="_blank" rel="noopener noreferrer">Financial Times</a></td>
+                        <td id="footer-refresh-3"></td>
+                        <td id="footer-refresh-4"></td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.theguardian.com" target="_blank" rel="noopener noreferrer">The Guardian</a></td>
+                        <td><a href="https://www.investing.com" target="_blank" rel="noopener noreferrer">Investing.com</a></td>
+                        <td id="footer-refresh-5"></td>
+                        <td id="footer-refresh-6"></td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://www.reuters.com" target="_blank" rel="noopener noreferrer">Reuters</a></td>
+                        <td><a href="https://finance.yahoo.com" target="_blank" rel="noopener noreferrer">Yahoo Finance</a></td>
+                        <td id="footer-refresh-7"></td>
+                        <td id="footer-refresh-8"></td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://apnews.com" target="_blank" rel="noopener noreferrer">AP News</a></td>
+                        <td><a href="https://www.google.com/finance" target="_blank" rel="noopener noreferrer">Google Finance</a></td>
+                        <td id="footer-refresh-9"></td>
+                        <td id="footer-refresh-10"></td>
+                    </tr>
+                </tbody>
+            </table>
             <div class="footer-right-col">
                 <a href="https://github.com/dongheonia" target="_blank" rel="noopener noreferrer" id="footer-account-link">GitHub: dongheonia</a>
                 <div id="footer-copyright">&copy; 2026 dongheonia. All rights reserved.</div>
