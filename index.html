@@ -190,53 +190,54 @@
         </div>
     </div>
 
-    <!-- Footer: full-bleed navy band below the bottom-aligned 3-column grid. Major-site
-         links and the data-refresh-interval reference share ONE bordered 4-column table
-         (2 cols per topic, under a shared header row) rather than sitting as two
-         separate stacked lists; account/copyright sits to its right. Background spans
-         the full viewport width (see #site-footer's negative-margin rule in
-         styles.css) rather than sitting inset inside body's own p-6 padding like every
-         other section on the page. -->
+    <!-- Footer: full-bleed navy band below the bottom-aligned 3-column grid. Uses the
+         SAME grid-cols-3/gap-6 template as #main-grid above (see .footer-outer-grid in
+         styles.css) so each of its 3 sections starts on the exact same vertical line as
+         the column above it — links under the news card, refresh intervals under the
+         FX/rates/bond column, search+account under the market/commodities/crypto
+         column — rather than an independent 2fr/1fr split that only coincidentally
+         lined up. Background spans the full viewport width (see #site-footer's
+         negative-margin rule in styles.css) rather than sitting inset inside body's own
+         p-6 padding like every other section on the page. -->
     <div id="site-footer" class="mt-6">
         <div class="footer-outer-grid">
             <table class="footer-table">
                 <thead>
-                    <tr>
-                        <th colspan="2" id="footer-links-title">MAJOR SITES</th>
-                        <th colspan="2" id="footer-refresh-title">DATA REFRESH INTERVALS</th>
-                    </tr>
+                    <tr><th colspan="2" id="footer-links-title">MAJOR SITES</th></tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td><a href="https://www.bbc.com/news" target="_blank" rel="noopener noreferrer">BBC News</a></td>
                         <td><a href="https://www.bloomberg.com" target="_blank" rel="noopener noreferrer">Bloomberg</a></td>
-                        <td id="footer-refresh-1"></td>
-                        <td id="footer-refresh-2"></td>
                     </tr>
                     <tr>
                         <td><a href="https://www.cnn.com" target="_blank" rel="noopener noreferrer">CNN</a></td>
                         <td><a href="https://www.ft.com" target="_blank" rel="noopener noreferrer">Financial Times</a></td>
-                        <td id="footer-refresh-3"></td>
-                        <td id="footer-refresh-4"></td>
                     </tr>
                     <tr>
                         <td><a href="https://www.theguardian.com" target="_blank" rel="noopener noreferrer">The Guardian</a></td>
                         <td><a href="https://www.investing.com" target="_blank" rel="noopener noreferrer">Investing.com</a></td>
-                        <td id="footer-refresh-5"></td>
-                        <td id="footer-refresh-6"></td>
                     </tr>
                     <tr>
                         <td><a href="https://www.reuters.com" target="_blank" rel="noopener noreferrer">Reuters</a></td>
                         <td><a href="https://finance.yahoo.com" target="_blank" rel="noopener noreferrer">Yahoo Finance</a></td>
-                        <td id="footer-refresh-7"></td>
-                        <td id="footer-refresh-8"></td>
                     </tr>
                     <tr>
                         <td><a href="https://apnews.com" target="_blank" rel="noopener noreferrer">AP News</a></td>
                         <td><a href="https://www.google.com/finance" target="_blank" rel="noopener noreferrer">Google Finance</a></td>
-                        <td id="footer-refresh-9"></td>
-                        <td id="footer-refresh-10"></td>
                     </tr>
+                </tbody>
+            </table>
+            <table class="footer-table">
+                <thead>
+                    <tr><th colspan="2" id="footer-refresh-title">DATA REFRESH INTERVALS</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td id="footer-refresh-1"></td><td id="footer-refresh-2"></td></tr>
+                    <tr><td id="footer-refresh-3"></td><td id="footer-refresh-4"></td></tr>
+                    <tr><td id="footer-refresh-5"></td><td id="footer-refresh-6"></td></tr>
+                    <tr><td id="footer-refresh-7"></td><td id="footer-refresh-8"></td></tr>
+                    <tr><td id="footer-refresh-9"></td><td id="footer-refresh-10"></td></tr>
                 </tbody>
             </table>
             <div class="footer-right-col">

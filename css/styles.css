@@ -258,21 +258,22 @@ body.light-mode ::-webkit-scrollbar-thumb { background: #ccc; }
     margin-left: -24px; margin-right: -24px; width: calc(100% + 48px);
     padding: 24px;
 }
-/* Links (2 cols) and refresh intervals (2 cols) live in ONE 4-column table, under a
-   shared header row — not two separate stacked lists — with account/copyright as its
-   own column alongside it. table-layout:fixed + an explicit 25% on every cell is what
-   actually forces all 4 columns to the same width; without it the browser sizes each
-   column to fit its own longest cell (the refresh-interval text is much longer than a
-   site name), which is why they came out uneven before. Borders are deliberately NOT
-   drawn (border:none, not just invisible-color) — the equal column widths plus the
-   shared header row already read as one aligned table without needing grid lines. */
-.footer-outer-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
+/* Same grid-cols-3/gap-6 (24px) template as #main-grid above — so links / refresh
+   intervals / search+account start on the exact same vertical lines as the news / FX
+   / market columns above them, not an independently-proportioned split. Links (2 cols)
+   and refresh intervals (2 cols) are each their own small table under its own header
+   row. table-layout:fixed + an explicit 50% on every cell is what actually forces both
+   columns within a table to the same width; without it the browser sizes each column to
+   fit its own longest cell. Borders are deliberately NOT drawn (border:none, not just
+   invisible-color) — the equal column widths plus the header row already read as one
+   aligned table without needing grid lines. */
+.footer-outer-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
 .footer-table { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 12px; }
 .footer-table th {
-    width: 25%; text-align: left; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
+    width: 50%; text-align: left; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
     color: #93a3d1; padding: 6px 12px; border: none;
 }
-.footer-table td { width: 25%; padding: 6px 12px; border: none; color: #cbd5e1; }
+.footer-table td { width: 50%; padding: 6px 12px; border: none; color: #cbd5e1; }
 .footer-table td a { color: #cbd5e1; text-decoration: none; }
 .footer-table td a:hover { color: #ffffff; text-decoration: underline; }
 /* space-between (not flex-end) so the search form pins to the TOP of this column while
