@@ -293,26 +293,28 @@ body.light-mode ::-webkit-scrollbar-thumb { background: #ccc; }
 }
 .footer-search-form input::placeholder { color: #6b7999; }
 .footer-search-form input:focus { outline: none; border-color: #4a5ea0; }
-/* Fixed square, zero padding, and the svg stretched to 100% — the brand icon fills the
-   whole button edge-to-edge instead of floating as a small glyph inside a padded chip. */
-.footer-search-form button {
+/* The brand icon is a plain <a> (link to that engine's homepage), not a form-submit
+   button — see the HTML comment above the search forms. Fixed square, zero padding,
+   and the svg stretched to 100% — the icon fills the chip edge-to-edge instead of
+   floating as a small glyph inside a padded box. */
+.footer-search-form a {
     display: block; width: 28px; height: 28px; flex: none; box-sizing: border-box;
     background: #ffffff; border: 1px solid #2a3a6e;
     padding: 0; border-radius: 4px; cursor: pointer; overflow: hidden;
 }
-.footer-search-form button svg { display: block; width: 100%; height: 100%; }
-.footer-search-form button:hover { filter: brightness(1.08); }
-/* Each engine's own brand color, on both the button (the icon lives on a plain white
+.footer-search-form a svg { display: block; width: 100%; height: 100%; }
+.footer-search-form a:hover { filter: brightness(1.08); }
+/* Each engine's own brand color, on both the icon chip (the icon lives on a plain white
    chip so Google's multi-color mark and Naver's white-on-green mark both stay legible)
    and the input's focus ring. */
 .footer-search-google input:focus { border-color: #4285F4; }
 /* Google's mark reads cramped at a true edge-to-edge fill (unlike Naver's solid-color
-   square icon) — override the general button/svg rule above to center it at 70% size
-   with a little breathing room instead. */
-.footer-search-google button { border-color: #dadce0; display: flex; align-items: center; justify-content: center; }
-.footer-search-google button svg { width: 70%; height: 70%; }
+   square icon) — override the general rule above to center it at 70% size with a
+   little breathing room instead. */
+.footer-search-google a { border-color: #dadce0; display: flex; align-items: center; justify-content: center; }
+.footer-search-google a svg { width: 70%; height: 70%; }
 .footer-search-naver input:focus { border-color: #03C75A; }
-.footer-search-naver button { border-color: #03C75A; }
+.footer-search-naver a { border-color: #03C75A; }
 /* GitHub id (plain text, no link) stacked above the copyright line, both bottom-pinned
    and right-aligned together while the search stack above stays pinned to the top. */
 .footer-bottom-text { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
