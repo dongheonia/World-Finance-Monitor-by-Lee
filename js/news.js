@@ -87,10 +87,14 @@ const WORLD_TOPICS = [
     // which is exactly why unrelated stories (a local diner's business feature, a bare
     // company-directory listing) were showing up tagged [정치] even though they have
     // nothing to do with politics. Genuine political headlines still land on the real
-    // 'politics' entry above via its own keywords; only the true leftovers land here.
+    // 'politics' entry above via its own keywords.
+    // No longer ever shown as a tag — fetchFeedItems() drops any item that lands here
+    // instead of displaying it (see the isJunkHeadline-style filter there). Kept as a
+    // named sentinel (rather than deleting it outright) purely so that check has a
+    // stable `=== DEFAULT_WORLD_TOPIC` reference to compare against.
     { key: 'general', ko: '기타', en: 'Other', keywords: [] }
 ];
-const DEFAULT_WORLD_TOPIC = WORLD_TOPICS.find(t => t.key === 'general'); // generic fallback for hard-news items
+const DEFAULT_WORLD_TOPIC = WORLD_TOPICS.find(t => t.key === 'general'); // unmatched sentinel — never rendered, see fetchFeedItems
 // Weak corroborating signal used ONLY to decide whether an unmatched business-feed
 // headline should fall back to Corporate rather than staying generic — see
 // fetchFeedItems. Feed origin alone is not enough evidence on its own.
@@ -515,6 +519,13 @@ async function fetchFeedItems(feed) {
                 classified = { group: 'economy', topic: ECON_TOPICS.find(t => t.key === 'corporate') };
             }
         }
+        // Still unmatched after that one rescue attempt — rather than showing it under
+        // a meaningless [기타] tag, drop it. In practice this is dominated by content
+        // that doesn't belong on a hard-news/finance dashboard anyway (hyperlocal
+        // business features, lifestyle pieces, digest roundups) rather than real news
+        // this classifier just failed to place — plenty of properly-classified items
+        // remain to fill both tabs regardless (see NEWS_ITEMS_PER_TAB).
+        if (classified.topic === DEFAULT_WORLD_TOPIC) return null;
         return {
             title,
             link,
