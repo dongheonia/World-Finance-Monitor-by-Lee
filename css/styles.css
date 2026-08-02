@@ -1,6 +1,13 @@
 body {
     font-family: 'Inter', 'Courier Prime', monospace; background-color: #000000; color: #00ff00;
 }
+/* #site-footer is the last thing on the page and should be flush with the true bottom
+   of the document — without this, Tailwind's p-6 utility (see the body tag's class)
+   leaves its own 24px of bottom padding below the footer, showing a strip of body's own
+   background color (not navy) that the page could still scroll down into. !important
+   guarantees this wins regardless of the Tailwind CDN build's unpredictable injection
+   order — see the .font-mono note below for why that's not a given otherwise. */
+body { padding-bottom: 0 !important; }
 /* Tailwind's `.font-mono` utility (used all over the clock/price/map-panel markup)
    carries higher specificity than the plain `body` rule above and was silently
    winning, resolving to the OS's own mono stack (still slashed-zero on plenty of
@@ -250,16 +257,21 @@ body.light-mode ::-webkit-scrollbar-thumb { background: #ccc; }
     margin-left: -24px; margin-right: -24px; width: calc(100% + 48px);
     padding: 24px;
 }
-/* Links (2 cols) and refresh intervals (2 cols) live in ONE bordered 4-column table,
-   under a shared header row — not two separate stacked lists — with account/copyright
-   as its own column alongside it. */
+/* Links (2 cols) and refresh intervals (2 cols) live in ONE 4-column table, under a
+   shared header row — not two separate stacked lists — with account/copyright as its
+   own column alongside it. table-layout:fixed + an explicit 25% on every cell is what
+   actually forces all 4 columns to the same width; without it the browser sizes each
+   column to fit its own longest cell (the refresh-interval text is much longer than a
+   site name), which is why they came out uneven before. Borders are deliberately NOT
+   drawn (border:none, not just invisible-color) — the equal column widths plus the
+   shared header row already read as one aligned table without needing grid lines. */
 .footer-outer-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
-.footer-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.footer-table { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 12px; }
 .footer-table th {
-    text-align: left; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
-    color: #93a3d1; padding: 6px 12px; border: 1px solid #2a3a6e;
+    width: 25%; text-align: left; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
+    color: #93a3d1; padding: 6px 12px; border: none;
 }
-.footer-table td { padding: 6px 12px; border: 1px solid #2a3a6e; color: #cbd5e1; }
+.footer-table td { width: 25%; padding: 6px 12px; border: none; color: #cbd5e1; }
 .footer-table td a { color: #cbd5e1; text-decoration: none; }
 .footer-table td a:hover { color: #ffffff; text-decoration: underline; }
 .footer-right-col { display: flex; flex-direction: column; align-items: flex-end; justify-content: flex-end; gap: 6px; }
