@@ -287,11 +287,14 @@ body.light-mode ::-webkit-scrollbar-thumb { background: #ccc; }
 }
 .footer-search-form input::placeholder { color: #6b7999; }
 .footer-search-form input:focus { outline: none; border-color: #4a5ea0; }
+/* Fixed square, zero padding, and the svg stretched to 100% — the brand icon fills the
+   whole button edge-to-edge instead of floating as a small glyph inside a padded chip. */
 .footer-search-form button {
-    display: flex; align-items: center; justify-content: center;
+    display: block; width: 28px; height: 28px; flex: none;
     background: #ffffff; border: 1px solid #2a3a6e;
-    padding: 6px 9px; border-radius: 4px; cursor: pointer; line-height: 1;
+    padding: 0; border-radius: 4px; cursor: pointer; overflow: hidden;
 }
+.footer-search-form button svg { display: block; width: 100%; height: 100%; }
 .footer-search-form button:hover { filter: brightness(1.08); }
 /* Each engine's own brand color, on both the button (the icon lives on a plain white
    chip so Google's multi-color mark and Naver's white-on-green mark both stay legible)
