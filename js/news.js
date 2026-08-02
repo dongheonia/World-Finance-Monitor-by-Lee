@@ -1,12 +1,25 @@
 const WORLD_TOPICS = [
     { key: 'diplomacy', ko: '외교', en: 'Diplomacy', keywords: ['summit', 'diplomacy', 'diplomat', 'diplomatic', 'bilateral', 'ambassador', 'foreign minister', 'foreign ministry', 'embassy', 'treaty', 'peace talks', 'negotiations', 'envoy', 'security council', 'state visit', 'foreign policy', 'consulate', 'diplomatic ties'] },
     // Bare "attack"/"strike" are deliberately NOT here — too ambiguous ("strikes a
-    // deal" is business, a lone "attacker" is Crime, not a state-level War).
-    { key: 'war', ko: '전쟁', en: 'War', keywords: ['war', 'military strike', 'airstrike', 'air strike', 'missile strike', 'drone strike', 'military', 'troops', 'invasion', 'missile', 'ceasefire', 'combat', 'offensive', 'shelling', 'insurgent', 'militant', 'rebel', 'clashes', 'gunfire', 'bombardment', 'front line', 'warzone', 'hostilities', 'armed forces', 'fighting', 'battlefield'] },
+    // deal" is business, a lone "attacker" is Crime, not a state-level War). "strikes
+    // on" (with the preposition) is much safer — real headlines phrase actual military
+    // strikes this way ("strikes on Iran") where the figurative uses ("strikes a deal")
+    // never take "on" — and catches a large volume of real strike-related war coverage
+    // that bare "strike" would have been too risky to add for.
+    { key: 'war', ko: '전쟁', en: 'War', keywords: ['war', 'military strike', 'airstrike', 'air strike', 'missile strike', 'drone strike', 'strikes on', 'strike on', 'military', 'troops', 'invasion', 'missile', 'ceasefire', 'combat', 'offensive', 'shelling', 'insurgent', 'militant', 'rebel', 'clashes', 'gunfire', 'bombardment', 'front line', 'warzone', 'hostilities', 'armed forces', 'fighting', 'battlefield'] },
     { key: 'security', ko: '안보', en: 'Security', keywords: ['national security', 'nuclear weapon', 'defense ministry', 'military buildup', 'arms deal', 'weapons shipment', 'nato', 'intelligence agency', 'espionage', 'defense budget', 'army chief', 'military drill', 'spy network', 'classified documents', 'pentagon', 'wartime', 'security threat'] },
     { key: 'alliance', ko: '동맹', en: 'Alliance', keywords: ['alliance', 'coalition', 'joint military exercise', 'defense pact', 'mutual defense', 'allied forces', 'security pact', 'strategic partnership'] },
-    { key: 'cybersecurity', ko: '보안', en: 'Cybersecurity', keywords: ['cyberattack', 'hacked', 'data breach', 'ransomware', 'cybersecurity', 'hacker', 'leaked data', 'phishing', 'cyber espionage', 'malware'] },
-    { key: 'terrorism', ko: '테러', en: 'Terrorism', keywords: ['terrorist', 'terrorism', 'terror plot', 'extremist attack', 'suicide bombing', 'bomb plot', 'radicalized', 'jihadist', 'terror cell', 'terror group'] },
+    // 'hack' bare (not just 'hacked'/'hacker') — suffix-safe single word, and in a news
+    // headline "hack"/"hacks"/"hacking" is overwhelmingly the cybersecurity sense.
+    { key: 'cybersecurity', ko: '보안', en: 'Cybersecurity', keywords: ['cyberattack', 'hacked', 'hack', 'data breach', 'ransomware', 'cybersecurity', 'hacker', 'leaked data', 'phishing', 'cyber espionage', 'malware'] },
+    // Bombing-attack phrasing added after auditing real feed output turned up several
+    // bombing headlines ("bomb detonated", "female bomber") that matched neither this
+    // nor Crime and fell all the way through to the generic fallback — 'suicide
+    // bombing'/'bomb plot' alone were too narrow to catch how these are actually
+    // worded. Deliberately NOT adding bare 'bomber' — real sports-wire content refers
+    // to home-run hitters as "Bronx Bombers"/"bombers", which would have wrongly
+    // pulled baseball recaps in here.
+    { key: 'terrorism', ko: '테러', en: 'Terrorism', keywords: ['terrorist', 'terrorism', 'terror plot', 'extremist attack', 'suicide bombing', 'bomb plot', 'radicalized', 'jihadist', 'terror cell', 'terror group', 'suicide bomber', 'female bomber', 'bomb attack', 'bomb blast', 'bomb detonated', 'car bomb', 'roadside bomb'] },
     { key: 'refugees', ko: '난민', en: 'Refugees', keywords: ['refugee', 'refugee camp', 'asylum seekers', 'displaced people', 'humanitarian crisis', 'refugee crisis', 'stateless', 'resettlement', 'fleeing war'] },
     { key: 'humanrights', ko: '인권', en: 'Human Rights', keywords: ['human rights', 'genocide', 'ethnic cleansing', 'war crimes', 'political prisoner', 'persecution', 'freedom of speech', 'censorship', 'detained journalist', 'activist arrested', 'forced labor', 'discrimination'] },
     { key: 'health', ko: '보건', en: 'Health', keywords: ['public health', 'hospital crisis', 'health crisis', 'mental health', 'healthcare system', 'medical shortage', 'doctor shortage', 'health policy', 'medical care'] },
@@ -14,7 +27,10 @@ const WORLD_TOPICS = [
     { key: 'environment', ko: '환경', en: 'Environment', keywords: ['pollution', 'wildlife', 'deforestation', 'air quality', 'water level', 'endangered species', 'biodiversity', 'plastic waste', 'ocean warming', 'conservation', 'environmental damage'] },
     { key: 'climatechange', ko: '기후', en: 'Climate Change', keywords: ['climate change', 'global warming', 'climate summit', 'climate treaty', 'extreme weather', 'rising sea levels', 'climate crisis', 'greenhouse gas', 'cop28', 'cop29', 'cop30'] },
     { key: 'energy', ko: '에너지', en: 'Energy', keywords: ['power grid', 'blackout', 'energy crisis', 'gas pipeline', 'oil supply cut', 'solar panel', 'renewable energy', 'energy transition', 'power outage', 'electricity prices', 'fuel shortage'] },
-    { key: 'nuclear', ko: '원자력', en: 'Nuclear Energy', keywords: ['nuclear plant', 'nuclear reactor', 'nuclear power', 'nuclear energy', 'atomic energy', 'nuclear fuel', 'nuclear meltdown'] },
+    // Bare 'nuclear' added on top of the compound phrases — a suffix-safe single word
+    // that in real headlines almost always means this topic (a nuclear plant/reactor/
+    // program), rarely the idiomatic "nuclear family"/"go nuclear" senses.
+    { key: 'nuclear', ko: '원자력', en: 'Nuclear Energy', keywords: ['nuclear plant', 'nuclear reactor', 'nuclear power', 'nuclear energy', 'atomic energy', 'nuclear fuel', 'nuclear meltdown', 'nuclear'] },
     { key: 'space', ko: '우주', en: 'Space', keywords: ['nasa', 'rocket launch', 'satellite', 'spacex', 'space mission', 'space station', 'astronaut', 'moon mission', 'mars mission', 'space agency'] },
     { key: 'science', ko: '과학/기술', en: 'Science & Tech', keywords: ['scientists discover', 'research breakthrough', 'science study', 'scientific discovery', 'physics research', 'biology research', 'science journal'] },
     { key: 'education', ko: '교육', en: 'Education', keywords: ['school', 'university', 'students', 'tuition', 'curriculum', 'education policy', 'exam results', 'campus', 'professor', 'enrollment', 'classroom'] },
@@ -22,14 +38,14 @@ const WORLD_TOPICS = [
     // econ list — the new definitions split them explicitly (고용 = unemployment
     // rate/hiring stats, 노동 = strikes/wage disputes/working conditions), so 고용's
     // keywords were narrowed to statistics-only to let disputes fall through to here.
-    { key: 'labor', ko: '노동', en: 'Labor', keywords: ['labor union', "workers' rights", 'labor strike', 'union talks', 'wage dispute', 'workers protest', 'labor dispute', 'collective bargaining', 'workplace conditions', 'workplace safety', 'child labor', 'labor rights', 'strike action', 'union vote'] },
-    { key: 'migration', ko: '이민', en: 'Migration', keywords: ['migrant', 'migration', 'border crossing', 'deportation', 'immigration policy', 'border wall', 'migrant crisis', 'illegal immigration'] },
+    { key: 'labor', ko: '노동', en: 'Labor', keywords: ['labor union', "workers' rights", 'labor strike', 'union talks', 'wage dispute', 'workers protest', 'labor dispute', 'collective bargaining', 'workplace conditions', 'workplace safety', 'child labor', 'labor rights', 'strike action', 'union vote', 'labor battle', 'minimum wage'] },
+    { key: 'migration', ko: '이민', en: 'Migration', keywords: ['migrant', 'migration', 'border crossing', 'deportation', 'immigration policy', 'border wall', 'migrant crisis', 'illegal immigration', 'border crisis', 'border rush'] },
     { key: 'publicsafety', ko: '치안', en: 'Public Safety', keywords: ['riot', 'unrest', 'protest', 'demonstration', 'clashes with police', 'curfew', 'tear gas', 'evacuation order', 'security lockdown'] },
     // Bare "court" and "lawsuit" are deliberately NOT here — most real headlines using
     // those words are civil/patent/political cases, not criminal ones. "trial" stays
     // since in news headlines it overwhelmingly means a criminal trial.
     { key: 'crime', ko: '범죄', en: 'Crime', keywords: ['murder', 'shooting', 'stabbing', 'knife attack', 'gunman', 'attacker', 'mass shooting', 'crime', 'criminal court', 'trial', 'convict', 'arrest', 'indict', 'sentence', 'gang violence', 'fraud scheme', 'kidnapping', 'robbery', 'homicide', 'manhunt', 'investigation into', 'charges filed', 'felony', 'guilty plea', 'prosecutors'] },
-    { key: 'disaster', ko: '재난', en: 'Disaster', keywords: ['earthquake', 'flood', 'flooding', 'disaster', 'hurricane', 'wildfire', 'typhoon', 'tsunami', 'landslide', 'volcano', 'storm damage', 'cyclone', 'avalanche'] },
+    { key: 'disaster', ko: '재난', en: 'Disaster', keywords: ['earthquake', 'flood', 'flooding', 'disaster', 'hurricane', 'wildfire', 'typhoon', 'tsunami', 'landslide', 'volcano', 'storm damage', 'cyclone', 'avalanche', 'heatwave', 'heat wave', 'heat alert', 'extreme heat'] },
     { key: 'food', ko: '식량', en: 'Food Security', keywords: ['famine', 'food shortage', 'food crisis', 'crop failure', 'starvation', 'food insecurity', 'harvest failure', 'malnutrition'] },
     { key: 'logistics', ko: '물류', en: 'Logistics', keywords: ['freight disruption', 'supply route', 'logistics disruption', 'port congestion', 'trucking', 'cargo delay'] },
     { key: 'shipping', ko: '해운', en: 'Shipping', keywords: ['shipping route', 'port blockade', 'canal blocked', 'cargo ship', 'container ship', 'maritime', 'tanker', 'strait blockade'] },
@@ -49,7 +65,7 @@ const WORLD_TOPICS = [
     // ("government", "festival"-adjacent words) that shows up incidentally in plenty of
     // stories that really belong to a more specific category above — checking them last
     // means the more specific match wins whenever one exists.
-    { key: 'culture', ko: '문화', en: 'Culture', keywords: ['museum', 'heritage', 'festival', 'art exhibit', 'film festival', 'painting', 'novel', 'exhibition', 'literature', 'theater', 'opera', 'monument', 'author', 'sculpture', 'streaming service', 'box office', 'coachella', 'concert', 'music festival', 'tv show', 'movie premiere', 'film studio', 'record label', 'publishing house', 'lifestyle'] },
+    { key: 'culture', ko: '문화', en: 'Culture', keywords: ['museum', 'heritage', 'festival', 'art exhibit', 'film festival', 'painting', 'novel', 'exhibition', 'literature', 'theater', 'opera', 'monument', 'author', 'sculpture', 'streaming service', 'box office', 'coachella', 'concert', 'music festival', 'tv show', 'movie premiere', 'film studio', 'record label', 'publishing house', 'lifestyle', 'world tour', 'new album', 'runway show', 'fashion week'] },
     { key: 'politics', ko: '정치', en: 'Politics', keywords: ['election', 'president', 'parliament', 'government', 'minister', 'vote', 'congress', 'senate', 'prime minister', 'coup', 'impeachment', 'cabinet', 'political party', 'referendum', 'lawmaker', 'political crisis'] },
     // Genuinely last-resort — matched by nothing above and reachable only as
     // DEFAULT_WORLD_TOPIC below (empty keywords means the classifyNews loop itself can
@@ -93,22 +109,22 @@ const ECON_TOPICS = [
     { key: 'trade', ko: '무역', en: 'Trade', keywords: ['trade deal', 'trade war', 'export', 'import', 'trade deficit', 'trade surplus', 'wto', 'trade agreement', 'trade negotiations', 'trade barrier'] },
     { key: 'tariffs', ko: '관세', en: 'Tariffs', keywords: ['tariff', 'tariffs', 'customs duty', 'import duty', 'tariff hike', 'trade tariffs'] },
     { key: 'realestate', ko: '부동산', en: 'Real Estate', keywords: ['real estate', 'property market', 'commercial property', 'property prices', 'property tax', 'real estate developer', 'property investment'] },
-    { key: 'housing', ko: '주택', en: 'Housing', keywords: ['housing market', 'home prices', 'mortgage rate', 'rent prices', 'housing crisis', 'home sales', 'housing bubble', 'housing supply', 'first-time buyers'] },
+    { key: 'housing', ko: '주택', en: 'Housing', keywords: ['housing market', 'home prices', 'house prices', 'mortgage rate', 'mortgage', 'rent prices', 'housing crisis', 'home sales', 'housing bubble', 'housing supply', 'first-time buyers'] },
     // Narrowed to labor-market STATISTICS per the updated spec (실업률·취업자수·채용시장
     // 동향) — strikes/wage disputes/working conditions now belong to world's 노동
     // (Labor) instead, which is checked much later, so keeping "strike action"/"labor
     // union" here would have stolen all of those stories before 노동 ever got a look.
-    { key: 'employment', ko: '고용', en: 'Employment', keywords: ['jobs report', 'unemployment rate', 'unemployment', 'layoffs', 'hiring', 'payroll', 'job cuts', 'workforce', 'job market', 'labor shortage', 'jobless claims', 'employment rate', 'hiring market', 'job growth', 'jobs to go', 'jobs market'] },
+    { key: 'employment', ko: '고용', en: 'Employment', keywords: ['jobs report', 'unemployment rate', 'unemployment', 'layoffs', 'hiring', 'payroll', 'job cuts', 'workforce', 'job market', 'labor shortage', 'jobless claims', 'employment rate', 'hiring market', 'job growth', 'jobs to go', 'jobs market', 'jobs crisis'] },
     { key: 'householddebt', ko: '가계 부채', en: 'Household Debt', keywords: ['household debt', 'consumer debt', 'credit card debt', 'loan default', 'mortgage debt', 'personal debt', 'student loan debt'] },
-    { key: 'growth', ko: '성장률', en: 'Growth Rate', keywords: ['gdp growth', 'economic growth', 'recession', 'gdp contracts', 'growth forecast', 'economic output', 'gdp data', 'economic slowdown', 'growth rate', 'economy slow', 'economy shrink', 'economy contract', 'economy grew', 'economy grows', 'economic revival', 'growth outlook', 'second-half growth'] },
-    { key: 'fiscal', ko: '재정', en: 'Fiscal Policy', keywords: ['budget deficit', 'government spending', 'stimulus package', 'national debt', 'fiscal policy', 'government budget', 'public spending', 'deficit spending'] },
+    { key: 'growth', ko: '성장률', en: 'Growth Rate', keywords: ['gdp growth', 'economic growth', 'recession', 'gdp contracts', 'growth forecast', 'economic output', 'gdp data', 'economic slowdown', 'growth rate', 'economy slow', 'economy shrink', 'economy contract', 'economy grew', 'economy grows', 'economic revival', 'growth outlook', 'second-half growth', 'economic momentum'] },
+    { key: 'fiscal', ko: '재정', en: 'Fiscal Policy', keywords: ['budget deficit', 'government spending', 'stimulus package', 'national debt', 'fiscal policy', 'government budget', 'public spending', 'deficit spending', 'social security', '401(k)', 'retirement account'] },
     { key: 'tax', ko: '세금', en: 'Tax System', keywords: ['tax cut', 'tax hike', 'tax reform', 'tax law', 'tax bracket', 'corporate tax', 'income tax', 'tax policy'] },
-    { key: 'supplychain', ko: '공급망', en: 'Supply Chain', keywords: ['supply chain', 'chip shortage', 'shortage of', 'factory disruption', 'semiconductor shortage', 'supply disruption', 'manufacturing delay'] },
+    { key: 'supplychain', ko: '공급망', en: 'Supply Chain', keywords: ['supply chain', 'chip shortage', 'shortage of', 'factory disruption', 'semiconductor shortage', 'supply disruption', 'supply constraints', 'manufacturing delay'] },
     { key: 'logisticsdelivery', ko: '물류배송', en: 'Logistics & Delivery', keywords: ['delivery service', 'last-mile delivery', 'warehouse', 'logistics company', 'shipping costs', 'freight rates', 'delivery delays'] },
     { key: 'crypto', ko: '가상화폐', en: 'Crypto', keywords: ['bitcoin', 'ethereum', 'crypto', 'stablecoin', 'nft', 'crypto exchange', 'digital currency', 'altcoin', 'crypto market'] },
     { key: 'blockchain', ko: '블록체인', en: 'Blockchain', keywords: ['blockchain', 'distributed ledger', 'smart contract', 'web3', 'defi'] },
     { key: 'semiconductors', ko: '반도체', en: 'Semiconductors', keywords: ['semiconductor', 'chipmaker', 'foundry', 'chip export', 'chip factory', 'chip industry', 'chip design', 'chip manufacturing'] },
-    { key: 'tech', ko: '테크', en: 'Tech', keywords: ['artificial intelligence', ' ai model', 'software firm', 'tech firm', 'data center', 'app launch', 'tech company', 'silicon valley', 'cloud computing', 'tech giant', 'big tech'] },
+    { key: 'tech', ko: '테크', en: 'Tech', keywords: ['artificial intelligence', ' ai model', 'ai plan', 'ai plans', 'ai tools', 'generative ai', 'software firm', 'tech firm', 'data center', 'app launch', 'tech company', 'silicon valley', 'cloud computing', 'tech giant', 'big tech'] },
     { key: 'mobility', ko: '모빌리티', en: 'Mobility', keywords: ['ride-hailing', 'self-driving', 'autonomous vehicle', 'mobility service', 'micromobility', 'scooter sharing', 'airline', 'airline fares'] },
     { key: 'automotive', ko: '자동차', en: 'Automotive', keywords: ['automaker', 'ev maker', 'electric vehicle', 'car manufacturer', 'auto industry', 'car sales', 'vehicle recall'] },
     { key: 'commodities', ko: '원자재', en: 'Commodities', keywords: ['oil price', 'crude', 'gold price', 'commodity prices', 'natural gas price', 'wheat prices', 'copper prices', 'metal prices', 'agricultural commodity', 'silver price'] },
