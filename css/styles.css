@@ -239,8 +239,17 @@ body.light-mode ::-webkit-scrollbar-thumb { background: #ccc; }
 
 /* Site footer: a fixed navy band below the bottom-aligned 3-column grid — deliberately
    NOT theme-dependent (unlike .terminal-box) since the navy background itself is the
-   whole point here, in both light and dark mode. */
-#site-footer { background-color: #0b1230; border: 1px solid #1e2a5e; }
+   whole point here, in both light and dark mode.
+   Full-bleed: body has p-6 (24px) padding on every side, which insets #site-footer just
+   like every other section — the negative margin here cancels exactly that 24px on each
+   side so the navy background reaches the actual viewport edges instead of stopping at
+   body's padding, then the matching horizontal padding below keeps the INNER content
+   (links/text) lined up with everything above it rather than jammed against the edge. */
+#site-footer {
+    background-color: #0b1230; border-top: 1px solid #1e2a5e;
+    margin-left: -24px; margin-right: -24px; width: calc(100% + 48px);
+    padding: 24px;
+}
 .footer-title {
     font-weight: 700; font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase;
     color: #93a3d1; border-bottom: 1px solid #1e2a5e; padding-bottom: 6px; margin-bottom: 10px;

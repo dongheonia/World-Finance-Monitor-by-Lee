@@ -137,7 +137,7 @@ function updateStaticLabels() {
     document.getElementById('lbl-chk-social').innerText = t.chkSocial;
     document.getElementById('footer-links-title').innerText = t.footerLinksTitle;
     document.getElementById('footer-refresh-title').innerText = t.footerRefreshTitle;
-    for (let i = 1; i <= 7; i++) {
+    for (let i = 1; i <= 10; i++) {
         document.getElementById(`footer-refresh-${i}`).innerText = t[`footerRefresh${i}`];
     }
 }

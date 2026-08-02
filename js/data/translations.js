@@ -23,13 +23,16 @@ const translations = {
         riskFilterTitle: "글로벌 임팩트", chkWar: "전쟁", chkDisaster: "재난", chkEconomy: "경제", chkSocial: "사건",
         footerLinksTitle: "주요 사이트",
         footerRefreshTitle: "데이터 새로고침 주기",
-        footerRefresh1: "시세 (주가·환율·원자재): 1분",
-        footerRefresh2: "뉴스: 1분",
-        footerRefresh3: "지수·원자재 (FMP): 70분",
-        footerRefresh4: "차트 (프록시): 5분",
-        footerRefresh5: "코인 차트: 2분",
-        footerRefresh6: "ECB 정책금리: 1시간",
-        footerRefresh7: "글로벌임팩트 지도: 하루 2회"
+        footerRefresh1: "지도 (글로벌임팩트): 하루 2회",
+        footerRefresh2: "금융캘린더: 정적 데이터",
+        footerRefresh3: "뉴스: 1분",
+        footerRefresh4: "지나가는 뉴스바: 1분",
+        footerRefresh5: "환율: 1분",
+        footerRefresh6: "기준금리: 1시간",
+        footerRefresh7: "국채금리: 1분",
+        footerRefresh8: "증권거래소: 1분",
+        footerRefresh9: "원자재 및 에너지: 1분",
+        footerRefresh10: "가상화폐: 1분"
     },
     en: {
         btn: "한국어", themeBtnLight: "Light Mode", themeBtnDark: "Dark Mode",
@@ -53,12 +56,15 @@ const translations = {
         riskFilterTitle: "GLOBAL IMPACT", chkWar: "War", chkDisaster: "Disaster", chkEconomy: "Economy", chkSocial: "Incident",
         footerLinksTitle: "MAJOR SITES",
         footerRefreshTitle: "DATA REFRESH INTERVALS",
-        footerRefresh1: "Prices (stocks/FX/commodities): 1 min",
-        footerRefresh2: "News: 1 min",
-        footerRefresh3: "Indices/commodities (FMP): 70 min",
-        footerRefresh4: "Charts (proxied): 5 min",
-        footerRefresh5: "Crypto charts: 2 min",
-        footerRefresh6: "ECB policy rate: 1 hr",
-        footerRefresh7: "Global Impact map: 2x/day"
+        footerRefresh1: "Map (Global Impact): 2x/day",
+        footerRefresh2: "Financial calendar: Static data",
+        footerRefresh3: "News: 1 min",
+        footerRefresh4: "News ticker: 1 min",
+        footerRefresh5: "FX rates: 1 min",
+        footerRefresh6: "Policy rate: 1 hr",
+        footerRefresh7: "Bond yield: 1 min",
+        footerRefresh8: "Stock exchange: 1 min",
+        footerRefresh9: "Commodities & energy: 1 min",
+        footerRefresh10: "Cryptocurrency: 1 min"
     }
 };
