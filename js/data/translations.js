@@ -26,13 +26,14 @@ const translations = {
         footerRefresh1: "지도 (글로벌임팩트): 하루 2회",
         footerRefresh2: "환율: 1분",
         footerRefresh3: "금융캘린더: 정적 데이터",
-        footerRefresh4: "국채금리: 1분",
+        footerRefresh4: "국채금리: 미국 70분·그외 수동",
         footerRefresh5: "뉴스: 1분",
-        footerRefresh6: "증권거래소: 1분",
+        footerRefresh6: "증권거래소: 1분·70분(일부)",
         footerRefresh7: "지나가는 뉴스바: 1분",
-        footerRefresh8: "원자재 및 에너지: 1분",
-        footerRefresh9: "기준금리: 1시간",
-        footerRefresh10: "가상화폐: 1분"
+        footerRefresh8: "원자재 및 에너지: 1분·70분(일부)",
+        footerRefresh9: "기준금리: 유럽 1시간·그외 수동",
+        footerRefresh10: "가상화폐: 1분",
+        footerSearchPlaceholder: "Google 검색"
     },
     en: {
         btn: "한국어", themeBtnLight: "Light Mode", themeBtnDark: "Dark Mode",
@@ -59,12 +60,13 @@ const translations = {
         footerRefresh1: "Map (Global Impact): 2x/day",
         footerRefresh2: "FX rates: 1 min",
         footerRefresh3: "Financial calendar: Static data",
-        footerRefresh4: "Bond yield: 1 min",
+        footerRefresh4: "Bond yield: US 70 min · others manual",
         footerRefresh5: "News: 1 min",
-        footerRefresh6: "Stock exchange: 1 min",
+        footerRefresh6: "Stock exchange: 1 min · 70 min (some)",
         footerRefresh7: "News ticker: 1 min",
-        footerRefresh8: "Commodities & energy: 1 min",
-        footerRefresh9: "Policy rate: 1 hr",
-        footerRefresh10: "Cryptocurrency: 1 min"
+        footerRefresh8: "Commodities & energy: 1 min · 70 min (some)",
+        footerRefresh9: "Policy rate: EU 1 hr · others manual",
+        footerRefresh10: "Cryptocurrency: 1 min",
+        footerSearchPlaceholder: "Google Search"
     }
 };

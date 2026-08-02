@@ -140,6 +140,7 @@ function updateStaticLabels() {
     for (let i = 1; i <= 10; i++) {
         document.getElementById(`footer-refresh-${i}`).innerText = t[`footerRefresh${i}`];
     }
+    document.getElementById('footer-search-input').placeholder = t.footerSearchPlaceholder;
 }
 
 function updateClocks() {
