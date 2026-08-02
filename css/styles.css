@@ -260,7 +260,13 @@ body.light-mode ::-webkit-scrollbar-thumb { background: #ccc; }
 }
 .footer-links-grid a { color: #cbd5e1; text-decoration: none; }
 .footer-links-grid a:hover { color: #ffffff; text-decoration: underline; }
-.footer-refresh-list { display: flex; flex-direction: column; gap: 8px; font-size: 12px; color: #cbd5e1; }
+/* Row-major fill (grid's default auto-flow), same reading order as .footer-links-grid
+   above — item 1 top-left, item 2 top-right, item 3 second row, etc. — rather than
+   filling one column top-to-bottom before starting the next. */
+.footer-refresh-list {
+    display: grid; grid-template-columns: repeat(2, 1fr); column-gap: 24px; row-gap: 8px;
+    font-size: 12px; color: #cbd5e1;
+}
 .footer-right-col { display: flex; flex-direction: column; align-items: flex-end; justify-content: flex-end; gap: 6px; }
 #footer-account-link { color: #cbd5e1; text-decoration: none; font-size: 12px; }
 #footer-account-link:hover { color: #ffffff; text-decoration: underline; }
