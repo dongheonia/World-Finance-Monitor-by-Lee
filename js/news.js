@@ -73,13 +73,13 @@ const WORLD_TOPICS = [
     // trades, roster moves — which turned out to be a huge share of real sports volume
     // (league names, stat lines, transaction verbs) and was falling through to the
     // generic fallback for lack of any match at all.
-    { key: 'sports', ko: '스포츠', en: 'Sports', keywords: ['olympic', 'world cup', 'championship', 'tournament', 'football match', 'basketball', 'baseball', 'soccer', 'grand slam', 'athlete', 'coach fired', 'medal', 'marathon', 'boxing match', 'nba', 'nfl', 'mlb', 'nhl', 'mls', 'premier league', 'la liga', 'world series', 'super bowl', 'stanley cup', 'home run', 'rbi', 'strikeout', 'strikes out', 'no-hitter', 'shutout', 'shut out', 'walk-off', 'playoffs', 'postseason', 'quarterback', 'pitcher', 'bullpen', 'roster', 'trade deadline', 'free agent', 'draft pick', 'clinch', 'world record', 'relay', 'head coach', 'left fielder', 'right-hander', 'left-hander', 'rhp', 'lhp', 'batting', 'inning', 'innings', 'touchdown', 'field goal', 'penalty kick', 'red card', 'yellow card', 'clean sheet', 'world junior', 'nationals meet', 'swim meet', 'striker', 'midfielder', 'goalkeeper', 'winger', 'transfer window', 'loan deal'] },
+    { key: 'sports', ko: '스포츠', en: 'Sports', keywords: ['olympic', 'world cup', 'championship', 'tournament', 'football match', 'basketball', 'baseball', 'soccer', 'grand slam', 'athlete', 'coach fired', 'medal', 'marathon', 'boxing match', 'nba', 'nfl', 'mlb', 'nhl', 'mls', 'premier league', 'la liga', 'world series', 'super bowl', 'stanley cup', 'home run', 'rbi', 'strikeout', 'strikes out', 'no-hitter', 'shutout', 'shut out', 'walk-off', 'playoffs', 'postseason', 'quarterback', 'pitcher', 'bullpen', 'roster', 'trade deadline', 'free agent', 'draft pick', 'clinch', 'world record', 'relay', 'head coach', 'left fielder', 'right-hander', 'left-hander', 'rhp', 'lhp', 'batting', 'inning', 'innings', 'touchdown', 'field goal', 'penalty kick', 'red card', 'yellow card', 'clean sheet', 'world junior', 'nationals meet', 'swim meet', 'striker', 'midfielder', 'goalkeeper', 'winger', 'transfer window', 'loan deal', 'fifa', 'training camp', 'world title', 'race results'] },
     // Culture and Politics go LAST on purpose: both lean on fairly generic vocabulary
     // ("government", "festival"-adjacent words) that shows up incidentally in plenty of
     // stories that really belong to a more specific category above — checking them last
     // means the more specific match wins whenever one exists.
     { key: 'culture', ko: '문화', en: 'Culture', keywords: ['museum', 'heritage', 'festival', 'art exhibit', 'film festival', 'painting', 'novel', 'exhibition', 'literature', 'theater', 'opera', 'monument', 'author', 'sculpture', 'streaming service', 'box office', 'coachella', 'concert', 'music festival', 'tv show', 'movie premiere', 'film studio', 'record label', 'publishing house', 'lifestyle', 'world tour', 'new album', 'runway show', 'fashion week'] },
-    { key: 'politics', ko: '정치', en: 'Politics', keywords: ['election', 'president', 'parliament', 'government', 'minister', 'vote', 'congress', 'senate', 'prime minister', 'coup', 'impeachment', 'cabinet', 'political party', 'referendum', 'lawmaker', 'political crisis'] },
+    { key: 'politics', ko: '정치', en: 'Politics', keywords: ['election', 'president', 'parliament', 'government', 'minister', 'vote', 'congress', 'senate', 'prime minister', 'coup', 'impeachment', 'cabinet', 'political party', 'referendum', 'lawmaker', 'political crisis', 'corruption'] },
     // Genuinely last-resort — matched by nothing above and reachable only as
     // DEFAULT_WORLD_TOPIC below (empty keywords means the classifyNews loop itself can
     // never select it). Used to be politics itself doing double duty as both a real,
@@ -88,13 +88,9 @@ const WORLD_TOPICS = [
     // company-directory listing) were showing up tagged [정치] even though they have
     // nothing to do with politics. Genuine political headlines still land on the real
     // 'politics' entry above via its own keywords.
-    // No longer ever shown as a tag — fetchFeedItems() drops any item that lands here
-    // instead of displaying it (see the isJunkHeadline-style filter there). Kept as a
-    // named sentinel (rather than deleting it outright) purely so that check has a
-    // stable `=== DEFAULT_WORLD_TOPIC` reference to compare against.
     { key: 'general', ko: '기타', en: 'Other', keywords: [] }
 ];
-const DEFAULT_WORLD_TOPIC = WORLD_TOPICS.find(t => t.key === 'general'); // unmatched sentinel — never rendered, see fetchFeedItems
+const DEFAULT_WORLD_TOPIC = WORLD_TOPICS.find(t => t.key === 'general'); // generic fallback for hard-news items
 // Weak corroborating signal used ONLY to decide whether an unmatched business-feed
 // headline should fall back to Corporate rather than staying generic — see
 // fetchFeedItems. Feed origin alone is not enough evidence on its own.
@@ -135,7 +131,7 @@ const ECON_TOPICS = [
     { key: 'householddebt', ko: '가계 부채', en: 'Household Debt', keywords: ['household debt', 'consumer debt', 'credit card debt', 'loan default', 'mortgage debt', 'personal debt', 'student loan debt'] },
     { key: 'growth', ko: '성장률', en: 'Growth Rate', keywords: ['gdp growth', 'economic growth', 'recession', 'gdp contracts', 'growth forecast', 'economic output', 'gdp data', 'economic slowdown', 'growth rate', 'economy slow', 'economy shrink', 'economy contract', 'economy grew', 'economy grows', 'economic revival', 'growth outlook', 'second-half growth', 'economic momentum', 'economic turmoil'] },
     { key: 'fiscal', ko: '재정', en: 'Fiscal Policy', keywords: ['budget deficit', 'government spending', 'stimulus package', 'national debt', 'fiscal policy', 'government budget', 'public spending', 'deficit spending', 'social security', '401(k)', 'retirement account'] },
-    { key: 'tax', ko: '세금', en: 'Tax System', keywords: ['tax cut', 'tax hike', 'tax reform', 'tax law', 'tax bracket', 'corporate tax', 'income tax', 'tax policy'] },
+    { key: 'tax', ko: '세금', en: 'Tax System', keywords: ['tax cut', 'tax hike', 'tax reform', 'tax law', 'tax bracket', 'corporate tax', 'income tax', 'tax policy', 'tax'] },
     { key: 'supplychain', ko: '공급망', en: 'Supply Chain', keywords: ['supply chain', 'chip shortage', 'shortage of', 'factory disruption', 'semiconductor shortage', 'supply disruption', 'supply constraints', 'manufacturing delay'] },
     { key: 'logisticsdelivery', ko: '물류배송', en: 'Logistics & Delivery', keywords: ['delivery service', 'last-mile delivery', 'warehouse', 'logistics company', 'shipping costs', 'freight rates', 'delivery delays'] },
     { key: 'crypto', ko: '가상화폐', en: 'Crypto', keywords: ['bitcoin', 'ethereum', 'crypto', 'stablecoin', 'nft', 'crypto exchange', 'digital currency', 'altcoin', 'crypto market'] },
@@ -152,7 +148,7 @@ const ECON_TOPICS = [
     { key: 'investment', ko: '투자', en: 'Investment', keywords: ['investment', 'investing', 'investor', 'invests in', 'stake in', 'ipo', 'goes public', 'stock market', 'shares', 'nasdaq', 'wall street', 'private equity', 'dividend', 'portfolio', 'kospi', 'market rout', 'stock rout'] },
     { key: 'venture', ko: '벤처', en: 'Venture Capital', keywords: ['venture capital', 'vc firm', 'venture fund', 'series a', 'series b', 'series c', 'funding round', 'seed funding', 'venture backed'] },
     { key: 'startup', ko: '스타트업', en: 'Startups', keywords: ['startup', 'startups', 'unicorn startup', 'tech startup', 'startup founder', 'startup valuation', 'startup funding'] },
-    { key: 'corporate', ko: '기업', en: 'Corporate', keywords: ['merger', 'acquisition', 'acquires', 'takeover', 'bankruptcy', 'chapter 11', 'ceo', 'executive', 'earnings', 'quarterly', 'profit', 'revenue', 'company', 'companies', 'corporate', 'firm', 'firms', 'business deal', 'shareholder', 'restructuring', 'spinoff', 'up for sale', 'agrees to sell', 'debt deal', 'creditors', 'stake sale'] },
+    { key: 'corporate', ko: '기업', en: 'Corporate', keywords: ['merger', 'acquisition', 'acquires', 'takeover', 'bankruptcy', 'chapter 11', 'ceo', 'executive', 'earnings', 'quarterly', 'profit', 'revenue', 'company', 'companies', 'corporate', 'firm', 'firms', 'business deal', 'shareholder', 'restructuring', 'spinoff', 'up for sale', 'agrees to sell', 'debt deal', 'creditors', 'stake sale', 'business owner', 'business expo', 'business academy', 'entrepreneur'] },
     // Personal-finance service/product coverage (credit cards, insurance, loans, CD
     // rates) — a recurring category on business feeds that previously matched nothing
     // here (bank/insurer/etc. all assume an institution is the subject, not a consumer
@@ -519,13 +515,10 @@ async function fetchFeedItems(feed) {
                 classified = { group: 'economy', topic: ECON_TOPICS.find(t => t.key === 'corporate') };
             }
         }
-        // Still unmatched after that one rescue attempt — rather than showing it under
-        // a meaningless [기타] tag, drop it. In practice this is dominated by content
-        // that doesn't belong on a hard-news/finance dashboard anyway (hyperlocal
-        // business features, lifestyle pieces, digest roundups) rather than real news
-        // this classifier just failed to place — plenty of properly-classified items
-        // remain to fill both tabs regardless (see NEWS_ITEMS_PER_TAB).
-        if (classified.topic === DEFAULT_WORLD_TOPIC) return null;
+        // Still unmatched after that one rescue attempt — shown as [기타] rather than
+        // dropped. Real news, just none of it a keyword this classifier owns yet; the
+        // fix for that is adding more topic coverage (see the keyword lists above), not
+        // shrinking the pool by silently excluding real articles.
         return {
             title,
             link,
