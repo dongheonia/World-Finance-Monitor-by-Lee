@@ -288,8 +288,16 @@ body.light-mode ::-webkit-scrollbar-thumb { background: #ccc; }
 .footer-search-form input::placeholder { color: #6b7999; }
 .footer-search-form input:focus { outline: none; border-color: #4a5ea0; }
 .footer-search-form button {
-    background: #1e2a5e; border: 1px solid #2a3a6e; color: #cbd5e1;
-    font-size: 13px; padding: 6px 10px; border-radius: 4px; cursor: pointer; line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+    background: #ffffff; border: 1px solid #2a3a6e;
+    padding: 6px 9px; border-radius: 4px; cursor: pointer; line-height: 1;
 }
-.footer-search-form button:hover { background: #2a3a6e; color: #ffffff; }
+.footer-search-form button:hover { filter: brightness(1.08); }
+/* Each engine's own brand color, on both the button (the icon lives on a plain white
+   chip so Google's multi-color mark and Naver's white-on-green mark both stay legible)
+   and the input's focus ring. */
+.footer-search-google input:focus { border-color: #4285F4; }
+.footer-search-google button { border-color: #dadce0; }
+.footer-search-naver input:focus { border-color: #03C75A; }
+.footer-search-naver button { border-color: #03C75A; }
 #footer-copyright { color: #6b7999; font-size: 11px; }
