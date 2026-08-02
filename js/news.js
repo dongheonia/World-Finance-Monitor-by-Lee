@@ -6,7 +6,13 @@ const WORLD_TOPICS = [
     // strikes this way ("strikes on Iran") where the figurative uses ("strikes a deal")
     // never take "on" — and catches a large volume of real strike-related war coverage
     // that bare "strike" would have been too risky to add for.
-    { key: 'war', ko: '전쟁', en: 'War', keywords: ['war', 'military strike', 'airstrike', 'air strike', 'missile strike', 'drone strike', 'strikes on', 'strike on', 'military', 'troops', 'invasion', 'missile', 'ceasefire', 'combat', 'offensive', 'shelling', 'insurgent', 'militant', 'rebel', 'clashes', 'gunfire', 'bombardment', 'front line', 'warzone', 'hostilities', 'armed forces', 'fighting', 'battlefield'] },
+    // 'strikes kill'/'attacks on iran' etc: added after the audit kept surfacing real,
+    // major Iran-conflict coverage phrased without "strikes ON" ("Israeli strikes kill
+    // four in Gaza", "Trump cancels Iran strike") — "strikes kill" is safe generally
+    // (no figurative use pairs "strikes" directly with "kill"); the Iran/Gaza-specific
+    // phrases are narrower and tied to this specific ongoing conflict, worth revisiting
+    // if/when it resolves.
+    { key: 'war', ko: '전쟁', en: 'War', keywords: ['war', 'military strike', 'airstrike', 'air strike', 'missile strike', 'drone strike', 'strikes on', 'strike on', 'strikes kill', 'attack on iran', 'attacks on iran', 'iran attack', 'iran strike', 'iran strikes', 'military', 'troops', 'invasion', 'missile', 'ceasefire', 'combat', 'offensive', 'shelling', 'insurgent', 'militant', 'rebel', 'clashes', 'gunfire', 'bombardment', 'front line', 'warzone', 'hostilities', 'armed forces', 'fighting', 'battlefield'] },
     { key: 'security', ko: '안보', en: 'Security', keywords: ['national security', 'nuclear weapon', 'defense ministry', 'military buildup', 'arms deal', 'weapons shipment', 'nato', 'intelligence agency', 'espionage', 'defense budget', 'army chief', 'military drill', 'spy network', 'classified documents', 'pentagon', 'wartime', 'security threat'] },
     { key: 'alliance', ko: '동맹', en: 'Alliance', keywords: ['alliance', 'coalition', 'joint military exercise', 'defense pact', 'mutual defense', 'allied forces', 'security pact', 'strategic partnership'] },
     // 'hack' bare (not just 'hacked'/'hacker') — suffix-safe single word, and in a news
@@ -19,7 +25,7 @@ const WORLD_TOPICS = [
     // worded. Deliberately NOT adding bare 'bomber' — real sports-wire content refers
     // to home-run hitters as "Bronx Bombers"/"bombers", which would have wrongly
     // pulled baseball recaps in here.
-    { key: 'terrorism', ko: '테러', en: 'Terrorism', keywords: ['terrorist', 'terrorism', 'terror plot', 'extremist attack', 'suicide bombing', 'bomb plot', 'radicalized', 'jihadist', 'terror cell', 'terror group', 'suicide bomber', 'female bomber', 'bomb attack', 'bomb blast', 'bomb detonated', 'car bomb', 'roadside bomb'] },
+    { key: 'terrorism', ko: '테러', en: 'Terrorism', keywords: ['terrorist', 'terrorism', 'terror plot', 'extremist attack', 'suicide bombing', 'bomb plot', 'radicalized', 'jihadist', 'terror cell', 'terror group', 'suicide bomber', 'female bomber', 'bomb attack', 'bomb blast', 'bomb detonated', 'bomb carried by', 'car bomb', 'roadside bomb'] },
     { key: 'refugees', ko: '난민', en: 'Refugees', keywords: ['refugee', 'refugee camp', 'asylum seekers', 'displaced people', 'humanitarian crisis', 'refugee crisis', 'stateless', 'resettlement', 'fleeing war'] },
     { key: 'humanrights', ko: '인권', en: 'Human Rights', keywords: ['human rights', 'genocide', 'ethnic cleansing', 'war crimes', 'political prisoner', 'persecution', 'freedom of speech', 'censorship', 'detained journalist', 'activist arrested', 'forced labor', 'discrimination'] },
     { key: 'health', ko: '보건', en: 'Health', keywords: ['public health', 'hospital crisis', 'health crisis', 'mental health', 'healthcare system', 'medical shortage', 'doctor shortage', 'health policy', 'medical care'] },
@@ -45,6 +51,13 @@ const WORLD_TOPICS = [
     // those words are civil/patent/political cases, not criminal ones. "trial" stays
     // since in news headlines it overwhelmingly means a criminal trial.
     { key: 'crime', ko: '범죄', en: 'Crime', keywords: ['murder', 'shooting', 'stabbing', 'knife attack', 'gunman', 'attacker', 'mass shooting', 'crime', 'criminal court', 'trial', 'convict', 'arrest', 'indict', 'sentence', 'gang violence', 'fraud scheme', 'kidnapping', 'robbery', 'homicide', 'manhunt', 'investigation into', 'charges filed', 'felony', 'guilty plea', 'prosecutors'] },
+    // Unintentional human/mechanical incidents — plane/train/vehicle crashes, sinkings,
+    // structural collapses, missing climbers/hikers — as distinct from Crime (no intent)
+    // and Disaster (no natural-hazard cause). All compound phrases deliberately: bare
+    // 'crash' alone would wrongly catch "stocks crash"/"market crash" econ headlines,
+    // and bare 'explosion'/'missing' are too generic (population explosion, missing
+    // person as a possible abduction/Crime case) to be safe as single words here.
+    { key: 'accident', ko: '사고', en: 'Accident', keywords: ['plane crash', 'plane crashes', 'jet crash', 'helicopter crash', 'car crash', 'truck crash', 'bus crash', 'train crash', 'train derailment', 'multi-vehicle crash', 'pileup', 'ferry sinks', 'boat capsizes', 'ship collision', 'building collapse', 'bridge collapse', 'crane collapse', 'industrial accident', 'factory explosion', 'gas explosion', 'mayday', 'crash landing', 'emergency landing', 'runway incident', 'climbers missing', 'climbers go missing', 'hikers missing', 'hikers go missing', 'missing climber'] },
     { key: 'disaster', ko: '재난', en: 'Disaster', keywords: ['earthquake', 'flood', 'flooding', 'disaster', 'hurricane', 'wildfire', 'typhoon', 'tsunami', 'landslide', 'volcano', 'storm damage', 'cyclone', 'avalanche', 'heatwave', 'heat wave', 'heat alert', 'extreme heat'] },
     { key: 'food', ko: '식량', en: 'Food Security', keywords: ['famine', 'food shortage', 'food crisis', 'crop failure', 'starvation', 'food insecurity', 'harvest failure', 'malnutrition'] },
     { key: 'logistics', ko: '물류', en: 'Logistics', keywords: ['freight disruption', 'supply route', 'logistics disruption', 'port congestion', 'trucking', 'cargo delay'] },
@@ -60,7 +73,7 @@ const WORLD_TOPICS = [
     // trades, roster moves — which turned out to be a huge share of real sports volume
     // (league names, stat lines, transaction verbs) and was falling through to the
     // generic fallback for lack of any match at all.
-    { key: 'sports', ko: '스포츠', en: 'Sports', keywords: ['olympic', 'world cup', 'championship', 'tournament', 'football match', 'basketball', 'soccer', 'grand slam', 'athlete', 'coach fired', 'medal', 'marathon', 'boxing match', 'nba', 'nfl', 'mlb', 'nhl', 'mls', 'premier league', 'la liga', 'world series', 'super bowl', 'stanley cup', 'home run', 'rbi', 'strikeout', 'strikes out', 'no-hitter', 'shutout', 'shut out', 'walk-off', 'playoffs', 'postseason', 'quarterback', 'pitcher', 'bullpen', 'roster', 'trade deadline', 'free agent', 'draft pick', 'clinch', 'world record', 'relay', 'head coach', 'left fielder', 'right-hander', 'left-hander', 'rhp', 'lhp', 'batting', 'inning', 'innings', 'touchdown', 'field goal', 'penalty kick', 'red card', 'yellow card', 'clean sheet', 'world junior', 'nationals meet', 'swim meet'] },
+    { key: 'sports', ko: '스포츠', en: 'Sports', keywords: ['olympic', 'world cup', 'championship', 'tournament', 'football match', 'basketball', 'baseball', 'soccer', 'grand slam', 'athlete', 'coach fired', 'medal', 'marathon', 'boxing match', 'nba', 'nfl', 'mlb', 'nhl', 'mls', 'premier league', 'la liga', 'world series', 'super bowl', 'stanley cup', 'home run', 'rbi', 'strikeout', 'strikes out', 'no-hitter', 'shutout', 'shut out', 'walk-off', 'playoffs', 'postseason', 'quarterback', 'pitcher', 'bullpen', 'roster', 'trade deadline', 'free agent', 'draft pick', 'clinch', 'world record', 'relay', 'head coach', 'left fielder', 'right-hander', 'left-hander', 'rhp', 'lhp', 'batting', 'inning', 'innings', 'touchdown', 'field goal', 'penalty kick', 'red card', 'yellow card', 'clean sheet', 'world junior', 'nationals meet', 'swim meet', 'striker', 'midfielder', 'goalkeeper', 'winger', 'transfer window', 'loan deal'] },
     // Culture and Politics go LAST on purpose: both lean on fairly generic vocabulary
     // ("government", "festival"-adjacent words) that shows up incidentally in plenty of
     // stories that really belong to a more specific category above — checking them last
@@ -109,14 +122,14 @@ const ECON_TOPICS = [
     { key: 'trade', ko: '무역', en: 'Trade', keywords: ['trade deal', 'trade war', 'export', 'import', 'trade deficit', 'trade surplus', 'wto', 'trade agreement', 'trade negotiations', 'trade barrier'] },
     { key: 'tariffs', ko: '관세', en: 'Tariffs', keywords: ['tariff', 'tariffs', 'customs duty', 'import duty', 'tariff hike', 'trade tariffs'] },
     { key: 'realestate', ko: '부동산', en: 'Real Estate', keywords: ['real estate', 'property market', 'commercial property', 'property prices', 'property tax', 'real estate developer', 'property investment'] },
-    { key: 'housing', ko: '주택', en: 'Housing', keywords: ['housing market', 'home prices', 'house prices', 'mortgage rate', 'mortgage', 'rent prices', 'housing crisis', 'home sales', 'housing bubble', 'housing supply', 'first-time buyers'] },
+    { key: 'housing', ko: '주택', en: 'Housing', keywords: ['housing market', 'home prices', 'house prices', 'mortgage rate', 'mortgage', 'rent prices', 'housing crisis', 'home sales', 'housing bubble', 'housing supply', 'first-time buyers', 'condo crisis', 'condo'] },
     // Narrowed to labor-market STATISTICS per the updated spec (실업률·취업자수·채용시장
     // 동향) — strikes/wage disputes/working conditions now belong to world's 노동
     // (Labor) instead, which is checked much later, so keeping "strike action"/"labor
     // union" here would have stolen all of those stories before 노동 ever got a look.
     { key: 'employment', ko: '고용', en: 'Employment', keywords: ['jobs report', 'unemployment rate', 'unemployment', 'layoffs', 'hiring', 'payroll', 'job cuts', 'workforce', 'job market', 'labor shortage', 'jobless claims', 'employment rate', 'hiring market', 'job growth', 'jobs to go', 'jobs market', 'jobs crisis'] },
     { key: 'householddebt', ko: '가계 부채', en: 'Household Debt', keywords: ['household debt', 'consumer debt', 'credit card debt', 'loan default', 'mortgage debt', 'personal debt', 'student loan debt'] },
-    { key: 'growth', ko: '성장률', en: 'Growth Rate', keywords: ['gdp growth', 'economic growth', 'recession', 'gdp contracts', 'growth forecast', 'economic output', 'gdp data', 'economic slowdown', 'growth rate', 'economy slow', 'economy shrink', 'economy contract', 'economy grew', 'economy grows', 'economic revival', 'growth outlook', 'second-half growth', 'economic momentum'] },
+    { key: 'growth', ko: '성장률', en: 'Growth Rate', keywords: ['gdp growth', 'economic growth', 'recession', 'gdp contracts', 'growth forecast', 'economic output', 'gdp data', 'economic slowdown', 'growth rate', 'economy slow', 'economy shrink', 'economy contract', 'economy grew', 'economy grows', 'economic revival', 'growth outlook', 'second-half growth', 'economic momentum', 'economic turmoil'] },
     { key: 'fiscal', ko: '재정', en: 'Fiscal Policy', keywords: ['budget deficit', 'government spending', 'stimulus package', 'national debt', 'fiscal policy', 'government budget', 'public spending', 'deficit spending', 'social security', '401(k)', 'retirement account'] },
     { key: 'tax', ko: '세금', en: 'Tax System', keywords: ['tax cut', 'tax hike', 'tax reform', 'tax law', 'tax bracket', 'corporate tax', 'income tax', 'tax policy'] },
     { key: 'supplychain', ko: '공급망', en: 'Supply Chain', keywords: ['supply chain', 'chip shortage', 'shortage of', 'factory disruption', 'semiconductor shortage', 'supply disruption', 'supply constraints', 'manufacturing delay'] },
@@ -132,7 +145,7 @@ const ECON_TOPICS = [
     { key: 'carbon', ko: '탄소배출', en: 'Carbon Emissions', keywords: ['carbon emissions target', 'net zero', 'green bond', 'climate pledge', 'carbon footprint', 'carbon tax', 'carbon credit', 'emissions target'] },
     { key: 'consumption', ko: '소비', en: 'Consumption', keywords: ['consumer spending', 'consumer demand', 'consumer confidence', 'holiday shopping', 'black friday'] },
     { key: 'retail', ko: '유통', en: 'Retail & Distribution', keywords: ['retail sales', 'retail industry', 'shopping trends', 'e-commerce', 'retailer', 'department store', 'supermarket chain', 'retail spending'] },
-    { key: 'investment', ko: '투자', en: 'Investment', keywords: ['investment', 'investing', 'investor', 'invests in', 'stake in', 'ipo', 'goes public', 'stock market', 'shares', 'nasdaq', 'wall street', 'private equity', 'dividend', 'portfolio'] },
+    { key: 'investment', ko: '투자', en: 'Investment', keywords: ['investment', 'investing', 'investor', 'invests in', 'stake in', 'ipo', 'goes public', 'stock market', 'shares', 'nasdaq', 'wall street', 'private equity', 'dividend', 'portfolio', 'kospi', 'market rout', 'stock rout'] },
     { key: 'venture', ko: '벤처', en: 'Venture Capital', keywords: ['venture capital', 'vc firm', 'venture fund', 'series a', 'series b', 'series c', 'funding round', 'seed funding', 'venture backed'] },
     { key: 'startup', ko: '스타트업', en: 'Startups', keywords: ['startup', 'startups', 'unicorn startup', 'tech startup', 'startup founder', 'startup valuation', 'startup funding'] },
     { key: 'corporate', ko: '기업', en: 'Corporate', keywords: ['merger', 'acquisition', 'acquires', 'takeover', 'bankruptcy', 'chapter 11', 'ceo', 'executive', 'earnings', 'quarterly', 'profit', 'revenue', 'company', 'companies', 'corporate', 'firm', 'firms', 'business deal', 'shareholder', 'restructuring', 'spinoff', 'up for sale', 'agrees to sell', 'debt deal', 'creditors', 'stake sale'] },
