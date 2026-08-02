@@ -169,7 +169,8 @@ body:not(.light-mode) #tab-world-news.text-white, body:not(.light-mode) #tab-eco
 /* Timezone boxes: city-name and time colors move together. Light mode matches the rest
    of the light theme (white card, dark text) rather than the dark gray box it used to
    be, which read as an unwanted "black box" against the light background. */
-body.light-mode .tz-box { background-color: #6b7280; border-color: #6b7280; }
+/* Same dark gray as #theme-btn/#lang-btn on the same top bar row, for visual consistency. */
+body.light-mode .tz-box { background-color: #1f2937; border-color: #1f2937; }
 body.light-mode .tz-time, body.light-mode .clock-label { color: #ffffff; }
 body:not(.light-mode) .tz-box { background-color: #ffffff; border-color: #ffffff; }
 body:not(.light-mode) .tz-time, body:not(.light-mode) .clock-label { color: #000000; }
