@@ -132,11 +132,12 @@ async function fetchYahooQuote(symbol) {
 // free-tier source anywhere (FMP or Twelve Data, both checked) — they stay on the
 // best-effort Yahoo-proxy path below.
 //
-// Free-tier quota is a hard 250 calls/day with no batching, so at 10 calls per FMP
-// refresh (7 indices + 3 commodities; treasury-rates is a separate 11th call) the
-// safe sustainable cadence is ~65 min minimum — refreshed every 75 min for buffer.
-// This is categorically slower than the 1-minute cadence everything else uses; there
-// is no free tier of any provider that supports true 1-minute refresh for this data.
+// Free-tier quota is a hard 250 calls/day with no batching, so at 11 calls per FMP
+// refresh (7 indices + 3 commodities + 1 treasury-rates call) the safe sustainable
+// cadence is ~65 min minimum if run continuously 24/7 (24*60/11 ≈ 22.7 max refreshes/
+// day) — refreshed every 70 min (≈20.6 refreshes/day) for a small buffer. This is
+// categorically slower than the 1-minute cadence everything else uses; there is no
+// free tier of any provider that supports true 1-minute refresh for this data.
 // FMP_API_KEY itself lives in config.js (gitignored, loaded before this file) — see
 // config.example.js for the template a fresh clone needs to copy and fill in.
 const FMP_INDEX_SYMBOLS = ['^GSPC', '^IXIC', '^DJI', '^FTSE', '^STOXX50E', '^HSI', '^N225'];
@@ -278,7 +279,7 @@ async function fetchChartSeriesOnly(symbol) {
     // "current quote" concern to weigh here at all.
     const target = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1d&range=1mo&_=${Date.now()}`;
     // Unlike fetchYahooQuote's 5000ms (tuned to fit a 1-minute price cycle), this runs
-    // on its own slow 10-minute cadence with no such budget — a longer timeout here
+    // on its own slower 5-minute cadence with no such budget — a longer timeout here
     // just means more of the inherently flaky free proxies' slow responses actually get
     // to finish instead of being cut off early.
     const res = await fetchViaProxies(target, 9000);
@@ -322,7 +323,7 @@ async function fetchProxiedSparklines(symbols) {
 
 // The free CORS proxies routinely drop a handful of requests in any given burst (see
 // the note above ALL_CORS_PROXIES) — rather than leaving a symbol chartless for the
-// full 10-minute cycle after a bad first attempt, this makes one extra pass shortly
+// full 5-minute cycle after a bad first attempt, this makes one extra pass shortly
 // after load at just the symbols still missing, which is usually enough to catch
 // whatever failed transiently the first time.
 function retryMissingSparklines() {

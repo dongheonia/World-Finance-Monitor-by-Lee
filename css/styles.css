@@ -236,3 +236,23 @@ body:not(.light-mode) .cal-list-date, body:not(.light-mode) .cal-list-title, bod
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
 body.light-mode ::-webkit-scrollbar-thumb { background: #ccc; }
+
+/* Site footer: a fixed navy band below the bottom-aligned 3-column grid — deliberately
+   NOT theme-dependent (unlike .terminal-box) since the navy background itself is the
+   whole point here, in both light and dark mode. */
+#site-footer { background-color: #0b1230; border: 1px solid #1e2a5e; }
+.footer-title {
+    font-weight: 700; font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase;
+    color: #93a3d1; border-bottom: 1px solid #1e2a5e; padding-bottom: 6px; margin-bottom: 10px;
+}
+.footer-links-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); column-gap: 16px; row-gap: 8px;
+    font-size: 12px;
+}
+.footer-links-grid a { color: #cbd5e1; text-decoration: none; }
+.footer-links-grid a:hover { color: #ffffff; text-decoration: underline; }
+.footer-refresh-list { display: flex; flex-direction: column; gap: 8px; font-size: 12px; color: #cbd5e1; }
+.footer-right-col { display: flex; flex-direction: column; align-items: flex-end; justify-content: flex-end; gap: 6px; }
+#footer-account-link { color: #cbd5e1; text-decoration: none; font-size: 12px; }
+#footer-account-link:hover { color: #ffffff; text-decoration: underline; }
+#footer-copyright { color: #6b7999; font-size: 11px; }

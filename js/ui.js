@@ -135,6 +135,11 @@ function updateStaticLabels() {
     document.getElementById('lbl-chk-disaster').innerText = t.chkDisaster;
     document.getElementById('lbl-chk-economy').innerText = t.chkEconomy;
     document.getElementById('lbl-chk-social').innerText = t.chkSocial;
+    document.getElementById('footer-links-title').innerText = t.footerLinksTitle;
+    document.getElementById('footer-refresh-title').innerText = t.footerRefreshTitle;
+    for (let i = 1; i <= 7; i++) {
+        document.getElementById(`footer-refresh-${i}`).innerText = t[`footerRefresh${i}`];
+    }
 }
 
 function updateClocks() {

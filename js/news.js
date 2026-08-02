@@ -406,71 +406,56 @@ function textOf(item, tag) {
     return el ? el.textContent.trim() : '';
 }
 
+// Races the CORS proxies (via fetchViaProxies, same helper market-data.js uses for
+// Yahoo) instead of trying them one after another. Sequential trial-then-fallback meant
+// a single down/slow proxy cost every feed a full 6s timeout before the second proxy
+// even got a turn — with 24 feeds across several batches, that's what stretched "a
+// handful of articles up front, then a long wait before the rest show up" out so long.
+// Racing means each feed only ever waits as long as whichever proxy answers first.
 async function fetchFeedItems(feed) {
-    let lastErr = new Error('no proxy available');
-    for (const buildProxyUrl of CORS_PROXIES) {
-        try {
-            const res = await fetchWithTimeout(buildProxyUrl(feed.url), 6000);
-            if (!res.ok) throw new Error('http ' + res.status);
-            const xmlText = await res.text();
-            const doc = new DOMParser().parseFromString(xmlText, 'text/xml');
-            if (doc.querySelector('parsererror')) throw new Error('xml parse error');
-            const items = Array.from(doc.getElementsByTagName('item')).slice(0, 25);
-            if (items.length === 0) throw new Error('no items in feed');
-            return items.map(item => {
-                const title = cleanTitle(textOf(item, 'title'));
-                const link = textOf(item, 'link') || '#';
-                const pubDateText = textOf(item, 'pubDate');
-                let classified = classifyNews(title);
-                // A headline from a business feed that matched nothing specific isn't
-                // automatically economic — CNBC/Bloomberg/etc. also carry geopolitical
-                // stories (an Iran cease-fire update, a court case) that have nothing to
-                // do with business just because of where they were published. Only
-                // reclassify to Corporate when the title itself also carries some actual
-                // money/business signal — feed origin alone used to blindly win, which is
-                // exactly why "Trump Says There's a 'Good Chance' of an Iran Deal" or a
-                // "Felony Theft Charges Filed Against a Business Owner" were landing
-                // under Corporate instead of Diplomacy/Conflict or Crime.
-                if (feed.isBusinessFeed && classified.group === 'world' && classified.topic === DEFAULT_WORLD_TOPIC) {
-                    const hasBusinessSignal = BUSINESS_SIGNAL_HINTS.some(h => title.toLowerCase().includes(h));
-                    if (hasBusinessSignal) {
-                        classified = { group: 'economy', topic: ECON_TOPICS.find(t => t.key === 'corporate') };
-                    }
-                }
-                return {
-                    title,
-                    link,
-                    pubDate: pubDateText ? new Date(pubDateText) : new Date(),
-                    topic: classified.topic,
-                    group: classified.group
-                };
-            });
-        } catch (e) {
-            lastErr = e;
+    const res = await fetchViaProxies(feed.url, 6000);
+    const xmlText = await res.text();
+    const doc = new DOMParser().parseFromString(xmlText, 'text/xml');
+    if (doc.querySelector('parsererror')) throw new Error('xml parse error');
+    const items = Array.from(doc.getElementsByTagName('item')).slice(0, 25);
+    if (items.length === 0) throw new Error('no items in feed');
+    return items.map(item => {
+        const title = cleanTitle(textOf(item, 'title'));
+        const link = textOf(item, 'link') || '#';
+        const pubDateText = textOf(item, 'pubDate');
+        let classified = classifyNews(title);
+        // A headline from a business feed that matched nothing specific isn't
+        // automatically economic — CNBC/Bloomberg/etc. also carry geopolitical
+        // stories (an Iran cease-fire update, a court case) that have nothing to
+        // do with business just because of where they were published. Only
+        // reclassify to Corporate when the title itself also carries some actual
+        // money/business signal — feed origin alone used to blindly win, which is
+        // exactly why "Trump Says There's a 'Good Chance' of an Iran Deal" or a
+        // "Felony Theft Charges Filed Against a Business Owner" were landing
+        // under Corporate instead of Diplomacy/Conflict or Crime.
+        if (feed.isBusinessFeed && classified.group === 'world' && classified.topic === DEFAULT_WORLD_TOPIC) {
+            const hasBusinessSignal = BUSINESS_SIGNAL_HINTS.some(h => title.toLowerCase().includes(h));
+            if (hasBusinessSignal) {
+                classified = { group: 'economy', topic: ECON_TOPICS.find(t => t.key === 'corporate') };
+            }
         }
-    }
-    throw lastErr;
+        return {
+            title,
+            link,
+            pubDate: pubDateText ? new Date(pubDateText) : new Date(),
+            topic: classified.topic,
+            group: classified.group
+        };
+    });
 }
 
-// Firing all ~29 feeds through the free corsfix proxy at once causes it to randomly
-// reject a chunk of them under the burst (observed: identical feed list yielding econ
-// counts anywhere from 26 to 56 across back-to-back runs). Fetching in small staggered
-// batches keeps peak concurrent load on the proxy low, which is far more consistent.
-async function fetchAllNews() {
-    const BATCH_SIZE = 6;
-    const BATCH_DELAY_MS = 300;
-    const results = [];
-    for (let i = 0; i < NEWS_FEEDS.length; i += BATCH_SIZE) {
-        const batch = NEWS_FEEDS.slice(i, i + BATCH_SIZE);
-        results.push(...await Promise.allSettled(batch.map(fetchFeedItems)));
-        if (i + BATCH_SIZE < NEWS_FEEDS.length) await new Promise(r => setTimeout(r, BATCH_DELAY_MS));
-    }
-    let combined = [];
-    results.forEach(r => { if (r.status === 'fulfilled') combined = combined.concat(r.value); });
-    if (combined.length === 0) {
-        if (masterNews.length === 0) { renderNewsLists(); renderTicker(); }
-        return;
-    }
+// Dedupes/classifies/sorts/caps and paints whatever raw feed items have landed SO FAR.
+// Pulled out of fetchAllNews so it can run after every batch (see below) instead of
+// only once all ~24 feeds have finished — that "only render at the very end" behavior
+// was the other half of "a few articles show up, then a long wait before the rest
+// appear": each batch could itself take several seconds, and there are 4 of them.
+function applyNewsPool(combined) {
+    if (combined.length === 0) return;
     const seen = new Set();
     const deduped = [];
     combined.forEach(item => {
@@ -510,6 +495,26 @@ async function fetchAllNews() {
     alignColumnBottoms();
     saveNewsCache();
     if (currentLang === 'ko') translateNewsIfNeeded();
+}
+
+// Firing all ~29 feeds through the free corsfix proxy at once causes it to randomly
+// reject a chunk of them under the burst (observed: identical feed list yielding econ
+// counts anywhere from 26 to 56 across back-to-back runs). Fetching in small staggered
+// batches keeps peak concurrent load on the proxy low, which is far more consistent.
+async function fetchAllNews() {
+    const BATCH_SIZE = 6;
+    const BATCH_DELAY_MS = 300;
+    let combined = [];
+    for (let i = 0; i < NEWS_FEEDS.length; i += BATCH_SIZE) {
+        const batch = NEWS_FEEDS.slice(i, i + BATCH_SIZE);
+        const results = await Promise.allSettled(batch.map(fetchFeedItems));
+        results.forEach(r => { if (r.status === 'fulfilled') combined = combined.concat(r.value); });
+        // Paint after every batch so the news box fills in progressively instead of
+        // sitting on the sparse fallback/cache until the whole feed list is done.
+        applyNewsPool(combined);
+        if (i + BATCH_SIZE < NEWS_FEEDS.length) await new Promise(r => setTimeout(r, BATCH_DELAY_MS));
+    }
+    if (combined.length === 0 && masterNews.length === 0) { renderNewsLists(); renderTicker(); }
 }
 
 // Firing 30-50+ translate calls at once (one per untranslated headline) trips Google's

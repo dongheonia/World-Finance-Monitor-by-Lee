@@ -203,81 +203,60 @@ function localizeMapLabels(lang) {
 }
 
 // Switching MapLibre's style wipes any sources/layers we added (markers survive,
-// since they're plain DOM elements positioned independently of the style) — so the
-// war-circle layer has to be rebuilt every time setStyle() runs, once the new style
-// finishes loading. Economy dots are plain Markers and don't need this.
-function addWarLayer() {
-    if (!mapInstance || mapInstance.getSource('war-events')) return;
-    mapInstance.addSource('war-events', {
+// since they're plain DOM elements positioned independently of the style) — so every
+// circle layer has to be rebuilt every time setStyle() runs, once the new style
+// finishes loading (see onMapStyleReady). Shared by war/disaster (which are ALWAYS
+// circles) and economy/social (which are a MIX — only entries broad enough to carry a
+// `radius` become a circle here; entries with no `radius` stay plain point markers,
+// added separately by addPointMarkers() below since Markers survive setStyle() on
+// their own and don't need rebuilding).
+function addCircleLayer(id, events, fillColor, lineColor, visible) {
+    if (!mapInstance || mapInstance.getSource(id + '-events')) return;
+    const withRadius = events.filter(e => e.radius);
+    if (withRadius.length === 0) return;
+    mapInstance.addSource(id + '-events', {
         type: 'geojson',
         data: {
             type: 'FeatureCollection',
-            features: WAR_EVENTS.map(w => ({
+            features: withRadius.map(e => ({
                 type: 'Feature',
-                properties: { ko: w.ko, en: w.en, reasonKo: w.reasonKo, reasonEn: w.reasonEn, date: w.date, ongoing: w.ongoing, endDate: w.endDate || null },
-                geometry: { type: 'Polygon', coordinates: [circlePolygon(w.coords, w.radius)] }
+                properties: { ko: e.ko, en: e.en, reasonKo: e.reasonKo, reasonEn: e.reasonEn, date: e.date, ongoing: e.ongoing, endDate: e.endDate || null },
+                geometry: { type: 'Polygon', coordinates: [circlePolygon(e.coords, e.radius)] }
             }))
         }
     });
-    const warVisibility = warVisible ? 'visible' : 'none';
+    const vis = visible ? 'visible' : 'none';
     mapInstance.addLayer({
-        id: 'war-fill', type: 'fill', source: 'war-events',
-        layout: { visibility: warVisibility },
-        paint: { 'fill-color': 'rgba(255, 70, 70, 0.32)' }
+        id: `${id}-fill`, type: 'fill', source: `${id}-events`,
+        layout: { visibility: vis },
+        paint: { 'fill-color': fillColor }
     });
     mapInstance.addLayer({
-        id: 'war-line', type: 'line', source: 'war-events',
-        layout: { visibility: warVisibility },
-        paint: { 'line-color': '#dc2626', 'line-width': 2 }
+        id: `${id}-line`, type: 'line', source: `${id}-events`,
+        layout: { visibility: vis },
+        paint: { 'line-color': lineColor, 'line-width': 2 }
     });
-    mapInstance.on('click', 'war-fill', (e) => {
+    mapInstance.on('click', `${id}-fill`, (e) => {
         e.originalEvent.stopPropagation();
         showRiskPopup(e.lngLat, e.features[0].properties);
     });
-    mapInstance.on('mouseenter', 'war-fill', () => { mapInstance.getCanvas().style.cursor = 'pointer'; });
-    mapInstance.on('mouseleave', 'war-fill', () => { mapInstance.getCanvas().style.cursor = ''; });
+    mapInstance.on('mouseenter', `${id}-fill`, () => { mapInstance.getCanvas().style.cursor = 'pointer'; });
+    mapInstance.on('mouseleave', `${id}-fill`, () => { mapInstance.getCanvas().style.cursor = ''; });
 }
 
-// Same rebuild-on-style-swap story as addWarLayer(), just yellow-bordered/pale-yellow
-// for disasters instead of red for war.
-function addDisasterLayer() {
-    if (!mapInstance || mapInstance.getSource('disaster-events')) return;
-    mapInstance.addSource('disaster-events', {
-        type: 'geojson',
-        data: {
-            type: 'FeatureCollection',
-            features: DISASTER_EVENTS.map(d => ({
-                type: 'Feature',
-                properties: { ko: d.ko, en: d.en, reasonKo: d.reasonKo, reasonEn: d.reasonEn, date: d.date, ongoing: d.ongoing, endDate: d.endDate || null },
-                geometry: { type: 'Polygon', coordinates: [circlePolygon(d.coords, d.radius)] }
-            }))
-        }
-    });
-    const disasterVisibility = disasterVisible ? 'visible' : 'none';
-    mapInstance.addLayer({
-        id: 'disaster-fill', type: 'fill', source: 'disaster-events',
-        layout: { visibility: disasterVisibility },
-        paint: { 'fill-color': 'rgba(250, 204, 21, 0.28)' }
-    });
-    mapInstance.addLayer({
-        id: 'disaster-line', type: 'line', source: 'disaster-events',
-        layout: { visibility: disasterVisibility },
-        paint: { 'line-color': '#eab308', 'line-width': 2 }
-    });
-    mapInstance.on('click', 'disaster-fill', (e) => {
-        e.originalEvent.stopPropagation();
-        showRiskPopup(e.lngLat, e.features[0].properties);
-    });
-    mapInstance.on('mouseenter', 'disaster-fill', () => { mapInstance.getCanvas().style.cursor = 'pointer'; });
-    mapInstance.on('mouseleave', 'disaster-fill', () => { mapInstance.getCanvas().style.cursor = ''; });
-}
+function addWarLayer() { addCircleLayer('war', WAR_EVENTS, 'rgba(255, 70, 70, 0.32)', '#dc2626', warVisible); }
+function addDisasterLayer() { addCircleLayer('disaster', DISASTER_EVENTS, 'rgba(250, 204, 21, 0.28)', '#eab308', disasterVisible); }
+function addEconomyCircleLayer() { addCircleLayer('econ', ECONOMY_EVENTS, 'rgba(59, 130, 246, 0.28)', '#3b82f6', econVisible); }
+function addSocialCircleLayer() { addCircleLayer('social', SOCIAL_EVENTS, 'rgba(168, 85, 247, 0.28)', '#a855f7', socialVisible); }
 
-// Economy-risk dots are plain DOM markers (points, not affected-area circles), so
-// unlike the war layer they only need to be created once — Markers live outside the
-// GL style and survive setStyle() calls on their own.
+// Point markers for economy/social events that DON'T carry a `radius` — a single-site
+// incident (one attack, one border rush) rather than a country/region-wide condition
+// doesn't have a meaningful "affected area" to draw, so it stays a dot. Plain DOM
+// Markers live outside the GL style and survive setStyle() calls on their own, so
+// (unlike the circle layers above) these only need to be created once.
 let economyMarkerEls = [];
 function addEconomyMarkers() {
-    economyMarkerEls = ECONOMY_EVENTS.map(ev => {
+    economyMarkerEls = ECONOMY_EVENTS.filter(ev => !ev.radius).map(ev => {
         const wrapper = document.createElement('div');
         wrapper.className = 'econ-marker';
         wrapper.innerHTML = '<span class="econ-dot"></span>';
@@ -300,7 +279,7 @@ function updateEconomyVisibility() {
 // be toggled independently.
 let socialMarkerEls = [];
 function addSocialMarkers() {
-    socialMarkerEls = SOCIAL_EVENTS.map(ev => {
+    socialMarkerEls = SOCIAL_EVENTS.filter(ev => !ev.radius).map(ev => {
         const wrapper = document.createElement('div');
         wrapper.className = 'social-marker';
         wrapper.innerHTML = '<span class="social-dot"></span>';
@@ -321,13 +300,16 @@ function updateSocialVisibility() {
 
 // Called once a style (Map or Satellite) has fully finished loading — hides the
 // basemap's own continent labels, re-applies the current language's label text, and
-// (re)builds the war/disaster circle layers, all of which setStyle() would otherwise
-// have wiped.
+// (re)builds every circle layer (war/disaster, plus the radius-bearing subset of
+// economy/social), all of which setStyle() would otherwise have wiped. The point-
+// marker subset of economy/social is untouched here since Markers survive on their own.
 function onMapStyleReady() {
     hideContinentLabels();
     localizeMapLabels(currentLang);
     addWarLayer();
     addDisasterLayer();
+    addEconomyCircleLayer();
+    addSocialCircleLayer();
 }
 
 // Approximate circle-as-polygon (equirectangular degrees) — good enough for an
@@ -343,10 +325,12 @@ function circlePolygon([lon, lat], radiusKm, steps = 64) {
     return coords;
 }
 
-// War/disaster circles are shown/hidden via the GL layer's own visibility (survives
-// until the next style swap, at which point addWarLayer()/addDisasterLayer() re-apply
-// the flag). Economy dots are shown/hidden via a body class since they're plain DOM
-// markers.
+// Circle layers (war/disaster always, economy/social for the radius-bearing subset)
+// are shown/hidden via the GL layer's own visibility, which survives until the next
+// style swap — at that point onMapStyleReady()'s addWarLayer()/addDisasterLayer()/
+// addEconomyCircleLayer()/addSocialCircleLayer() calls re-apply the current flag (see
+// addCircleLayer's `visible` param). The remaining point-marker subset of economy/
+// social is shown/hidden via a body class instead, since those are plain DOM markers.
 let warVisible = true;
 let disasterVisible = true;
 let econVisible = true;
@@ -369,9 +353,19 @@ function toggleRiskCategory(type) {
     } else if (type === 'economy') {
         econVisible = document.getElementById('chk-economy').checked;
         updateEconomyVisibility();
+        if (mapInstance && mapInstance.getLayer('econ-fill')) {
+            const v = econVisible ? 'visible' : 'none';
+            mapInstance.setLayoutProperty('econ-fill', 'visibility', v);
+            mapInstance.setLayoutProperty('econ-line', 'visibility', v);
+        }
     } else if (type === 'social') {
         socialVisible = document.getElementById('chk-social').checked;
         updateSocialVisibility();
+        if (mapInstance && mapInstance.getLayer('social-fill')) {
+            const v = socialVisible ? 'visible' : 'none';
+            mapInstance.setLayoutProperty('social-fill', 'visibility', v);
+            mapInstance.setLayoutProperty('social-line', 'visibility', v);
+        }
     }
 }
 

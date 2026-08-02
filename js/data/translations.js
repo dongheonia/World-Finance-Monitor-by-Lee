@@ -20,7 +20,16 @@ const translations = {
         secCrypto: "가상화폐",
         mapInstructions: "* 휠로 확대/축소, 드래그로 이동 (UN 193개 회원국)",
         mapStyleTitle: "지도 스타일", styleMap: "지도", styleSatellite: "위성",
-        riskFilterTitle: "글로벌 임팩트", chkWar: "전쟁", chkDisaster: "재난", chkEconomy: "경제", chkSocial: "사건"
+        riskFilterTitle: "글로벌 임팩트", chkWar: "전쟁", chkDisaster: "재난", chkEconomy: "경제", chkSocial: "사건",
+        footerLinksTitle: "주요 사이트",
+        footerRefreshTitle: "데이터 새로고침 주기",
+        footerRefresh1: "시세 (주가·환율·원자재): 1분",
+        footerRefresh2: "뉴스: 1분",
+        footerRefresh3: "지수·원자재 (FMP): 70분",
+        footerRefresh4: "차트 (프록시): 5분",
+        footerRefresh5: "코인 차트: 2분",
+        footerRefresh6: "ECB 정책금리: 1시간",
+        footerRefresh7: "글로벌임팩트 지도: 하루 2회"
     },
     en: {
         btn: "한국어", themeBtnLight: "Light Mode", themeBtnDark: "Dark Mode",
@@ -41,6 +50,15 @@ const translations = {
         secCrypto: "CRYPTOCURRENCY",
         mapInstructions: "* WHEEL TO ZOOM / DRAG TO MOVE (UN 193 MEMBER STATES)",
         mapStyleTitle: "MAP STYLE", styleMap: "Map", styleSatellite: "Satellite",
-        riskFilterTitle: "GLOBAL IMPACT", chkWar: "War", chkDisaster: "Disaster", chkEconomy: "Economy", chkSocial: "Incident"
+        riskFilterTitle: "GLOBAL IMPACT", chkWar: "War", chkDisaster: "Disaster", chkEconomy: "Economy", chkSocial: "Incident",
+        footerLinksTitle: "MAJOR SITES",
+        footerRefreshTitle: "DATA REFRESH INTERVALS",
+        footerRefresh1: "Prices (stocks/FX/commodities): 1 min",
+        footerRefresh2: "News: 1 min",
+        footerRefresh3: "Indices/commodities (FMP): 70 min",
+        footerRefresh4: "Charts (proxied): 5 min",
+        footerRefresh5: "Crypto charts: 2 min",
+        footerRefresh6: "ECB policy rate: 1 hr",
+        footerRefresh7: "Global Impact map: 2x/day"
     }
 };
