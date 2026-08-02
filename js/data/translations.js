@@ -33,7 +33,8 @@ const translations = {
         footerRefresh8: "원자재 및 에너지: 1분·70분(일부)",
         footerRefresh9: "기준금리: 유럽 1시간·그외 수동",
         footerRefresh10: "가상화폐: 1분",
-        footerSearchPlaceholder: "Google 검색"
+        footerSearchPlaceholder: "Google 검색",
+        footerSearchPlaceholderNaver: "네이버 검색"
     },
     en: {
         btn: "한국어", themeBtnLight: "Light Mode", themeBtnDark: "Dark Mode",
@@ -67,6 +68,7 @@ const translations = {
         footerRefresh8: "Commodities & energy: 1 min · 70 min (some)",
         footerRefresh9: "Policy rate: EU 1 hr · others manual",
         footerRefresh10: "Cryptocurrency: 1 min",
-        footerSearchPlaceholder: "Google Search"
+        footerSearchPlaceholder: "Google Search",
+        footerSearchPlaceholderNaver: "Naver Search"
     }
 };

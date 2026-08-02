@@ -278,6 +278,7 @@ body.light-mode ::-webkit-scrollbar-thumb { background: #ccc; }
 /* space-between (not flex-end) so the search form pins to the TOP of this column while
    the copyright line stays pinned to the bottom — both still right-aligned. */
 .footer-right-col { display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; height: 100%; }
+.footer-search-stack { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
 .footer-search-form { display: flex; gap: 6px; }
 .footer-search-form input {
     background: #0f1b3d; border: 1px solid #2a3a6e; color: #e5e9f5;

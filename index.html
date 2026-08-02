@@ -240,10 +240,16 @@
                 </tbody>
             </table>
             <div class="footer-right-col">
-                <form action="https://www.google.com/search" method="get" target="_blank" rel="noopener noreferrer" class="footer-search-form" role="search">
-                    <input type="text" name="q" id="footer-search-input" autocomplete="off">
-                    <button type="submit" id="footer-search-btn" aria-label="Search">&#128269;</button>
-                </form>
+                <div class="footer-search-stack">
+                    <form action="https://www.google.com/search" method="get" target="_blank" rel="noopener noreferrer" class="footer-search-form" role="search">
+                        <input type="text" name="q" id="footer-search-input" autocomplete="off">
+                        <button type="submit" id="footer-search-btn" aria-label="Google Search">&#128269;</button>
+                    </form>
+                    <form action="https://search.naver.com/search.naver" method="get" target="_blank" rel="noopener noreferrer" class="footer-search-form" role="search">
+                        <input type="text" name="query" id="footer-search-input-naver" autocomplete="off">
+                        <button type="submit" id="footer-search-btn-naver" aria-label="Naver Search">&#128269;</button>
+                    </form>
+                </div>
                 <div id="footer-copyright">&copy; 2026 dongheonia. All rights reserved.</div>
             </div>
         </div>

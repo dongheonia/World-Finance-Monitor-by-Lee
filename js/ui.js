@@ -141,6 +141,7 @@ function updateStaticLabels() {
         document.getElementById(`footer-refresh-${i}`).innerText = t[`footerRefresh${i}`];
     }
     document.getElementById('footer-search-input').placeholder = t.footerSearchPlaceholder;
+    document.getElementById('footer-search-input-naver').placeholder = t.footerSearchPlaceholderNaver;
 }
 
 function updateClocks() {
