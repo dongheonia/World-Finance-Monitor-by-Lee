@@ -279,18 +279,23 @@ body.light-mode ::-webkit-scrollbar-thumb { background: #ccc; }
    the copyright line stays pinned to the bottom — both still right-aligned. */
 .footer-right-col { display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; height: 100%; }
 .footer-search-stack { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
-.footer-search-form { display: flex; gap: 6px; }
+/* align-items:center (not the flex default of stretch) plus giving the input the SAME
+   explicit height/box-sizing as the button below is what actually keeps them on one
+   shared horizontal line — stretch alone left the input at its own content-driven
+   height (32px) against the button's fixed 28px, so their tops lined up but bottoms
+   didn't. */
+.footer-search-form { display: flex; align-items: center; gap: 6px; }
 .footer-search-form input {
     background: #0f1b3d; border: 1px solid #2a3a6e; color: #e5e9f5;
-    font-size: 12px; padding: 6px 10px; border-radius: 4px; width: 180px;
-    font-family: inherit;
+    font-size: 12px; padding: 0 10px; border-radius: 4px; width: 180px; height: 28px;
+    box-sizing: border-box; font-family: inherit;
 }
 .footer-search-form input::placeholder { color: #6b7999; }
 .footer-search-form input:focus { outline: none; border-color: #4a5ea0; }
 /* Fixed square, zero padding, and the svg stretched to 100% — the brand icon fills the
    whole button edge-to-edge instead of floating as a small glyph inside a padded chip. */
 .footer-search-form button {
-    display: block; width: 28px; height: 28px; flex: none;
+    display: block; width: 28px; height: 28px; flex: none; box-sizing: border-box;
     background: #ffffff; border: 1px solid #2a3a6e;
     padding: 0; border-radius: 4px; cursor: pointer; overflow: hidden;
 }
