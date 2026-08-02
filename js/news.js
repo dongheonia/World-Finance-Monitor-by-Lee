@@ -39,15 +39,29 @@ const WORLD_TOPICS = [
     // 문화 below, which now explicitly covers film/music/festivals.
     { key: 'media', ko: '미디어', en: 'Media', keywords: ['press freedom', 'journalism', 'news outlet', 'news network', 'broadcaster', 'social media platform', 'sns platform', 'media regulation', 'newspaper', 'journalist', 'media company'] },
     { key: 'religion', ko: '종교', en: 'Religion', keywords: ['pope', 'vatican', 'religious leader', 'church', 'mosque', 'temple', 'religious freedom', 'faith leaders', 'interfaith', 'pilgrimage', 'archbishop', 'imam', 'rabbi'] },
-    { key: 'sports', ko: '스포츠', en: 'Sports', keywords: ['olympic', 'world cup', 'championship', 'tournament', 'football match', 'basketball', 'soccer', 'grand slam', 'athlete', 'coach fired', 'medal', 'marathon', 'boxing match'] },
+    // The original list only caught event-tier vocabulary (olympic/championship/
+    // tournament) and completely missed routine sports-WIRE reporting — box scores,
+    // trades, roster moves — which turned out to be a huge share of real sports volume
+    // (league names, stat lines, transaction verbs) and was falling through to the
+    // generic fallback for lack of any match at all.
+    { key: 'sports', ko: '스포츠', en: 'Sports', keywords: ['olympic', 'world cup', 'championship', 'tournament', 'football match', 'basketball', 'soccer', 'grand slam', 'athlete', 'coach fired', 'medal', 'marathon', 'boxing match', 'nba', 'nfl', 'mlb', 'nhl', 'mls', 'premier league', 'la liga', 'world series', 'super bowl', 'stanley cup', 'home run', 'rbi', 'strikeout', 'strikes out', 'no-hitter', 'shutout', 'shut out', 'walk-off', 'playoffs', 'postseason', 'quarterback', 'pitcher', 'bullpen', 'roster', 'trade deadline', 'free agent', 'draft pick', 'clinch', 'world record', 'relay', 'head coach', 'left fielder', 'right-hander', 'left-hander', 'rhp', 'lhp', 'batting', 'inning', 'innings', 'touchdown', 'field goal', 'penalty kick', 'red card', 'yellow card', 'clean sheet', 'world junior', 'nationals meet', 'swim meet'] },
     // Culture and Politics go LAST on purpose: both lean on fairly generic vocabulary
     // ("government", "festival"-adjacent words) that shows up incidentally in plenty of
     // stories that really belong to a more specific category above — checking them last
     // means the more specific match wins whenever one exists.
     { key: 'culture', ko: '문화', en: 'Culture', keywords: ['museum', 'heritage', 'festival', 'art exhibit', 'film festival', 'painting', 'novel', 'exhibition', 'literature', 'theater', 'opera', 'monument', 'author', 'sculpture', 'streaming service', 'box office', 'coachella', 'concert', 'music festival', 'tv show', 'movie premiere', 'film studio', 'record label', 'publishing house', 'lifestyle'] },
-    { key: 'politics', ko: '정치', en: 'Politics', keywords: ['election', 'president', 'parliament', 'government', 'minister', 'vote', 'congress', 'senate', 'prime minister', 'coup', 'impeachment', 'cabinet', 'political party', 'referendum', 'lawmaker', 'political crisis'] }
+    { key: 'politics', ko: '정치', en: 'Politics', keywords: ['election', 'president', 'parliament', 'government', 'minister', 'vote', 'congress', 'senate', 'prime minister', 'coup', 'impeachment', 'cabinet', 'political party', 'referendum', 'lawmaker', 'political crisis'] },
+    // Genuinely last-resort — matched by nothing above and reachable only as
+    // DEFAULT_WORLD_TOPIC below (empty keywords means the classifyNews loop itself can
+    // never select it). Used to be politics itself doing double duty as both a real,
+    // keyword-matched topic AND the catch-all for anything that matched nothing —
+    // which is exactly why unrelated stories (a local diner's business feature, a bare
+    // company-directory listing) were showing up tagged [정치] even though they have
+    // nothing to do with politics. Genuine political headlines still land on the real
+    // 'politics' entry above via its own keywords; only the true leftovers land here.
+    { key: 'general', ko: '기타', en: 'Other', keywords: [] }
 ];
-const DEFAULT_WORLD_TOPIC = WORLD_TOPICS.find(t => t.key === 'politics'); // generic fallback for hard-news items
+const DEFAULT_WORLD_TOPIC = WORLD_TOPICS.find(t => t.key === 'general'); // generic fallback for hard-news items
 // Weak corroborating signal used ONLY to decide whether an unmatched business-feed
 // headline should fall back to Corporate rather than staying generic — see
 // fetchFeedItems. Feed origin alone is not enough evidence on its own.
@@ -56,7 +70,11 @@ const BUSINESS_SIGNAL_HINTS = ['$', '%', 'million', 'billion', 'trillion', 'stoc
 // Phrases that use "war"/"battle" figuratively — never treated as an actual armed conflict.
 // The commercial ones (price/bidding/turf/talent wars) route to Corporate instead of
 // falling through to a generic tag, since they're really business competition stories.
-const WAR_EXCLUDE_PHRASES = ['price war', 'bidding war', 'war of words', 'trade war', 'turf war', 'war chest', 'culture war', 'war on drugs', 'war on', 'price battle', 'talent war', 'streaming war'];
+// Deliberately listing each idiom individually rather than a bare 'war on' — that
+// blanket form used to also swallow real wars phrased the exact same way ("the US war
+// on Iran", "war on Gaza"), silently reclassifying genuine War stories as generic/
+// Politics. Add more specific "war on X" idioms here as they come up, never the bare form.
+const WAR_EXCLUDE_PHRASES = ['price war', 'bidding war', 'war of words', 'trade war', 'turf war', 'war chest', 'culture war', 'war on drugs', 'war on terror', 'war on poverty', 'war on crime', 'price battle', 'talent war', 'streaming war'];
 const WAR_EXCLUDE_TO_CORPORATE = ['price war', 'bidding war', 'turf war', 'talent war', 'price battle', 'streaming war'];
 
 // Economic-news topic keywords, checked FIRST — if a story's core impact is on money,
@@ -70,7 +88,7 @@ const WAR_EXCLUDE_TO_CORPORATE = ['price war', 'bidding war', 'turf war', 'talen
 // the later, more specific category actually gets a chance to match something.
 const ECON_TOPICS = [
     { key: 'rates', ko: '금리', en: 'Interest Rates', keywords: ['interest rate', 'rate hike', 'rate cut', 'central bank', 'fed rate', 'policy rate', 'basis points', 'monetary policy', 'rate decision', 'benchmark rate', 'federal reserve'] },
-    { key: 'inflation', ko: '물가', en: 'Inflation', keywords: ['inflation', 'consumer price', 'cpi ', 'cost of living', 'price rises', 'deflation', 'price surge', 'prices rise', 'hyperinflation', 'price pressures'] },
+    { key: 'inflation', ko: '물가', en: 'Inflation', keywords: ['inflation', 'consumer price', 'cpi ', 'cost of living', 'price rises', 'deflation', 'price surge', 'prices rise', 'hyperinflation', 'price pressures', 'gas prices', 'pump prices', 'petrol prices', 'petrol price'] },
     { key: 'fx', ko: '환율', en: 'FX / Currency', keywords: ['exchange rate', 'currency', 'dollar strengthens', 'dollar weakens', 'yen', 'forex', 'weak won', 'strong won', 'currency market', 'pound falls', 'euro rises', 'devaluation'] },
     { key: 'trade', ko: '무역', en: 'Trade', keywords: ['trade deal', 'trade war', 'export', 'import', 'trade deficit', 'trade surplus', 'wto', 'trade agreement', 'trade negotiations', 'trade barrier'] },
     { key: 'tariffs', ko: '관세', en: 'Tariffs', keywords: ['tariff', 'tariffs', 'customs duty', 'import duty', 'tariff hike', 'trade tariffs'] },
@@ -80,9 +98,9 @@ const ECON_TOPICS = [
     // 동향) — strikes/wage disputes/working conditions now belong to world's 노동
     // (Labor) instead, which is checked much later, so keeping "strike action"/"labor
     // union" here would have stolen all of those stories before 노동 ever got a look.
-    { key: 'employment', ko: '고용', en: 'Employment', keywords: ['jobs report', 'unemployment rate', 'unemployment', 'layoffs', 'hiring', 'payroll', 'job cuts', 'workforce', 'job market', 'labor shortage', 'jobless claims', 'employment rate', 'hiring market'] },
+    { key: 'employment', ko: '고용', en: 'Employment', keywords: ['jobs report', 'unemployment rate', 'unemployment', 'layoffs', 'hiring', 'payroll', 'job cuts', 'workforce', 'job market', 'labor shortage', 'jobless claims', 'employment rate', 'hiring market', 'job growth', 'jobs to go', 'jobs market'] },
     { key: 'householddebt', ko: '가계 부채', en: 'Household Debt', keywords: ['household debt', 'consumer debt', 'credit card debt', 'loan default', 'mortgage debt', 'personal debt', 'student loan debt'] },
-    { key: 'growth', ko: '성장률', en: 'Growth Rate', keywords: ['gdp growth', 'economic growth', 'recession', 'gdp contracts', 'growth forecast', 'economic output', 'gdp data', 'economic slowdown', 'growth rate', 'economy slow', 'economy shrink', 'economy contract', 'economy grew', 'economy grows'] },
+    { key: 'growth', ko: '성장률', en: 'Growth Rate', keywords: ['gdp growth', 'economic growth', 'recession', 'gdp contracts', 'growth forecast', 'economic output', 'gdp data', 'economic slowdown', 'growth rate', 'economy slow', 'economy shrink', 'economy contract', 'economy grew', 'economy grows', 'economic revival', 'growth outlook', 'second-half growth'] },
     { key: 'fiscal', ko: '재정', en: 'Fiscal Policy', keywords: ['budget deficit', 'government spending', 'stimulus package', 'national debt', 'fiscal policy', 'government budget', 'public spending', 'deficit spending'] },
     { key: 'tax', ko: '세금', en: 'Tax System', keywords: ['tax cut', 'tax hike', 'tax reform', 'tax law', 'tax bracket', 'corporate tax', 'income tax', 'tax policy'] },
     { key: 'supplychain', ko: '공급망', en: 'Supply Chain', keywords: ['supply chain', 'chip shortage', 'shortage of', 'factory disruption', 'semiconductor shortage', 'supply disruption', 'manufacturing delay'] },
@@ -97,12 +115,16 @@ const ECON_TOPICS = [
     { key: 'esg', ko: 'ESG', en: 'ESG', keywords: ['esg', 'sustainability report', 'corporate responsibility', 'esg investing', 'esg rating', 'esg fund'] },
     { key: 'carbon', ko: '탄소배출', en: 'Carbon Emissions', keywords: ['carbon emissions target', 'net zero', 'green bond', 'climate pledge', 'carbon footprint', 'carbon tax', 'carbon credit', 'emissions target'] },
     { key: 'consumption', ko: '소비', en: 'Consumption', keywords: ['consumer spending', 'consumer demand', 'consumer confidence', 'holiday shopping', 'black friday'] },
-    { key: 'retail', ko: '유통', en: 'Retail & Distribution', keywords: ['retail sales', 'retail industry', 'shopping trends', 'e-commerce', 'retailer', 'department store', 'supermarket chain'] },
+    { key: 'retail', ko: '유통', en: 'Retail & Distribution', keywords: ['retail sales', 'retail industry', 'shopping trends', 'e-commerce', 'retailer', 'department store', 'supermarket chain', 'retail spending'] },
     { key: 'investment', ko: '투자', en: 'Investment', keywords: ['investment', 'investing', 'investor', 'invests in', 'stake in', 'ipo', 'goes public', 'stock market', 'shares', 'nasdaq', 'wall street', 'private equity', 'dividend', 'portfolio'] },
     { key: 'venture', ko: '벤처', en: 'Venture Capital', keywords: ['venture capital', 'vc firm', 'venture fund', 'series a', 'series b', 'series c', 'funding round', 'seed funding', 'venture backed'] },
     { key: 'startup', ko: '스타트업', en: 'Startups', keywords: ['startup', 'startups', 'unicorn startup', 'tech startup', 'startup founder', 'startup valuation', 'startup funding'] },
-    { key: 'corporate', ko: '기업', en: 'Corporate', keywords: ['merger', 'acquisition', 'acquires', 'takeover', 'bankruptcy', 'chapter 11', 'ceo', 'executive', 'earnings', 'quarterly', 'profit', 'revenue', 'company', 'companies', 'corporate', 'firm', 'firms', 'business deal', 'shareholder', 'restructuring', 'spinoff'] },
-    { key: 'finance', ko: '금융', en: 'Finance', keywords: ['bank', 'banks', 'banking', 'lender', 'lenders', 'financial regulator', 'hedge fund', 'insurer', 'sec ', 'wall street', 'financial firm', 'brokerage', 'asset manager', 'financial institution'] }
+    { key: 'corporate', ko: '기업', en: 'Corporate', keywords: ['merger', 'acquisition', 'acquires', 'takeover', 'bankruptcy', 'chapter 11', 'ceo', 'executive', 'earnings', 'quarterly', 'profit', 'revenue', 'company', 'companies', 'corporate', 'firm', 'firms', 'business deal', 'shareholder', 'restructuring', 'spinoff', 'up for sale', 'agrees to sell', 'debt deal', 'creditors', 'stake sale'] },
+    // Personal-finance service/product coverage (credit cards, insurance, loans, CD
+    // rates) — a recurring category on business feeds that previously matched nothing
+    // here (bank/insurer/etc. all assume an institution is the subject, not a consumer
+    // product) and fell through to the generic fallback.
+    { key: 'finance', ko: '금융', en: 'Finance', keywords: ['bank', 'banks', 'banking', 'lender', 'lenders', 'financial regulator', 'hedge fund', 'insurer', 'sec ', 'wall street', 'financial firm', 'brokerage', 'asset manager', 'financial institution', 'credit card', 'car insurance', 'personal loan', 'cd rate', 'cd rates', 'student loan', 'home equity loan', 'home equity'] }
 ];
 
 // News RSS feeds nearly universally append " - Outlet Name" to the title. Rather than
@@ -406,6 +428,30 @@ function textOf(item, tag) {
     return el ? el.textContent.trim() : '';
 }
 
+// Several feeds (the Google News queries scoped to reuters.com/cnbc.com especially)
+// mix real articles with quote-widget/directory pages that Google indexed anyway —
+// bare stock tickers ("APMD.OQ"), "Check out X's stock price ... in real time" quote
+// blurbs, executive-directory "<Name>, <Company>: Profile and Biography" listings, and
+// bare "<Company> Ltd/Inc/Corp" entries. None of these are actual news, they match no
+// real topic, and previously landed in the generic-fallback bucket — inflating it with
+// pure noise on top of the real classification gaps. Validated against ~750 real
+// same-day headlines pulled directly from every configured feed: every single title
+// under 3 words in that sample was one of these junk patterns, with zero false
+// positives against real (if terse) headlines.
+function isJunkHeadline(title) {
+    const t = title.trim();
+    if (t.split(/\s+/).length < 3) return true;
+    if (/Stock Price\s*(&|and)\s*Latest News/i.test(t)) return true;
+    if (/Stock Price,\s*Quote/i.test(t)) return true;
+    if (/'s stock price \(.+\) in real time$/i.test(t)) return true;
+    if (/:\s*Profile and Biography$/i.test(t)) return true;
+    if (/Sector\s*&\s*Industry Performance$/i.test(t)) return true;
+    if (/^Latest from \w+$/i.test(t)) return true;
+    if (/TESTING ONLY/i.test(t)) return true;
+    if (/^[A-Z][\w&.,'-]*(\s+[\w&.,'-]+)*\s+(Ltd|Inc|Corp\.?|PLC|SA|AS|ASA|GmbH|Tbk PT)\.?$/.test(t)) return true;
+    return false;
+}
+
 // Races the CORS proxies (via fetchViaProxies, same helper market-data.js uses for
 // Yahoo) instead of trying them one after another. Sequential trial-then-fallback meant
 // a single down/slow proxy cost every feed a full 6s timeout before the second proxy
@@ -421,6 +467,7 @@ async function fetchFeedItems(feed) {
     if (items.length === 0) throw new Error('no items in feed');
     return items.map(item => {
         const title = cleanTitle(textOf(item, 'title'));
+        if (isJunkHeadline(title)) return null;
         const link = textOf(item, 'link') || '#';
         const pubDateText = textOf(item, 'pubDate');
         let classified = classifyNews(title);
@@ -446,7 +493,7 @@ async function fetchFeedItems(feed) {
             topic: classified.topic,
             group: classified.group
         };
-    });
+    }).filter(Boolean); // drop the junk entries filtered out above
 }
 
 // Dedupes/classifies/sorts/caps and paints whatever raw feed items have landed SO FAR.
