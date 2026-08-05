@@ -16,19 +16,20 @@ window.onload = () => {
     fetchProxiedSparklines();
     fetchCryptoSparklines();
     setTimeout(retryMissingSparklines, 45000);
-    // Every section (FX, bond yields, stock indices, commodities, crypto) refreshes
-    // every 1 minute now — the FMP-covered subset (7 major indices, Brent/Gold/Silver,
-    // US 10Y) moved onto the same free Yahoo-proxy path everything else uses (see the
-    // note above FMP_API_KEY in market-data.js), since testing confirmed Yahoo serves
-    // real live data for all of them. This is already effectively real-time for a
-    // free/unofficial data source (Yahoo's unofficial chart API has no faster official
-    // cadence to chase, and going below 60s risks tripping the free CORS proxies' own
-    // rate limiting — see ALL_CORS_PROXIES — which would make the numbers LESS
-    // reliable, not more real-time).
-    // FMP now has exactly one job left — US 2-year Treasury yield, the one instrument
-    // with no free ticker anywhere else — so its 250-calls/day quota only has to cover
-    // 1 call/cycle instead of 11, dropping the safe floor from ~65 min to ~6 min; 10
-    // minutes keeps a comfortable daily buffer (144 of the 250 allowed calls).
+    // FX, stock indices, and commodities all refresh every 1 minute now — the
+    // FMP-covered subset (7 major indices, Brent/Gold/Silver) moved onto the same free
+    // Yahoo-proxy path everything else uses (see the note above fetchAllFmp in
+    // market-data.js), since testing confirmed Yahoo serves real live data for all of
+    // them. This is already effectively real-time for a free/unofficial data source
+    // (Yahoo's unofficial chart API has no faster official cadence to chase, and going
+    // below 60s risks tripping the free CORS proxies' own rate limiting — see
+    // ALL_CORS_PROXIES — which would make the numbers LESS reliable, not more real-time).
+    // Both US Treasury yields (10Y/2Y) stay on FMP at 10 minutes — 10Y could run at
+    // 1-minute like everything else (Yahoo has a real '^TNX' ticker), but 2Y has no
+    // free ticker anywhere and has to stay on FMP regardless, so both are kept on the
+    // same cadence by request rather than showing mismatched refresh rates side by
+    // side. FMP's quota easily supports this: one treasury-rates call returns both
+    // readings together, so 10-minute cadence is only ~144 of its 250-calls/day cap.
     // The ECB policy rate moves at most ~8x/year and only publishes once a day, so
     // there's no real data to be "more real-time" about — hourly already checks far
     // more often than the underlying series can change; the other 5 central banks have

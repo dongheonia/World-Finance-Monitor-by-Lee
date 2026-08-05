@@ -125,18 +125,21 @@ async function fetchYahooQuote(symbol) {
 // Yahoo's own chart endpoint returns valid live data for every one of those symbols
 // (they were already being used for sparklines via CHART_ONLY_SYMBOLS, just not for
 // the price) — so they've moved to the same free 1-minute Yahoo-proxy path as every
-// other index/commodity below instead. That leaves FMP with exactly one job: US
-// Treasury 2-year yield, which has no free ticker anywhere else (Yahoo only publishes
-// 13-week/5/10/30-year — verified directly, no 2-year symbol resolves). Its
-// treasury-rates endpoint happens to return the 10-year alongside the 2-year in the
-// same call, so that's kept and used for '^TNX' too as a slower cross-check, but the
-// 1-minute Yahoo fetch (below) is the primary source for it now.
+// other index/commodity below instead.
+// That leaves FMP with the two US Treasury yields. US 2-year has no free ticker
+// anywhere else (Yahoo only publishes 13-week/5/10/30-year — verified directly, no
+// 2-year symbol resolves), so it has to stay here regardless. US 10-year DOES have a
+// real Yahoo ticker ('^TNX') and could run on the faster 1-minute path alone — but
+// per explicit request, both US yields are kept on the SAME cadence for consistency
+// (one FMP call already returns both readings together) rather than mismatched
+// 1-min/10-min numbers sitting side by side in the same section.
 // Germany DAX, KOSPI, Shanghai Composite are on the free 1-minute Yahoo path already;
 // every non-US 10Y bond yield (UK/France/Germany/China/Japan/Korea) has no free
 // live source anywhere (Yahoo, FMP, Twelve Data all checked) and has no ticker to
 // even attempt — see allYahooSymbols() below.
-// Down to 1 call/cycle (from 11), the safe sustainable cadence is ~250 refreshes/day
-// (24*60/250 ≈ 5.8 min) — run every 10 min for a comfortable buffer (144 calls/day).
+// Down to 2 calls/cycle (from 11), the safe sustainable cadence is far below FMP's
+// 250-calls/day cap even at 10 minutes (24*60/10*1 ≈ 144 calls/day, since both yields
+// come back in the SAME treasury-rates call) — 10 min matches what was requested.
 // FMP_API_KEY itself lives in config.js (gitignored, loaded before this file) — see
 // config.example.js for the template a fresh clone needs to copy and fill in.
 async function fetchAllFmp() {
@@ -151,6 +154,7 @@ async function fetchAllFmp() {
                     const changePercent = prevVal ? +((change / prevVal) * 100).toFixed(2) : 0;
                     return { current: cur, change, change_percent: changePercent };
                 };
+                setQuote('^TNX', toChange(latest.year10, prevRow.year10));
                 setQuote('US2Y=RR', toChange(latest.year2, prevRow.year2));
             }
         }
@@ -163,16 +167,19 @@ async function fetchAllFmp() {
 
 // Synthetic bond-yield identifiers this file made up for the optional local
 // FRED-backed backend (see fetchLocalBondYields) — Yahoo has no real ticker for any
-// of these, so attempting them via the Yahoo proxy would just fail every single
-// cycle. US2Y=RR is the one exception worth a dedicated exclusion comment: it's
-// covered by fetchAllFmp above instead (see the FMP section).
-const NO_YAHOO_SOURCE_SYMBOLS = ['US2Y=RR', 'GB10Y=RR', 'FR10Y=RR', 'DE10Y=RR', 'CN10Y=RR', 'JP10Y=RR', 'KR10Y=RR'];
+// of these, so attempting them via the Yahoo proxy would just fail every single cycle.
+const NO_YAHOO_SOURCE_SYMBOLS = ['GB10Y=RR', 'FR10Y=RR', 'DE10Y=RR', 'CN10Y=RR', 'JP10Y=RR', 'KR10Y=RR'];
+// '^TNX' DOES have a real Yahoo ticker, but is deliberately excluded here too — see
+// the comment above fetchAllFmp for why it's kept on FMP's shared 10-minute cadence
+// alongside US2Y=RR instead of the faster 1-minute Yahoo path.
+const FMP_SOURCED_SYMBOLS = ['^TNX', 'US2Y=RR'];
 
 function allYahooSymbols() {
     const set = new Set();
     [...INDICES, ...PINNED_MARKET, ...COMMODITIES, ...BOND10Y, ...PINNED_FX].forEach(i => set.add(i.symbol));
     set.delete('DUBAI_CRUDE_MANUAL'); // no live source exists — see COMMODITIES comment
     NO_YAHOO_SOURCE_SYMBOLS.forEach(s => set.delete(s));
+    FMP_SOURCED_SYMBOLS.forEach(s => set.delete(s));
     return [...set];
 }
 
@@ -214,18 +221,22 @@ async function fetchAllYahoo() {
     }
 }
 
-// Every index/commodity now gets its PRICE from the 1-minute Yahoo path above
+// Most indices/commodities now get their PRICE from the 1-minute Yahoo path above
 // (fetchOneYahooSymbol), which already includes the chart series in the same call —
-// no separate sparkline fetch needed for those. The one thing still missing a chart
-// is FX: its price comes from Frankfurter (only one point per day, too sparse for a
-// good-looking chart; see fetchAllFX), so it gets a sparkline-ONLY fetch through this
-// same Yahoo-chart-via-CORS-proxy path instead. Yahoo's FX tickers use exactly the
-// same "USDKRW=X"-style symbols already used throughout this file, and carry real
-// intraday data for FX pairs (spot FX trades ~24/5, unlike exchange hours), giving
-// these charts the same resolution as the Market/Commodities ones instead of
-// Frankfurter's ~5-point weekly line. Decoupled from price so a failed chart fetch
-// never touches the number shown; runs on its own slow cadence (see the setInterval
-// near window.onload) — a 5-40min-old sparkline is fine, unlike price.
+// no separate sparkline fetch needed for those. Three things still need a dedicated
+// sparkline-only fetch through this same Yahoo-chart-via-CORS-proxy path instead:
+//  - FX: its price comes from Frankfurter (only one point per day, too sparse for a
+//    good-looking chart; see fetchAllFX). Yahoo's FX tickers use exactly the same
+//    "USDKRW=X"-style symbols already used throughout this file, and carry real
+//    intraday data for FX pairs (spot FX trades ~24/5, unlike exchange hours), giving
+//    these charts the same resolution as the Market/Commodities ones instead of
+//    Frankfurter's ~5-point weekly line.
+//  - '^TNX' (US 10Y): price comes from FMP now (see fetchAllFmp), kept off the
+//    1-minute Yahoo path on purpose, but Yahoo's chart history for it is still real
+//    and free, so it's fetched here for the sparkline alone.
+// Decoupled from price so a failed chart fetch never touches the number shown; runs
+// on its own slow cadence (see the setInterval near window.onload) — a 5-40min-old
+// sparkline is fine, unlike price.
 const ALL_FX_SYMBOLS = [...new Set([...FOREX_KO, ...FOREX_EN_USD, ...FOREX_EN_GBP].map(f => f.symbol))];
 // Dollar Index and VIX only otherwise get ONE combined price+chart fetch per 60s cycle
 // (via fetchOneYahooSymbol, 5000ms timeout, no retry) — same as every other pinned/index
@@ -233,7 +244,7 @@ const ALL_FX_SYMBOLS = [...new Set([...FOREX_KO, ...FOREX_EN_USD, ...FOREX_EN_GB
 // so they ALSO get this dedicated, longer-timeout chart fetch plus the 45s retry pass
 // below — belt-and-suspenders so a single flaky proxy attempt doesn't leave the pinned
 // rows chartless for a full minute+.
-const CHART_ONLY_SYMBOLS = [...ALL_FX_SYMBOLS, ...PINNED_FX.map(f => f.symbol), ...PINNED_MARKET.map(i => i.symbol)];
+const CHART_ONLY_SYMBOLS = [...ALL_FX_SYMBOLS, ...PINNED_FX.map(f => f.symbol), ...PINNED_MARKET.map(i => i.symbol), '^TNX'];
 
 async function fetchChartSeriesOnly(symbol) {
     // Same 1-month/daily window as fetchYahooQuote — see the comment there. This
