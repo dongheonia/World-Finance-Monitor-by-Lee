@@ -129,12 +129,11 @@ function loadNewsCache() {
 let mapInstance = null;
 let currentMapStyle = 'map'; // 'map' | 'satellite'
 let newsTab = 'world'; // which tab is active in the combined news box
-// world/economic show the same count. The news card now spans the calendar row +
-// data row combined (see #main-grid in styles.css), roughly double its old height, so
-// this was raised well past the old 40-item effective floor to actually fill that
-// extra space with real content instead of just needing less scrolling to see the
-// same 40 items.
-const NEWS_ITEMS_PER_TAB = 80;
+// world/economic show the same count. The news card spans the calendar row + data row
+// combined (see #main-grid in styles.css), so there's plenty of scrollable room for
+// more than a screen's worth. Matches the pool cap in applyNewsPool() (see the comment
+// there) — no point rendering more than the pool ever actually holds.
+const NEWS_ITEMS_PER_TAB = 150;
 
 // ---------------------------------------------------------------
 // LIVE DATA NOTES:

@@ -1,5 +1,8 @@
 const WORLD_TOPICS = [
-    { key: 'diplomacy', ko: '외교', en: 'Diplomacy', keywords: ['summit', 'diplomacy', 'diplomat', 'diplomatic', 'bilateral', 'ambassador', 'foreign minister', 'foreign ministry', 'embassy', 'treaty', 'peace talks', 'negotiations', 'envoy', 'security council', 'state visit', 'foreign policy', 'consulate', 'diplomatic ties'] },
+    // 'sanctions' added — in world-news headlines this word is overwhelmingly
+    // international/political sanctions (state vs. state), not any other sense of the
+    // word, and was a real audited gap ("US removes sanctions from ... entities").
+    { key: 'diplomacy', ko: '외교', en: 'Diplomacy', keywords: ['summit', 'diplomacy', 'diplomat', 'diplomatic', 'bilateral', 'ambassador', 'foreign minister', 'foreign ministry', 'embassy', 'treaty', 'peace talks', 'negotiations', 'envoy', 'security council', 'state visit', 'foreign policy', 'consulate', 'diplomatic ties', 'sanctions'] },
     // Bare "attack"/"strike" are deliberately NOT here — too ambiguous ("strikes a
     // deal" is business, a lone "attacker" is Crime, not a state-level War). "strikes
     // on" (with the preposition) is much safer — real headlines phrase actual military
@@ -12,7 +15,11 @@ const WORLD_TOPICS = [
     // (no figurative use pairs "strikes" directly with "kill"); the Iran/Gaza-specific
     // phrases are narrower and tied to this specific ongoing conflict, worth revisiting
     // if/when it resolves.
-    { key: 'war', ko: '전쟁', en: 'War', keywords: ['war', 'military strike', 'airstrike', 'air strike', 'missile strike', 'drone strike', 'strikes on', 'strike on', 'strikes kill', 'attack on iran', 'attacks on iran', 'iran attack', 'iran strike', 'iran strikes', 'military', 'troops', 'invasion', 'missile', 'ceasefire', 'combat', 'offensive', 'shelling', 'insurgent', 'militant', 'rebel', 'clashes', 'gunfire', 'bombardment', 'front line', 'warzone', 'hostilities', 'armed forces', 'fighting', 'battlefield'] },
+    // 'drone attack' added alongside the existing 'drone strike' — audit turned up real
+    // drone-attack headlines phrased without "strike" at all (e.g. targeting civilians/
+    // infrastructure rather than a military strike), which were falling through to the
+    // generic fallback for lack of any match.
+    { key: 'war', ko: '전쟁', en: 'War', keywords: ['war', 'military strike', 'airstrike', 'air strike', 'missile strike', 'drone strike', 'drone attack', 'strikes on', 'strike on', 'strikes kill', 'attack on iran', 'attacks on iran', 'iran attack', 'iran strike', 'iran strikes', 'military', 'troops', 'invasion', 'missile', 'ceasefire', 'combat', 'offensive', 'shelling', 'insurgent', 'militant', 'rebel', 'clashes', 'gunfire', 'bombardment', 'front line', 'warzone', 'hostilities', 'armed forces', 'fighting', 'battlefield'] },
     { key: 'security', ko: '안보', en: 'Security', keywords: ['national security', 'nuclear weapon', 'defense ministry', 'military buildup', 'arms deal', 'weapons shipment', 'nato', 'intelligence agency', 'espionage', 'defense budget', 'army chief', 'military drill', 'spy network', 'classified documents', 'pentagon', 'wartime', 'security threat'] },
     { key: 'alliance', ko: '동맹', en: 'Alliance', keywords: ['alliance', 'coalition', 'joint military exercise', 'defense pact', 'mutual defense', 'allied forces', 'security pact', 'strategic partnership'] },
     // 'hack' bare (not just 'hacked'/'hacker') — suffix-safe single word, and in a news
@@ -25,9 +32,16 @@ const WORLD_TOPICS = [
     // worded. Deliberately NOT adding bare 'bomber' — real sports-wire content refers
     // to home-run hitters as "Bronx Bombers"/"bombers", which would have wrongly
     // pulled baseball recaps in here.
-    { key: 'terrorism', ko: '테러', en: 'Terrorism', keywords: ['terrorist', 'terrorism', 'terror plot', 'extremist attack', 'suicide bombing', 'bomb plot', 'radicalized', 'jihadist', 'terror cell', 'terror group', 'suicide bomber', 'female bomber', 'bomb attack', 'bomb blast', 'bomb detonated', 'bomb carried by', 'car bomb', 'roadside bomb'] },
+    // 'explosives found'/'carrying explosives' added — real audited headlines about a
+    // device/explosives being discovered (before any detonation) used neither "bomb"
+    // nor "terrorist", so they matched nothing here despite clearly belonging.
+    { key: 'terrorism', ko: '테러', en: 'Terrorism', keywords: ['terrorist', 'terrorism', 'terror plot', 'extremist attack', 'suicide bombing', 'bomb plot', 'radicalized', 'jihadist', 'terror cell', 'terror group', 'suicide bomber', 'female bomber', 'bomb attack', 'bomb blast', 'bomb detonated', 'bomb carried by', 'car bomb', 'roadside bomb', 'explosives found', 'carrying explosives'] },
     { key: 'refugees', ko: '난민', en: 'Refugees', keywords: ['refugee', 'refugee camp', 'asylum seekers', 'displaced people', 'humanitarian crisis', 'refugee crisis', 'stateless', 'resettlement', 'fleeing war'] },
-    { key: 'humanrights', ko: '인권', en: 'Human Rights', keywords: ['human rights', 'genocide', 'ethnic cleansing', 'war crimes', 'political prisoner', 'persecution', 'freedom of speech', 'censorship', 'detained journalist', 'activist arrested', 'forced labor', 'discrimination'] },
+    // 'executions' (plural specifically, not singular 'execution') — the plural form in
+    // a news headline is overwhelmingly capital punishment/political killings; singular
+    // "execution" was deliberately left out since it's commonly used non-rights-related
+    // ("flawless execution", "plan execution").
+    { key: 'humanrights', ko: '인권', en: 'Human Rights', keywords: ['human rights', 'genocide', 'ethnic cleansing', 'war crimes', 'political prisoner', 'persecution', 'freedom of speech', 'censorship', 'detained journalist', 'activist arrested', 'forced labor', 'discrimination', 'executions'] },
     { key: 'health', ko: '보건', en: 'Health', keywords: ['public health', 'hospital crisis', 'health crisis', 'mental health', 'healthcare system', 'medical shortage', 'doctor shortage', 'health policy', 'medical care'] },
     { key: 'infectiousdisease', ko: '전염병', en: 'Infectious Disease', keywords: ['outbreak', 'epidemic', 'pandemic', 'virus', 'infectious disease', 'superbug', 'contagion', 'quarantine', 'disease spread', 'vaccine', 'vaccination', 'vaccine rollout'] },
     { key: 'environment', ko: '환경', en: 'Environment', keywords: ['pollution', 'wildlife', 'deforestation', 'air quality', 'water level', 'endangered species', 'biodiversity', 'plastic waste', 'ocean warming', 'conservation', 'environmental damage'] },
@@ -50,7 +64,11 @@ const WORLD_TOPICS = [
     // Bare "court" and "lawsuit" are deliberately NOT here — most real headlines using
     // those words are civil/patent/political cases, not criminal ones. "trial" stays
     // since in news headlines it overwhelmingly means a criminal trial.
-    { key: 'crime', ko: '범죄', en: 'Crime', keywords: ['murder', 'shooting', 'stabbing', 'knife attack', 'gunman', 'attacker', 'mass shooting', 'crime', 'criminal court', 'trial', 'convict', 'arrest', 'indict', 'sentence', 'gang violence', 'fraud scheme', 'kidnapping', 'robbery', 'homicide', 'manhunt', 'investigation into', 'charges filed', 'felony', 'guilty plea', 'prosecutors'] },
+    // 'shot dead' added as its own phrase — audit found real killing headlines that
+    // used neither "shooting" nor "murder" ("X shot dead during Y"). Deliberately the
+    // full 3-word phrase, not bare "shot" or "shoots" — those would wrongly catch sports
+    // ("team shoots poorly") since crime is checked well before sports below.
+    { key: 'crime', ko: '범죄', en: 'Crime', keywords: ['murder', 'shooting', 'shot dead', 'stabbing', 'knife attack', 'gunman', 'attacker', 'mass shooting', 'crime', 'criminal court', 'trial', 'convict', 'arrest', 'indict', 'sentence', 'gang violence', 'fraud scheme', 'kidnapping', 'robbery', 'homicide', 'manhunt', 'investigation into', 'charges filed', 'felony', 'guilty plea', 'prosecutors'] },
     // Unintentional human/mechanical incidents — plane/train/vehicle crashes, sinkings,
     // structural collapses, missing climbers/hikers — as distinct from Crime (no intent)
     // and Disaster (no natural-hazard cause). All compound phrases deliberately: bare
@@ -122,12 +140,19 @@ const ECON_TOPICS = [
     { key: 'trade', ko: '무역', en: 'Trade', keywords: ['trade deal', 'trade war', 'export', 'import', 'trade deficit', 'trade surplus', 'wto', 'trade agreement', 'trade negotiations', 'trade barrier'] },
     { key: 'tariffs', ko: '관세', en: 'Tariffs', keywords: ['tariff', 'tariffs', 'customs duty', 'import duty', 'tariff hike', 'trade tariffs'] },
     { key: 'realestate', ko: '부동산', en: 'Real Estate', keywords: ['real estate', 'property market', 'commercial property', 'property prices', 'property tax', 'real estate developer', 'property investment'] },
-    { key: 'housing', ko: '주택', en: 'Housing', keywords: ['housing market', 'home prices', 'house prices', 'mortgage rate', 'mortgage', 'rent prices', 'housing crisis', 'home sales', 'housing bubble', 'housing supply', 'first-time buyers', 'condo crisis', 'condo'] },
+    // 'housing boom'/'affordable housing' added — both extremely common recurring
+    // phrases in real housing-market headlines that the more specific compounds below
+    // didn't happen to cover.
+    { key: 'housing', ko: '주택', en: 'Housing', keywords: ['housing market', 'home prices', 'house prices', 'mortgage rate', 'mortgage', 'rent prices', 'housing crisis', 'home sales', 'housing bubble', 'housing supply', 'housing boom', 'affordable housing', 'first-time buyers', 'condo crisis', 'condo'] },
     // Narrowed to labor-market STATISTICS per the updated spec (실업률·취업자수·채용시장
     // 동향) — strikes/wage disputes/working conditions now belong to world's 노동
     // (Labor) instead, which is checked much later, so keeping "strike action"/"labor
     // union" here would have stolen all of those stories before 노동 ever got a look.
-    { key: 'employment', ko: '고용', en: 'Employment', keywords: ['jobs report', 'unemployment rate', 'unemployment', 'layoffs', 'hiring', 'payroll', 'job cuts', 'workforce', 'job market', 'labor shortage', 'jobless claims', 'employment rate', 'hiring market', 'job growth', 'jobs to go', 'jobs market', 'jobs crisis'] },
+    // 'adp employment'/'private sector employment' added — ADP's monthly private-
+    // payrolls report is a recurring, widely-covered release whose headlines routinely
+    // say neither "jobs report" nor "employment rate" (e.g. "ADP Employment
+    // Disappoints", "US private sector employment rises less than expected").
+    { key: 'employment', ko: '고용', en: 'Employment', keywords: ['jobs report', 'unemployment rate', 'unemployment', 'layoffs', 'hiring', 'payroll', 'job cuts', 'workforce', 'job market', 'labor shortage', 'jobless claims', 'employment rate', 'hiring market', 'job growth', 'jobs to go', 'jobs market', 'jobs crisis', 'adp employment', 'adp jobs', 'private sector employment', 'nonfarm payrolls'] },
     { key: 'householddebt', ko: '가계 부채', en: 'Household Debt', keywords: ['household debt', 'consumer debt', 'credit card debt', 'loan default', 'mortgage debt', 'personal debt', 'student loan debt'] },
     { key: 'growth', ko: '성장률', en: 'Growth Rate', keywords: ['gdp growth', 'economic growth', 'recession', 'gdp contracts', 'growth forecast', 'economic output', 'gdp data', 'economic slowdown', 'growth rate', 'economy slow', 'economy shrink', 'economy contract', 'economy grew', 'economy grows', 'economic revival', 'growth outlook', 'second-half growth', 'economic momentum', 'economic turmoil'] },
     { key: 'fiscal', ko: '재정', en: 'Fiscal Policy', keywords: ['budget deficit', 'government spending', 'stimulus package', 'national debt', 'fiscal policy', 'government budget', 'public spending', 'deficit spending', 'social security', '401(k)', 'retirement account'] },
@@ -137,7 +162,10 @@ const ECON_TOPICS = [
     { key: 'crypto', ko: '가상화폐', en: 'Crypto', keywords: ['bitcoin', 'ethereum', 'crypto', 'stablecoin', 'nft', 'crypto exchange', 'digital currency', 'altcoin', 'crypto market'] },
     { key: 'blockchain', ko: '블록체인', en: 'Blockchain', keywords: ['blockchain', 'distributed ledger', 'smart contract', 'web3', 'defi'] },
     { key: 'semiconductors', ko: '반도체', en: 'Semiconductors', keywords: ['semiconductor', 'chipmaker', 'foundry', 'chip export', 'chip factory', 'chip industry', 'chip design', 'chip manufacturing'] },
-    { key: 'tech', ko: '테크', en: 'Tech', keywords: ['artificial intelligence', ' ai model', 'ai plan', 'ai plans', 'ai tools', 'generative ai', 'software firm', 'tech firm', 'data center', 'app launch', 'tech company', 'silicon valley', 'cloud computing', 'tech giant', 'big tech'] },
+    // 'chatgpt' — a specific enough brand name to be safe as a bare single word (no
+    // other real-world sense of the term), and common in AI-industry headlines that
+    // otherwise say nothing more generic like "artificial intelligence".
+    { key: 'tech', ko: '테크', en: 'Tech', keywords: ['artificial intelligence', ' ai model', 'ai plan', 'ai plans', 'ai tools', 'generative ai', 'chatgpt', 'software firm', 'tech firm', 'data center', 'app launch', 'tech company', 'silicon valley', 'cloud computing', 'tech giant', 'big tech'] },
     { key: 'mobility', ko: '모빌리티', en: 'Mobility', keywords: ['ride-hailing', 'self-driving', 'autonomous vehicle', 'mobility service', 'micromobility', 'scooter sharing', 'airline', 'airline fares'] },
     { key: 'automotive', ko: '자동차', en: 'Automotive', keywords: ['automaker', 'ev maker', 'electric vehicle', 'car manufacturer', 'auto industry', 'car sales', 'vehicle recall'] },
     { key: 'commodities', ko: '원자재', en: 'Commodities', keywords: ['oil price', 'crude', 'gold price', 'commodity prices', 'natural gas price', 'wheat prices', 'copper prices', 'metal prices', 'agricultural commodity', 'silver price'] },
@@ -148,7 +176,12 @@ const ECON_TOPICS = [
     { key: 'investment', ko: '투자', en: 'Investment', keywords: ['investment', 'investing', 'investor', 'invests in', 'stake in', 'ipo', 'goes public', 'stock market', 'shares', 'nasdaq', 'wall street', 'private equity', 'dividend', 'portfolio', 'kospi', 'market rout', 'stock rout'] },
     { key: 'venture', ko: '벤처', en: 'Venture Capital', keywords: ['venture capital', 'vc firm', 'venture fund', 'series a', 'series b', 'series c', 'funding round', 'seed funding', 'venture backed'] },
     { key: 'startup', ko: '스타트업', en: 'Startups', keywords: ['startup', 'startups', 'unicorn startup', 'tech startup', 'startup founder', 'startup valuation', 'startup funding'] },
-    { key: 'corporate', ko: '기업', en: 'Corporate', keywords: ['merger', 'acquisition', 'acquires', 'takeover', 'bankruptcy', 'chapter 11', 'ceo', 'executive', 'earnings', 'quarterly', 'profit', 'revenue', 'company', 'companies', 'corporate', 'firm', 'firms', 'business deal', 'shareholder', 'restructuring', 'spinoff', 'up for sale', 'agrees to sell', 'debt deal', 'creditors', 'stake sale', 'business owner', 'business expo', 'business academy', 'entrepreneur'] },
+    // Earnings-report phrasing added — real audited headlines routinely report a
+    // results beat/miss or a guidance change without ever using "earnings"/"quarterly"/
+    // "profit"/"revenue" ("CVS blows past estimates, hikes guidance", "Uber ... Issues
+    // Soft Forecast") — all financial-reporting-specific phrases, safe against
+    // non-business false positives.
+    { key: 'corporate', ko: '기업', en: 'Corporate', keywords: ['merger', 'acquisition', 'acquires', 'takeover', 'bankruptcy', 'chapter 11', 'ceo', 'executive', 'earnings', 'quarterly', 'profit', 'revenue', 'company', 'companies', 'corporate', 'firm', 'firms', 'business deal', 'shareholder', 'restructuring', 'spinoff', 'up for sale', 'agrees to sell', 'debt deal', 'creditors', 'stake sale', 'business owner', 'business expo', 'business academy', 'entrepreneur', 'beats estimates', 'tops estimates', 'past estimates', 'misses estimates', 'hikes guidance', 'raises guidance', 'cuts guidance', 'issues guidance', 'soft forecast'] },
     // Personal-finance service/product coverage (credit cards, insurance, loans, CD
     // rates) — a recurring category on business feeds that previously matched nothing
     // here (bank/insurer/etc. all assume an institution is the subject, not a consumer
@@ -559,11 +592,17 @@ function applyNewsPool(combined) {
     // score far higher under importanceScore() than typical economic stories, so a
     // single global cap on the whole (already severity-sorted) list let 세계소식 crowd
     // 경제소식 out of the pool almost entirely, even when raw economic supply was
-    // healthy (~100 items pre-cap). Each filter preserves the existing severity sort,
-    // so this only changes WHICH items survive the cap, not the ordering within a group.
+    // healthy. Each filter preserves the existing severity sort, so this only changes
+    // WHICH items survive the cap, not the ordering within a group.
+    // 150 (not the old 90) — measured actual post-dedup supply directly (2026-08-05):
+    // ~228 world / ~226 econ unique items per fetch cycle, so 90 was leaving well over
+    // half of real, already-fetched econ supply on the floor for no reason. 150 stays
+    // comfortably under typical supply on a normal cycle while still being a real cap
+    // (not the full ~226, which would need NEWS_ITEMS_PER_TAB raised to match and cost
+    // more render/translation work than the extra depth is worth).
     const dedupedWorld = deduped.filter(n => n.group !== 'economy');
     const dedupedEcon = deduped.filter(n => n.group === 'economy');
-    const balanced = [...dedupedWorld.slice(0, 90), ...dedupedEcon.slice(0, 90)];
+    const balanced = [...dedupedWorld.slice(0, 150), ...dedupedEcon.slice(0, 150)];
     // Each cycle rebuilds fresh item objects from the raw feeds, which used to throw
     // away every already-translated titleKo and force a full re-translate of the
     // entire pool (~40-90 items) every single 60s refresh — that churn was the real
