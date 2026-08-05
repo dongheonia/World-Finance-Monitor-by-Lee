@@ -10,26 +10,25 @@ window.onload = () => {
     renderCalendar();
     requestAnimationFrame(centerCalendarOnToday); // wait a frame so layout/offsetTop are settled
     fetchAllMarketData();
-    fetchAllFmp();
+    fetchFredBondYields();
     fetchECBPolicyRate();
     fetchAllNews();
     fetchProxiedSparklines();
     fetchCryptoSparklines();
     setTimeout(retryMissingSparklines, 45000);
-    // FX, stock indices, and commodities all refresh every 1 minute now — the
-    // FMP-covered subset (7 major indices, Brent/Gold/Silver) moved onto the same free
-    // Yahoo-proxy path everything else uses (see the note above fetchAllFmp in
-    // market-data.js), since testing confirmed Yahoo serves real live data for all of
-    // them. This is already effectively real-time for a free/unofficial data source
-    // (Yahoo's unofficial chart API has no faster official cadence to chase, and going
-    // below 60s risks tripping the free CORS proxies' own rate limiting — see
-    // ALL_CORS_PROXIES — which would make the numbers LESS reliable, not more real-time).
-    // Both US Treasury yields (10Y/2Y) stay on FMP at 10 minutes — 10Y could run at
-    // 1-minute like everything else (Yahoo has a real '^TNX' ticker), but 2Y has no
-    // free ticker anywhere and has to stay on FMP regardless, so both are kept on the
-    // same cadence by request rather than showing mismatched refresh rates side by
-    // side. FMP's quota easily supports this: one treasury-rates call returns both
-    // readings together, so 10-minute cadence is only ~144 of its 250-calls/day cap.
+    // FX, stock indices, commodities, and US 10Y bond yield all refresh every 1 minute
+    // now — the indices/commodities that used to be throttled to FMP's 70-minute cycle
+    // moved onto the same free Yahoo-proxy path everything else uses (see the note
+    // above NO_YAHOO_SOURCE_SYMBOLS in market-data.js), since testing confirmed Yahoo
+    // serves real live data for all of them, '^TNX' included. This is already
+    // effectively real-time for a free/unofficial data source (Yahoo's unofficial
+    // chart API has no faster official cadence to chase, and going below 60s risks
+    // tripping the free CORS proxies' own rate limiting — see ALL_CORS_PROXIES — which
+    // would make the numbers LESS reliable, not more real-time).
+    // The non-US bond yields (UK/France/Germany/Japan/Korea) come from FRED, which
+    // only ever publishes once a month — polling that on a 1-minute cycle would just
+    // hammer the shared CORS-proxy pool for zero benefit, so it gets its own 30-minute
+    // cadence instead (see the comment above fetchFredBondYields).
     // The ECB policy rate moves at most ~8x/year and only publishes once a day, so
     // there's no real data to be "more real-time" about — hourly already checks far
     // more often than the underlying series can change; the other 5 central banks have
@@ -42,7 +41,7 @@ window.onload = () => {
     // see fetchCryptoSparklines) has no such shared-proxy downside, so it runs on its
     // own much faster 2-minute cadence.
     setInterval(fetchAllMarketData, 60000);
-    setInterval(fetchAllFmp, 10 * 60 * 1000);
+    setInterval(fetchFredBondYields, 30 * 60 * 1000);
     setInterval(fetchECBPolicyRate, 60 * 60 * 1000);
     setInterval(fetchAllNews, 60000);
     setInterval(fetchProxiedSparklines, 5 * 60 * 1000);

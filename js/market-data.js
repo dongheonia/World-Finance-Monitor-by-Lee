@@ -118,68 +118,15 @@ async function fetchYahooQuote(symbol) {
     return { current: +current.toFixed(4), change, change_percent: changePercent, series };
 }
 
-// ---------------------------------------------------------------
-// Financial Modeling Prep (FMP) — was previously also used for the 7 major indices
-// and Brent/Gold/Silver, but that traded them down to a 70-minute cadence purely to
-// stay under FMP's 250-calls/day free quota. Direct testing (2026-08-05) confirmed
-// Yahoo's own chart endpoint returns valid live data for every one of those symbols
-// (they were already being used for sparklines via CHART_ONLY_SYMBOLS, just not for
-// the price) — so they've moved to the same free 1-minute Yahoo-proxy path as every
-// other index/commodity below instead.
-// That leaves FMP with the two US Treasury yields. US 2-year has no free ticker
-// anywhere else (Yahoo only publishes 13-week/5/10/30-year — verified directly, no
-// 2-year symbol resolves), so it has to stay here regardless. US 10-year DOES have a
-// real Yahoo ticker ('^TNX') and could run on the faster 1-minute path alone — but
-// per explicit request, both US yields are kept on the SAME cadence for consistency
-// (one FMP call already returns both readings together) rather than mismatched
-// 1-min/10-min numbers sitting side by side in the same section.
-// Germany DAX, KOSPI, Shanghai Composite are on the free 1-minute Yahoo path already;
-// every non-US 10Y bond yield (UK/France/Germany/China/Japan/Korea) has no free
-// live source anywhere (Yahoo, FMP, Twelve Data all checked) and has no ticker to
-// even attempt — see allYahooSymbols() below.
-// Down to 2 calls/cycle (from 11), the safe sustainable cadence is far below FMP's
-// 250-calls/day cap even at 10 minutes (24*60/10*1 ≈ 144 calls/day, since both yields
-// come back in the SAME treasury-rates call) — 10 min matches what was requested.
-// FMP_API_KEY itself lives in config.js (gitignored, loaded before this file) — see
-// config.example.js for the template a fresh clone needs to copy and fill in.
-async function fetchAllFmp() {
-    try {
-        const res = await fetchWithTimeout(`https://financialmodelingprep.com/stable/treasury-rates?apikey=${FMP_API_KEY}`, 8000);
-        if (res.ok) {
-            const rows = await res.json();
-            if (Array.isArray(rows) && rows.length >= 2) {
-                const [latest, prevRow] = rows;
-                const toChange = (cur, prevVal) => {
-                    const change = +(cur - prevVal).toFixed(3);
-                    const changePercent = prevVal ? +((change / prevVal) * 100).toFixed(2) : 0;
-                    return { current: cur, change, change_percent: changePercent };
-                };
-                setQuote('^TNX', toChange(latest.year10, prevRow.year10));
-                setQuote('US2Y=RR', toChange(latest.year2, prevRow.year2));
-            }
-        }
-    } catch (e) {
-        console.warn('FMP treasury-rates fetch failed:', e.message);
-    }
-    renderAll();
-}
-// ---------------------------------------------------------------
-
-// Synthetic bond-yield identifiers this file made up for the optional local
-// FRED-backed backend (see fetchLocalBondYields) — Yahoo has no real ticker for any
-// of these, so attempting them via the Yahoo proxy would just fail every single cycle.
+// Synthetic bond-yield identifiers this file made up (Yahoo has no real ticker for any
+// of these, so attempting them via the Yahoo proxy would just fail every single cycle)
+// — covered instead by fetchFredBondYields() below (all but China — see there).
 const NO_YAHOO_SOURCE_SYMBOLS = ['GB10Y=RR', 'FR10Y=RR', 'DE10Y=RR', 'CN10Y=RR', 'JP10Y=RR', 'KR10Y=RR'];
-// '^TNX' DOES have a real Yahoo ticker, but is deliberately excluded here too — see
-// the comment above fetchAllFmp for why it's kept on FMP's shared 10-minute cadence
-// alongside US2Y=RR instead of the faster 1-minute Yahoo path.
-const FMP_SOURCED_SYMBOLS = ['^TNX', 'US2Y=RR'];
 
 function allYahooSymbols() {
     const set = new Set();
     [...INDICES, ...PINNED_MARKET, ...COMMODITIES, ...BOND10Y, ...PINNED_FX].forEach(i => set.add(i.symbol));
-    set.delete('DUBAI_CRUDE_MANUAL'); // no live source exists — see COMMODITIES comment
     NO_YAHOO_SOURCE_SYMBOLS.forEach(s => set.delete(s));
-    FMP_SOURCED_SYMBOLS.forEach(s => set.delete(s));
     return [...set];
 }
 
@@ -221,22 +168,18 @@ async function fetchAllYahoo() {
     }
 }
 
-// Most indices/commodities now get their PRICE from the 1-minute Yahoo path above
-// (fetchOneYahooSymbol), which already includes the chart series in the same call —
-// no separate sparkline fetch needed for those. Three things still need a dedicated
-// sparkline-only fetch through this same Yahoo-chart-via-CORS-proxy path instead:
-//  - FX: its price comes from Frankfurter (only one point per day, too sparse for a
-//    good-looking chart; see fetchAllFX). Yahoo's FX tickers use exactly the same
-//    "USDKRW=X"-style symbols already used throughout this file, and carry real
-//    intraday data for FX pairs (spot FX trades ~24/5, unlike exchange hours), giving
-//    these charts the same resolution as the Market/Commodities ones instead of
-//    Frankfurter's ~5-point weekly line.
-//  - '^TNX' (US 10Y): price comes from FMP now (see fetchAllFmp), kept off the
-//    1-minute Yahoo path on purpose, but Yahoo's chart history for it is still real
-//    and free, so it's fetched here for the sparkline alone.
-// Decoupled from price so a failed chart fetch never touches the number shown; runs
-// on its own slow cadence (see the setInterval near window.onload) — a 5-40min-old
-// sparkline is fine, unlike price.
+// Every index/commodity/US bond yield now gets its PRICE from the 1-minute Yahoo path
+// above (fetchOneYahooSymbol), which already includes the chart series in the same
+// call — no separate sparkline fetch needed for those. FX is the one thing still
+// missing a chart: its price comes from Frankfurter (only one point per day, too
+// sparse for a good-looking chart; see fetchAllFX), so it gets a sparkline-ONLY fetch
+// through this same Yahoo-chart-via-CORS-proxy path instead. Yahoo's FX tickers use
+// exactly the same "USDKRW=X"-style symbols already used throughout this file, and
+// carry real intraday data for FX pairs (spot FX trades ~24/5, unlike exchange hours),
+// giving these charts the same resolution as the Market/Commodities ones instead of
+// Frankfurter's ~5-point weekly line. Decoupled from price so a failed chart fetch
+// never touches the number shown; runs on its own slow cadence (see the setInterval
+// near window.onload) — a 5-40min-old sparkline is fine, unlike price.
 const ALL_FX_SYMBOLS = [...new Set([...FOREX_KO, ...FOREX_EN_USD, ...FOREX_EN_GBP].map(f => f.symbol))];
 // Dollar Index and VIX only otherwise get ONE combined price+chart fetch per 60s cycle
 // (via fetchOneYahooSymbol, 5000ms timeout, no retry) — same as every other pinned/index
@@ -244,7 +187,7 @@ const ALL_FX_SYMBOLS = [...new Set([...FOREX_KO, ...FOREX_EN_USD, ...FOREX_EN_GB
 // so they ALSO get this dedicated, longer-timeout chart fetch plus the 45s retry pass
 // below — belt-and-suspenders so a single flaky proxy attempt doesn't leave the pinned
 // rows chartless for a full minute+.
-const CHART_ONLY_SYMBOLS = [...ALL_FX_SYMBOLS, ...PINNED_FX.map(f => f.symbol), ...PINNED_MARKET.map(i => i.symbol), '^TNX'];
+const CHART_ONLY_SYMBOLS = [...ALL_FX_SYMBOLS, ...PINNED_FX.map(f => f.symbol), ...PINNED_MARKET.map(i => i.symbol)];
 
 async function fetchChartSeriesOnly(symbol) {
     // Same 1-month/daily window as fetchYahooQuote — see the comment there. This
@@ -499,29 +442,57 @@ async function fetchLocalBackend() {
     }
 }
 
-// Non-US 10Y bond yields via the local backend's FRED-backed /api/bond-yields (see
-// main.py) — separate from fetchLocalBackend() above since it's a different endpoint
-// with its own (server-cached, 30min-TTL) freshness characteristics. Same graceful
-// fallback: no backend running or FRED unreachable just leaves the existing value.
-const LOCAL_BOND_SYMBOLS = ['GB10Y=RR', 'FR10Y=RR', 'DE10Y=RR', 'JP10Y=RR', 'KR10Y=RR'];
+// Non-US 10Y government bond yields have no CORS-enabled API anywhere (Yahoo/FMP/
+// Twelve Data all checked — see the comment above NO_YAHOO_SOURCE_SYMBOLS). FRED (St.
+// Louis Fed) republishes OECD's "long-term interest rate" series for most of them,
+// monthly, and its CSV endpoint needs no API key — but has no CORS header of its own,
+// so it's routed through the same free CORS-proxy chain fetchYahooQuote already uses
+// (fetchViaProxies) rather than needing anything new. China isn't in this OECD
+// dataset (not an OECD member) and has no free source anywhere — stays on its curated
+// fallback value, same as before.
+const FRED_BOND_SERIES = {
+    'GB10Y=RR': 'IRLTLT01GBM156N',
+    'FR10Y=RR': 'IRLTLT01FRM156N',
+    'DE10Y=RR': 'IRLTLT01DEM156N',
+    'JP10Y=RR': 'IRLTLT01JPM156N',
+    'KR10Y=RR': 'IRLTLT01KRM156N'
+};
 
-async function fetchLocalBondYields() {
+function parseFredCsv(text) {
+    return text.trim().split('\n').slice(1) // drop the "observation_date,<series>" header row
+        .map(line => line.split(','))
+        .filter(cols => cols.length === 2 && cols[1] !== '' && cols[1] !== '.') // '.' is FRED's own "no observation" marker
+        .map(([date, value]) => ({ date, value: +value }));
+}
+
+async function fetchOneFredSeries(symbol, seriesId) {
     try {
-        const res = await fetchWithTimeout(`${LOCAL_BACKEND_URL}/api/bond-yields`, 4000);
-        if (!res.ok) throw new Error('http ' + res.status);
-        const data = await res.json();
-        let anySucceeded = false;
-        LOCAL_BOND_SYMBOLS.forEach(symbol => {
-            const q = data[symbol];
-            if (q && q.current != null) {
-                setQuote(symbol, { current: q.current, change: q.change, change_percent: q.change_percent });
-                anySucceeded = true;
-            }
-        });
-        if (anySucceeded) renderAll();
+        const res = await fetchViaProxies(`https://fred.stlouisfed.org/graph/fredgraph.csv?id=${seriesId}`, 9000);
+        const rows = parseFredCsv(await res.text());
+        if (rows.length < 2) throw new Error('not enough data points');
+        const latest = rows[rows.length - 1];
+        const prev = rows[rows.length - 2];
+        // "Change" here is real month-over-month, not a stale multi-month checkpoint —
+        // the most standard comparison basis for a series that only ever prints once a
+        // month in the first place (see the BOND10Y comment for why this replaced the
+        // old fixed-checkpoint comparison).
+        const change = +(latest.value - prev.value).toFixed(3);
+        const changePercent = prev.value ? +((change / prev.value) * 100).toFixed(2) : 0;
+        setQuote(symbol, { current: latest.value, change, change_percent: changePercent });
+        // Real (if coarse, monthly-resolution) trend data beats the "—" no-chart state
+        // these rows used to be stuck with — 24 points is 2 years of history.
+        setSeries(symbol, rows.slice(-24).map(r => r.value));
     } catch (e) {
-        // Silent — same "local backend optional" story as fetchLocalBackend.
+        console.warn('FRED fetch failed for', symbol, e.message);
     }
+}
+
+// FRED only publishes monthly, so there's no reason to poll this on the 1-minute
+// market cycle — 30 minutes is already far more often than the data can actually
+// change; it's just here to pick up a revision shortly after FRED publishes one.
+async function fetchFredBondYields() {
+    await Promise.allSettled(Object.entries(FRED_BOND_SERIES).map(([symbol, seriesId]) => fetchOneFredSeries(symbol, seriesId)));
+    renderAll();
 }
 
 function fetchAllMarketData() {
@@ -529,6 +500,5 @@ function fetchAllMarketData() {
     fetchAllFX();
     fetchAllCrypto();
     fetchLocalBackend();
-    fetchLocalBondYields();
 }
 

@@ -1,4 +1,6 @@
-# Real secrets — copy js/config.example.js to js/config.js and fill in your own key
+# No longer loaded by index.html (FMP is unused now — see market-data.js) — kept
+# ignored in case a local js/config.js still exists from before, so it never gets
+# committed by accident.
 js/config.js
 
 # Python

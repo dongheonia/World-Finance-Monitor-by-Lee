@@ -119,7 +119,7 @@ function updateStaticLabels() {
     document.getElementById('section-policy-title').childNodes[0].nodeValue = t.secPolicy;
     document.getElementById('unit-policy').innerText = t.unitPct;
     document.getElementById('section-bond-title').childNodes[0].nodeValue = t.secBond;
-    document.getElementById('unit-bond').innerText = t.unitPct;
+    document.getElementById('unit-bond').innerText = t.unitBond10y;
     document.getElementById('section-market-title').childNodes[0].nodeValue = t.secMarket;
     document.getElementById('unit-market').innerText = t.unitMarket;
     document.getElementById('section-commodities-title').childNodes[0].nodeValue = t.secCommodities;

@@ -224,12 +224,12 @@ function renderAll() {
     document.getElementById('bond-yield-container').innerHTML = BOND10Y.map(b => {
         const data = getData(b.symbol, b.fallback);
         const current = data.current;
-        // ^TNX/US2Y=RR always carry a real day-over-day change (FMP's treasury-rates
-        // endpoint returns yesterday's reading alongside today's); the other 6 do too,
-        // but only when the optional local FRED-backed backend is running (see
-        // fetchLocalBondYields) — China 10Y has no live source at all. Prefer that real
-        // previous-close comparison whenever it exists; only fall back to the fixed
-        // curated checkpoint (b.prevYield) when nothing live has landed yet.
+        // '^TNX' always carries a real day-over-day change (Yahoo's own previousClose);
+        // the FRED-sourced 5 (UK/France/Germany/Japan/Korea) carry a real
+        // month-over-month change once fetchFredBondYields lands — China has no live
+        // source at all. Prefer that real previous-period comparison whenever it
+        // exists; only fall back to the fixed curated checkpoint (b.prevYield) when
+        // nothing live has landed yet (e.g. right after page load, or China always).
         const hasLiveChange = data.change != null;
         const change = hasLiveChange ? +data.change.toFixed(2) : +(current - b.prevYield).toFixed(2);
         const prevForDisplay = hasLiveChange ? +(current - change).toFixed(2) : b.prevYield;
