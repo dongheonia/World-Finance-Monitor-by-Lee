@@ -91,13 +91,15 @@ function downsample(arr, maxPoints) {
     return out;
 }
 
-async function fetchYahooQuote(symbol) {
+async function fetchYahooQuote(symbol, range = '1mo') {
     // range=1mo&interval=1d gives ~22 daily closes (a trading month) instead of a single
     // intraday day — this only changes the SPARKLINE source; the live price/change below
     // still comes from `meta` (regularMarketPrice/previousClose), which Yahoo populates
     // the same way regardless of what range/interval the chart itself was requested at,
-    // so switching this doesn't make the quote itself any less current.
-    const target = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1d&range=1mo&_=${Date.now()}`;
+    // so switching this doesn't make the quote itself any less current. `range` is
+    // overridable per-symbol (see fetchOneYahooSymbol) — '^TNX' asks for '1y' instead,
+    // to match the rest of the bond-yield section's unified 1-year window.
+    const target = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1d&range=${range}&_=${Date.now()}`;
     const res = await fetchViaProxies(target, 5000);
     const data = await res.json();
     const result = data.chart && data.chart.result && data.chart.result[0];
@@ -142,7 +144,7 @@ function seedFallbackCache() {
 
 async function fetchOneYahooSymbol(symbol) {
     try {
-        const quote = await fetchYahooQuote(symbol);
+        const quote = await fetchYahooQuote(symbol, symbol === '^TNX' ? '1y' : '1mo');
         setQuote(symbol, quote);
         if (quote.series) setSeries(symbol, quote.series);
     } catch (e) {
@@ -454,24 +456,30 @@ async function fetchLocalBackend() {
 // "long-term interest rate" series monthly. None of these have a CORS header of their
 // own, so all of them route through the same free CORS-proxy chain fetchYahooQuote
 // already uses (fetchViaProxies) rather than needing anything new.
+// Every country's CHART is unified to a 1-year window, per explicit request — a bond
+// yield moves gradually on macro drivers, so a short window mostly shows noise; 1 year
+// is long enough to actually see a hiking/cutting cycle. current/change still always
+// come from the two most-recent real observations regardless of the chart's span (see
+// setQuoteAndSeriesFromValues) — the window only affects what the sparkline draws.
 //   - UK: Bank of England's own IADB (Interactive Statistical Database), series
 //     IUDMNZC (nominal spot 10-year gilt yield) — daily, straight from the source that
 //     actually issues the gilts.
 //   - Germany: Bundesbank's own statistics API, series BBSIS...R10XX... (Svensson-method
 //     term structure, 10-year residual maturity) — daily, from the Bundesbank itself.
 //   - Japan: Ministry of Finance's own published JGB yield table — daily, straight from
-//     the issuer. Uses the small "current month" file (resets each month, so the very
-//     first day or two of a new month can have too few points for a change/sparkline —
-//     self-heals within a couple of days) rather than the 1.2MB full-history file,
-//     which would be wasteful to re-fetch every cycle just for the latest point.
+//     the issuer. The small "current month" file (resets each month) supplies the
+//     freshest point every 30-min cycle; a one-time seed from the 1.2MB full-history
+//     file (too big to re-fetch every cycle) supplies the rest of the 1-year window —
+//     see seedMofJgbHistory.
 //   - France, Korea: no equivalent free daily source found (checked Banque de France's
 //     Webstat — the series metadata exists but its data API isn't reachable the same
 //     way ECB's is; checked Korea's KOSIS/ECOS — key-gated, and KRX/KOFIA have no free
-//     API either) — stay on FRED's monthly figures.
+//     API either) — stay on FRED's monthly figures (12 points = 1 year).
 //   - China: not in FRED's OECD dataset (not an OECD member) and has no free source
 //     anywhere (also checked BIS's statistics API directly — it covers policy rates and
 //     FX, not government bond yields) — stays on its curated approximate fallback (see
-//     BOND10Y in commodities-crypto.js).
+//     BOND10Y in commodities-crypto.js), likewise scaled to represent roughly the past
+//     year rather than a longer stretch.
 // UK is ALSO kept in FRED_BOND_SERIES even though BoE is its primary source — BoE's
 // site sits behind bot protection that occasionally 403s a proxied request (observed
 // directly while testing, inconsistently — same flaky-free-proxy story as everywhere
@@ -492,14 +500,17 @@ function parseFredCsv(text) {
         .map(([date, value]) => ({ date, value: +value }));
 }
 
-function setQuoteAndSeriesFromValues(symbol, values) {
+// `seriesValues` (defaults to `values` itself) lets a caller show a DOWNSAMPLED chart
+// while still computing current/change from the true last two RAW observations —
+// downsampling first would risk losing the actual most-recent point.
+function setQuoteAndSeriesFromValues(symbol, values, seriesValues = values) {
     if (values.length < 2) throw new Error('not enough data points');
     const current = values[values.length - 1];
     const prev = values[values.length - 2];
     const change = +(current - prev).toFixed(3);
     const changePercent = prev ? +((change / prev) * 100).toFixed(2) : 0;
     setQuote(symbol, { current, change, change_percent: changePercent });
-    setSeries(symbol, values);
+    setSeries(symbol, seriesValues);
 }
 
 async function fetchOneFredSeries(symbol, seriesId) {
@@ -509,8 +520,8 @@ async function fetchOneFredSeries(symbol, seriesId) {
         // "Change" here is real month-over-month, not a stale multi-month checkpoint —
         // the most standard comparison basis for a series that only ever prints once a
         // month in the first place (see the BOND10Y comment for why this replaced the
-        // old fixed-checkpoint comparison). 24 points is 2 years of history.
-        setQuoteAndSeriesFromValues(symbol, rows.slice(-24).map(r => r.value));
+        // old fixed-checkpoint comparison). 12 points = 12 months = 1 year of history.
+        setQuoteAndSeriesFromValues(symbol, rows.slice(-12).map(r => r.value));
     } catch (e) {
         console.warn('FRED fetch failed for', symbol, e.message);
     }
@@ -524,14 +535,16 @@ async function fetchBoeGiltYield() {
     try {
         const to = new Date();
         const from = new Date();
-        from.setDate(from.getDate() - 35); // ~1 trading month, matching every other chart's resolution
+        from.setDate(from.getDate() - 370); // 1 year + a small buffer
         const target = `https://www.bankofengland.co.uk/boeapps/database/_iadb-fromshowcolumns.asp?csv.x=yes&Datefrom=${boeDateParam(from)}&Dateto=${boeDateParam(to)}&SeriesCodes=IUDMNZC&CSVF=TN&UsingCodes=Y&VPD=Y&VFD=N`;
         const res = await fetchViaProxies(target, 9000);
         const values = (await res.text()).trim().split('\n').slice(1)
             .map(line => line.split(','))
             .filter(cols => cols.length === 2 && cols[1] !== '')
             .map(cols => +cols[1]);
-        setQuoteAndSeriesFromValues('GB10Y=RR', values);
+        // ~260 raw trading days for a year — downsample to a clean 40-point chart, same
+        // as every Yahoo-sourced sparkline on the page.
+        setQuoteAndSeriesFromValues('GB10Y=RR', values, downsample(values, 40));
     } catch (e) {
         console.warn('Bank of England gilt yield fetch failed:', e.message);
     }
@@ -540,7 +553,7 @@ async function fetchBoeGiltYield() {
 async function fetchBundesbankBondYield() {
     try {
         const from = new Date();
-        from.setDate(from.getDate() - 60); // wider window since some days publish no value (holidays)
+        from.setDate(from.getDate() - 380); // 1 year + extra buffer since some days publish no value (holidays)
         const startPeriod = from.toISOString().slice(0, 10);
         const target = `https://api.statistiken.bundesbank.de/rest/data/BBSIS/D.I.ZST.ZI.EUR.S1311.B.A604.R10XX.R.A.A._Z._Z.A?format=csv&lang=en&startPeriod=${startPeriod}`;
         const res = await fetchViaProxies(target, 9000);
@@ -549,7 +562,7 @@ async function fetchBundesbankBondYield() {
             .map(line => line.split(','))
             .filter(cols => cols[1] && cols[1] !== '.')
             .map(cols => +cols[1]);
-        setQuoteAndSeriesFromValues('DE10Y=RR', values.slice(-24));
+        setQuoteAndSeriesFromValues('DE10Y=RR', values, downsample(values, 40));
     } catch (e) {
         console.warn('Bundesbank bond yield fetch failed:', e.message);
     }
@@ -567,26 +580,25 @@ function mofExtract10y(csvText) {
 }
 
 // MOF's small "current month" file (used below, every 30-min cycle) resets on the 1st
-// of every month — early in a new month it only has a handful of points, which used to
-// render as a near-flat line (e.g. only 2-4 points for the first few days of a new
-// month). mofJgbBaseline holds the last ~24 points from MOF's full historical file
-// (1.2MB — too big to re-fetch every cycle, so this only runs ONCE per page load) purely
-// to PAD OUT the front of the current month's series until it's long enough on its own;
-// as the month progresses and the current-month file grows, less (eventually none) of
-// this padding is needed. Seeded into the real series cache via setSeriesIfMissing so a
-// fresh page load doesn't show "—" while waiting for this to land.
+// of every month, so on its own it can't cover a 1-year window. mofJgbBaseline holds
+// the last ~260 RAW (pre-downsample) trading days from MOF's full historical file
+// (1.2MB — too big to re-fetch every cycle, so this only runs ONCE per page load,
+// skipped entirely if a decent series is already cached). Every cycle,
+// fetchMofJgbYield() appends the current month's fresh values onto whatever part of
+// this baseline they don't yet cover, then downsamples the combined ~1-year window to
+// a clean 40-point chart. Seeded into the real series cache via setSeriesIfMissing so
+// a fresh page load doesn't show "—" while waiting for this to land.
 let mofJgbBaseline = null;
+const MOF_JGB_WINDOW = 260; // ~1 trading year
 async function seedMofJgbHistory() {
-    const cached = getSeries('JP10Y=RR');
-    if (cached && cached.length >= 20) { mofJgbBaseline = cached; return; }
+    if (mofJgbBaseline && mofJgbBaseline.length >= 200) return;
     try {
         const res = await fetchViaProxies('https://www.mof.go.jp/english/policy/jgbs/reference/interest_rate/historical/jgbcme_all.csv', 15000);
         const values = mofExtract10y(await res.text());
         if (values.length < 2) throw new Error('not enough data points');
-        mofJgbBaseline = values.slice(-24);
-        setSeriesIfMissing('JP10Y=RR', mofJgbBaseline);
+        mofJgbBaseline = values.slice(-MOF_JGB_WINDOW);
+        setSeriesIfMissing('JP10Y=RR', downsample(mofJgbBaseline, 40));
     } catch (e) {
-        mofJgbBaseline = cached || null;
         console.warn('MOF Japan JGB history seed failed:', e.message);
     }
 }
@@ -596,9 +608,9 @@ async function fetchMofJgbYield() {
         const res = await fetchViaProxies('https://www.mof.go.jp/english/policy/jgbs/reference/interest_rate/jgbcme.csv', 9000);
         const values = mofExtract10y(await res.text());
         if (values.length < 1) throw new Error('no data points this month yet');
-        const paddingNeeded = Math.max(0, 24 - values.length);
-        const padding = mofJgbBaseline ? mofJgbBaseline.slice(0, paddingNeeded) : [];
-        setQuoteAndSeriesFromValues('JP10Y=RR', [...padding, ...values]);
+        const older = mofJgbBaseline ? mofJgbBaseline.slice(0, Math.max(0, MOF_JGB_WINDOW - values.length)) : [];
+        const combined = [...older, ...values];
+        setQuoteAndSeriesFromValues('JP10Y=RR', combined, downsample(combined, 40));
     } catch (e) {
         console.warn('MOF Japan JGB yield fetch failed:', e.message);
     }

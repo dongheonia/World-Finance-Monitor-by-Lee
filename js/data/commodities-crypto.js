@@ -3,12 +3,15 @@
 // below is just the country name, not repeated per row) — US 2-year was dropped since
 // a single-country exception to the "everything here is 10Y" rule was more confusing
 // than useful. `current`/`change` prefer a live-fetched value when one lands (Yahoo for
-// the US, FRED for the rest — see fetchAllYahoo/fetchFredBondYields in market-data.js)
-// and only fall back to these figures otherwise. `prevYield` is a last-resort static
-// checkpoint for the fallback path ONLY (i.e. everything is still down before a first
-// live fetch has ever landed) — every live source computes a real previous-period
-// change itself (previous close for the US, previous month for the FRED-sourced ones),
-// which is what actually gets shown whenever live data is available.
+// the US, each country's own daily source or FRED for the rest — see
+// fetchAllYahoo/fetchNonUsBondYields in market-data.js) and only fall back to these
+// figures otherwise. `prevYield` is a last-resort static checkpoint for the fallback
+// path ONLY (i.e. everything is still down before a first live fetch has ever landed)
+// — every live source computes a real previous-period change itself (previous close
+// for the daily-sourced rows, previous month for the FRED-sourced ones), which is what
+// actually gets shown whenever live data is available. Every chart (live or curated)
+// is unified to roughly a 1-year window — see the comment above FRED_BOND_SERIES in
+// market-data.js for why.
 const BOND10Y = [
     { symbol: '^TNX', ko: '미국', en: 'United States', fallback: { current: 4.68 }, prevYield: 4.48 },
     { symbol: 'GB10Y=RR', ko: '영국', en: 'United Kingdom', fallback: { current: 5.06 }, prevYield: 4.76 },
@@ -18,12 +21,13 @@ const BOND10Y = [
     // carry a China 10Y series at all (FRED's only China rate series are a
     // discontinued-since-2023 3-month bill and interbank/discount rates, nothing
     // long-term). approxSeries is a manually curated, deliberately approximate stand-in
-    // for the sparkline ONLY — the general shape of China's 10Y grinding lower through
-    // 2024-2026 amid PBOC easing, per widely-reported financial coverage, not a
-    // day-by-day real series like every other row's chart. Seeded once in
-    // seedFallbackCache() and never overwritten (nothing will ever fetch a real one).
+    // for the sparkline ONLY — the general shape of China's 10Y over roughly the past
+    // year (gentle grind lower amid continued PBOC easing, per widely-reported
+    // financial coverage), not a day-by-day real series like every other row's chart.
+    // Seeded once in seedFallbackCache() and never overwritten (nothing will ever fetch
+    // a real one).
     { symbol: 'CN10Y=RR', ko: '중국', en: 'China', fallback: { current: 1.72 }, prevYield: 1.73,
-      approxSeries: [2.35, 2.28, 2.20, 2.10, 2.02, 1.95, 1.88, 1.82, 1.78, 1.75, 1.74, 1.72] },
+      approxSeries: [1.95, 1.92, 1.90, 1.88, 1.85, 1.82, 1.80, 1.78, 1.76, 1.75, 1.74, 1.72] },
     { symbol: 'JP10Y=RR', ko: '일본', en: 'Japan', fallback: { current: 2.79 }, prevYield: 2.70 },
     { symbol: 'KR10Y=RR', ko: '한국', en: 'Korea', fallback: { current: 4.28 }, prevYield: 4.16 }
 ];
