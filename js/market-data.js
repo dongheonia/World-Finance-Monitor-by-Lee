@@ -555,18 +555,50 @@ async function fetchBundesbankBondYield() {
     }
 }
 
+function mofExtract10y(csvText) {
+    const lines = csvText.trim().split('\n');
+    const header = lines[1].split(','); // "Date,1Y,2Y,...,10Y,15Y,..."
+    const idx10y = header.indexOf('10Y');
+    if (idx10y < 0) throw new Error('10Y column not found');
+    return lines.slice(2)
+        .map(line => line.split(','))
+        .filter(cols => cols.length > idx10y && /^\d{4}\/\d{1,2}\/\d{1,2}$/.test(cols[0]) && cols[idx10y] !== '-' && cols[idx10y] !== '')
+        .map(cols => +cols[idx10y]);
+}
+
+// MOF's small "current month" file (used below, every 30-min cycle) resets on the 1st
+// of every month — early in a new month it only has a handful of points, which used to
+// render as a near-flat line (e.g. only 2-4 points for the first few days of a new
+// month). mofJgbBaseline holds the last ~24 points from MOF's full historical file
+// (1.2MB — too big to re-fetch every cycle, so this only runs ONCE per page load) purely
+// to PAD OUT the front of the current month's series until it's long enough on its own;
+// as the month progresses and the current-month file grows, less (eventually none) of
+// this padding is needed. Seeded into the real series cache via setSeriesIfMissing so a
+// fresh page load doesn't show "—" while waiting for this to land.
+let mofJgbBaseline = null;
+async function seedMofJgbHistory() {
+    const cached = getSeries('JP10Y=RR');
+    if (cached && cached.length >= 20) { mofJgbBaseline = cached; return; }
+    try {
+        const res = await fetchViaProxies('https://www.mof.go.jp/english/policy/jgbs/reference/interest_rate/historical/jgbcme_all.csv', 15000);
+        const values = mofExtract10y(await res.text());
+        if (values.length < 2) throw new Error('not enough data points');
+        mofJgbBaseline = values.slice(-24);
+        setSeriesIfMissing('JP10Y=RR', mofJgbBaseline);
+    } catch (e) {
+        mofJgbBaseline = cached || null;
+        console.warn('MOF Japan JGB history seed failed:', e.message);
+    }
+}
+
 async function fetchMofJgbYield() {
     try {
         const res = await fetchViaProxies('https://www.mof.go.jp/english/policy/jgbs/reference/interest_rate/jgbcme.csv', 9000);
-        const lines = (await res.text()).trim().split('\n');
-        const header = lines[1].split(','); // "Date,1Y,2Y,...,10Y,15Y,..."
-        const idx10y = header.indexOf('10Y');
-        if (idx10y < 0) throw new Error('10Y column not found');
-        const values = lines.slice(2)
-            .map(line => line.split(','))
-            .filter(cols => cols.length > idx10y && /^\d{4}\/\d{1,2}\/\d{1,2}$/.test(cols[0]) && cols[idx10y] !== '-' && cols[idx10y] !== '')
-            .map(cols => +cols[idx10y]);
-        setQuoteAndSeriesFromValues('JP10Y=RR', values);
+        const values = mofExtract10y(await res.text());
+        if (values.length < 1) throw new Error('no data points this month yet');
+        const paddingNeeded = Math.max(0, 24 - values.length);
+        const padding = mofJgbBaseline ? mofJgbBaseline.slice(0, paddingNeeded) : [];
+        setQuoteAndSeriesFromValues('JP10Y=RR', [...padding, ...values]);
     } catch (e) {
         console.warn('MOF Japan JGB yield fetch failed:', e.message);
     }
@@ -584,6 +616,7 @@ async function fetchNonUsBondYields() {
     renderAll();
     await Promise.allSettled([fetchBoeGiltYield(), fetchBundesbankBondYield(), fetchMofJgbYield()]);
     renderAll();
+    saveSeriesCache(); // persists Japan's expensive one-time-seeded baseline too, so a reload within the 24h cache TTL never re-downloads MOF's 1.2MB history file
 }
 
 function fetchAllMarketData() {

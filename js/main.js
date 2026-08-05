@@ -1,6 +1,14 @@
 window.onload = () => {
-    seedFallbackCache();
+    // loadSeriesCache() FIRST — it does a wholesale replacement of the in-memory series
+    // cache (seriesCache = parsed.series), not a merge. Calling seedFallbackCache()
+    // before it used to seed China's approxSeries (see setSeriesIfMissing below) only
+    // for a stale localStorage snapshot saved before that feature existed — one with no
+    // 'CN10Y=RR' key at all — to immediately overwrite it and wipe the seed out again,
+    // permanently (nothing else will ever fetch a real China series to replace it).
+    // seedFallbackCache()'s setSeriesIfMissing calls only make sense run AFTER whatever
+    // real cached data exists has already been loaded, to fill in the actual gaps.
     loadSeriesCache(); // paint real (if slightly stale) charts instantly instead of leaving rows blank until a live fetch lands
+    seedFallbackCache();
     const cachedNews = loadNewsCache();
     if (cachedNews) masterNews = cachedNews; // paint the real news list instantly instead of the sparse fallback while fetchAllNews() refreshes it
     initMap();
@@ -10,6 +18,12 @@ window.onload = () => {
     renderCalendar();
     requestAnimationFrame(centerCalendarOnToday); // wait a frame so layout/offsetTop are settled
     fetchAllMarketData();
+    // Run concurrently, not sequentially — the one-time Japan history seed (see the
+    // comment above seedMofJgbHistory) fetches a 1.2MB file and can take a few seconds,
+    // and there's no reason to make every other country's bond yield wait on it. Worst
+    // case, Japan's very first 30-min cycle this session has less padding than usual
+    // and picks up the rest on the next one once the seed has landed.
+    seedMofJgbHistory();
     fetchNonUsBondYields();
     fetchECBPolicyRate();
     fetchAllNews();
