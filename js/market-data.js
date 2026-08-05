@@ -134,6 +134,10 @@ function seedFallbackCache() {
     [...INDICES, ...PINNED_MARKET, ...FOREX_KO, ...FOREX_EN_USD, ...FOREX_EN_GBP, ...PINNED_FX, ...COMMODITIES, ...CRYPTO, ...BOND10Y].forEach(i => {
         if (!cachedData[i.symbol]) cachedData[i.symbol] = i.fallback;
     });
+    // China 10Y's approximate curated sparkline (see the comment above it in
+    // commodities-crypto.js) — nothing ever fetches a real one, so this is the only
+    // place it's ever set.
+    BOND10Y.forEach(b => { if (b.approxSeries) setSeriesIfMissing(b.symbol, b.approxSeries); });
 }
 
 async function fetchOneYahooSymbol(symbol) {

@@ -14,7 +14,16 @@ const BOND10Y = [
     { symbol: 'GB10Y=RR', ko: '영국', en: 'United Kingdom', fallback: { current: 5.06 }, prevYield: 4.76 },
     { symbol: 'FR10Y=RR', ko: '프랑스', en: 'France', fallback: { current: 3.94 }, prevYield: 3.54 },
     { symbol: 'DE10Y=RR', ko: '독일', en: 'Germany', fallback: { current: 3.16 }, prevYield: 2.86 },
-    { symbol: 'CN10Y=RR', ko: '중국', en: 'China', fallback: { current: 1.72 }, prevYield: 1.73 },
+    // China has no live source anywhere — checked Yahoo/FMP/FRED/BIS directly, none
+    // carry a China 10Y series at all (FRED's only China rate series are a
+    // discontinued-since-2023 3-month bill and interbank/discount rates, nothing
+    // long-term). approxSeries is a manually curated, deliberately approximate stand-in
+    // for the sparkline ONLY — the general shape of China's 10Y grinding lower through
+    // 2024-2026 amid PBOC easing, per widely-reported financial coverage, not a
+    // day-by-day real series like every other row's chart. Seeded once in
+    // seedFallbackCache() and never overwritten (nothing will ever fetch a real one).
+    { symbol: 'CN10Y=RR', ko: '중국', en: 'China', fallback: { current: 1.72 }, prevYield: 1.73,
+      approxSeries: [2.35, 2.28, 2.20, 2.10, 2.02, 1.95, 1.88, 1.82, 1.78, 1.75, 1.74, 1.72] },
     { symbol: 'JP10Y=RR', ko: '일본', en: 'Japan', fallback: { current: 2.79 }, prevYield: 2.70 },
     { symbol: 'KR10Y=RR', ko: '한국', en: 'Korea', fallback: { current: 4.28 }, prevYield: 4.16 }
 ];
