@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <title>WORLD FINANCE MONITOR</title>
@@ -28,53 +28,53 @@
     <div class="flex items-center mb-4 border-b border-gray-800 pb-2">
         <div class="flex-1 flex space-x-6 text-xs font-mono">
             <div class="tz-box px-2 py-1 border rounded font-bold">
-                <span id="lbl-nyc" class="clock-label">NEW YORK:</span> <span id="time-nyc" class="tz-time">00:00</span>
+                <span id="lbl-nyc" class="clock-label">뉴욕:</span> <span id="time-nyc" class="tz-time">00:00</span>
             </div>
             <div class="tz-box px-2 py-1 border rounded font-bold">
-                <span id="lbl-lon" class="clock-label">LONDON:</span> <span id="time-lon" class="tz-time">00:00</span>
+                <span id="lbl-lon" class="clock-label">런던:</span> <span id="time-lon" class="tz-time">00:00</span>
             </div>
             <div class="tz-box px-2 py-1 border rounded font-bold">
-                <span id="lbl-tyo" class="clock-label">TOKYO:</span> <span id="time-tyo" class="tz-time">00:00</span>
+                <span id="lbl-tyo" class="clock-label">도쿄:</span> <span id="time-tyo" class="tz-time">00:00</span>
             </div>
         </div>
         <div class="flex-1 text-center">
-            <span class="brand-title" id="brand-title">World Finance Monitor</span>
+            <span class="brand-title" id="brand-title">월드 파이낸스 모니터</span>
         </div>
         <div class="flex-1 flex justify-end space-x-2">
-            <button id="theme-btn" onclick="toggleTheme()" class="w-[130px] text-center py-1 bg-gray-900 border border-gray-700 text-white text-xs rounded hover:bg-gray-800 cursor-pointer font-bold">Dark Mode</button>
-            <button id="lang-btn" onclick="toggleLanguage()" class="w-[130px] text-center py-1 bg-gray-900 border border-gray-700 text-white text-xs rounded hover:bg-gray-800 cursor-pointer font-bold">한국어</button>
+            <button id="theme-btn" onclick="toggleTheme()" class="w-[130px] text-center py-1 bg-gray-900 border border-gray-700 text-white text-xs rounded hover:bg-gray-800 cursor-pointer font-bold">다크 모드</button>
+            <button id="lang-btn" onclick="toggleLanguage()" class="w-[130px] text-center py-1 bg-gray-900 border border-gray-700 text-white text-xs rounded hover:bg-gray-800 cursor-pointer font-bold">English</button>
         </div>
     </div>
 
     <div id="map-wrapper" class="terminal-box rounded p-0 mb-4 relative terminal-grid overflow-hidden select-none">
         <div class="absolute top-2 left-2 z-20 bg-black/85 border border-gray-800 p-2 rounded text-[11px] font-mono flex flex-col space-y-1.5 shadow-lg backdrop-blur">
-            <div class="text-gray-500 border-b border-gray-800 pb-1 font-bold" id="risk-filter-title">GLOBAL IMPACT</div>
+            <div class="text-gray-500 border-b border-gray-800 pb-1 font-bold" id="risk-filter-title">글로벌 임팩트</div>
             <label class="flex items-center space-x-2 cursor-pointer text-gray-300 hover:text-white">
                 <input type="checkbox" id="chk-war" checked onchange="toggleRiskCategory('war')" class="accent-red-500 cursor-pointer">
-                <span id="lbl-chk-war">War</span>
+                <span id="lbl-chk-war">전쟁</span>
             </label>
             <label class="flex items-center space-x-2 cursor-pointer text-gray-300 hover:text-white">
                 <input type="checkbox" id="chk-disaster" checked onchange="toggleRiskCategory('disaster')" class="accent-yellow-500 cursor-pointer">
-                <span id="lbl-chk-disaster">Disaster</span>
+                <span id="lbl-chk-disaster">재난</span>
             </label>
             <label class="flex items-center space-x-2 cursor-pointer text-gray-300 hover:text-white">
                 <input type="checkbox" id="chk-social" checked onchange="toggleRiskCategory('social')" class="accent-purple-500 cursor-pointer">
-                <span id="lbl-chk-social">Incident</span>
+                <span id="lbl-chk-social">사건</span>
             </label>
             <label class="flex items-center space-x-2 cursor-pointer text-gray-300 hover:text-white">
                 <input type="checkbox" id="chk-economy" checked onchange="toggleRiskCategory('economy')" class="accent-blue-500 cursor-pointer">
-                <span id="lbl-chk-economy">Economy</span>
+                <span id="lbl-chk-economy">경제</span>
             </label>
         </div>
         <div class="absolute bottom-2 left-2 z-20 bg-black/85 border border-gray-800 p-2 rounded text-[11px] font-mono flex flex-col space-y-1.5 shadow-lg backdrop-blur">
-            <div class="text-gray-500 border-b border-gray-800 pb-1 font-bold" id="mapstyle-title">MAP STYLE</div>
+            <div class="text-gray-500 border-b border-gray-800 pb-1 font-bold" id="mapstyle-title">지도 스타일</div>
             <div class="flex space-x-1">
-                <button id="btn-style-map" onclick="switchMapStyle('map')" class="map-style-btn map-style-active px-2 py-1 rounded border border-gray-700 text-gray-300 hover:text-white cursor-pointer">Map</button>
-                <button id="btn-style-satellite" onclick="switchMapStyle('satellite')" class="map-style-btn px-2 py-1 rounded border border-gray-700 text-gray-300 hover:text-white cursor-pointer">Satellite</button>
+                <button id="btn-style-map" onclick="switchMapStyle('map')" class="map-style-btn map-style-active px-2 py-1 rounded border border-gray-700 text-gray-300 hover:text-white cursor-pointer">지도</button>
+                <button id="btn-style-satellite" onclick="switchMapStyle('satellite')" class="map-style-btn px-2 py-1 rounded border border-gray-700 text-gray-300 hover:text-white cursor-pointer">위성</button>
             </div>
         </div>
         <div id="map-instructions" class="absolute top-2 right-2 text-[10px] text-gray-600 font-mono pointer-events-none z-10">
-            * WHEEL TO ZOOM / DRAG TO MOVE (UN 193 MEMBER STATES)
+            * 휠로 확대/축소, 드래그로 이동 (UN 193개 회원국)
         </div>
         <div id="world-map" class="w-full relative"></div>
         <div id="warzone-popup" class="warzone-popup">
@@ -87,7 +87,7 @@
     <!-- Continuous scrolling news ticker -->
     <div class="ticker-wrapper">
         <div id="ticker-track" class="ticker-track">
-            <div class="ticker-item text-gray-400">Loading...</div>
+            <div class="ticker-item text-gray-400">로딩 중...</div>
         </div>
     </div>
 
@@ -120,11 +120,11 @@
         <div class="space-y-6">
             <div id="news-card" class="terminal-box rounded p-4 flex flex-col">
                 <div class="flex items-center mb-4 border-b border-gray-800 pb-1 flex-none">
-                    <button id="tab-world-news" onclick="switchNewsTab('world')" class="flex-1 text-center text-xs section-title cursor-pointer pb-1"></button>
-                    <button id="tab-econ-news" onclick="switchNewsTab('economy')" class="flex-1 text-center text-xs section-title cursor-pointer pb-1"></button>
+                    <button id="tab-world-news" onclick="switchNewsTab('world')" class="flex-1 text-center text-xs section-title cursor-pointer pb-1">세계 뉴스</button>
+                    <button id="tab-econ-news" onclick="switchNewsTab('economy')" class="flex-1 text-center text-xs section-title cursor-pointer pb-1">경제 뉴스</button>
                 </div>
                 <div id="news-container" class="space-y-3 text-sm text-gray-300 flex-1 min-h-0 overflow-y-auto pr-1">
-                    <div class="text-gray-600 text-sm">Loading news...</div>
+                    <div class="text-gray-600 text-sm">뉴스 로딩 중...</div>
                 </div>
             </div>
         </div>
@@ -133,29 +133,29 @@
         <div class="space-y-6">
             <div class="terminal-box rounded p-4">
                 <div class="flex items-center justify-between border-b border-gray-800 pb-1 mb-3">
-                    <div id="section-forex-title" class="text-xs text-gray-500 section-title">FX RATES<span class="section-unit" id="unit-forex"></span></div>
+                    <div id="section-forex-title" class="text-xs text-gray-500 section-title">환율 지표<span class="section-unit" id="unit-forex">(원)</span></div>
                     <div id="forex-base-toggle" class="hidden space-x-1">
                         <button id="btn-fx-usd" onclick="setForexBase('USD')" class="fx-base-btn map-style-btn map-style-active px-1.5 py-0.5 text-[10px] rounded border border-gray-700 text-gray-300 hover:text-white cursor-pointer">USD</button>
                         <button id="btn-fx-gbp" onclick="setForexBase('GBP')" class="fx-base-btn map-style-btn px-1.5 py-0.5 text-[10px] rounded border border-gray-700 text-gray-300 hover:text-white cursor-pointer">GBP</button>
                     </div>
                 </div>
                 <div id="forex-container" class="space-y-3">
-                    <div class="text-gray-600 text-sm">Loading...</div>
+                    <div class="text-gray-600 text-sm">로딩 중...</div>
                 </div>
             </div>
             <div class="terminal-box rounded p-4">
                 <div class="flex items-center justify-between border-b border-gray-800 pb-1 mb-3">
-                    <div id="section-policy-title" class="text-xs text-gray-500 section-title">POLICY RATE</div>
+                    <div id="section-policy-title" class="text-xs text-gray-500 section-title">기준금리</div>
                     <span class="section-unit" id="unit-policy"></span>
                 </div>
                 <div id="policy-rate-container" class="space-y-3">
-                    <div class="text-gray-600 text-sm">Loading...</div>
+                    <div class="text-gray-600 text-sm">로딩 중...</div>
                 </div>
             </div>
             <div class="terminal-box rounded p-4">
-                <div id="section-bond-title" class="text-xs text-gray-500 border-b border-gray-800 pb-1 mb-3 section-title">GOVERNMENT BOND YIELD<span class="section-unit" id="unit-bond"></span></div>
+                <div id="section-bond-title" class="text-xs text-gray-500 border-b border-gray-800 pb-1 mb-3 section-title">국채금리<span class="section-unit" id="unit-bond"></span></div>
                 <div id="bond-yield-container" class="space-y-3">
-                    <div class="text-gray-600 text-sm">Loading...</div>
+                    <div class="text-gray-600 text-sm">로딩 중...</div>
                 </div>
             </div>
         </div>
@@ -164,7 +164,7 @@
         <div class="space-y-6">
             <div class="terminal-box rounded p-4">
                 <div class="flex items-center justify-between border-b border-gray-800 pb-1 mb-3">
-                    <div id="section-market-title" class="text-xs text-gray-500 section-title">STOCK EXCHANGE<span class="section-unit" id="unit-market"></span></div>
+                    <div id="section-market-title" class="text-xs text-gray-500 section-title">증권거래소 지표<span class="section-unit" id="unit-market"></span></div>
                     <!-- Volatility alert toggle — off by default on every load (see
                          marketAlertsEnabled). Roughly the same size as the FX RATES USD/GBP
                          toggle buttons, so this row's height still lines up with FX RATES' even
@@ -172,19 +172,19 @@
                     <button id="market-alerts-btn" onclick="toggleMarketAlerts()" class="px-1.5 py-0.5 text-[10px] rounded border border-gray-700 text-gray-300 hover:text-white cursor-pointer font-bold"></button>
                 </div>
                 <div id="market-container" class="space-y-3">
-                    <div class="text-gray-600 text-sm">Loading...</div>
+                    <div class="text-gray-600 text-sm">로딩 중...</div>
                 </div>
             </div>
             <div class="terminal-box rounded p-4">
-                <div id="section-commodities-title" class="text-xs text-gray-500 border-b border-gray-800 pb-1 mb-3 section-title">COMMODITIES & ENERGY<span class="section-unit" id="unit-commodities">(USD)</span></div>
+                <div id="section-commodities-title" class="text-xs text-gray-500 border-b border-gray-800 pb-1 mb-3 section-title">원자재 및 에너지<span class="section-unit" id="unit-commodities">(달러)</span></div>
                 <div id="commodities-container" class="space-y-3">
-                    <div class="text-gray-600 text-sm">Loading...</div>
+                    <div class="text-gray-600 text-sm">로딩 중...</div>
                 </div>
             </div>
             <div class="terminal-box rounded p-4">
-                <div id="section-crypto-title" class="text-xs text-gray-500 border-b border-gray-800 pb-1 mb-3 section-title">CRYPTOCURRENCY<span class="section-unit" id="unit-crypto">(USD)</span></div>
+                <div id="section-crypto-title" class="text-xs text-gray-500 border-b border-gray-800 pb-1 mb-3 section-title">가상화폐<span class="section-unit" id="unit-crypto">(달러)</span></div>
                 <div id="crypto-container" class="space-y-3">
-                    <div class="text-gray-600 text-sm">Loading...</div>
+                    <div class="text-gray-600 text-sm">로딩 중...</div>
                 </div>
             </div>
         </div>
@@ -203,7 +203,7 @@
         <div class="footer-outer-grid">
             <table class="footer-table">
                 <thead>
-                    <tr><th colspan="2" id="footer-links-title">MAJOR SITES</th></tr>
+                    <tr><th colspan="2" id="footer-links-title">주요 사이트</th></tr>
                 </thead>
                 <tbody>
                     <tr>
@@ -230,14 +230,14 @@
             </table>
             <table class="footer-table">
                 <thead>
-                    <tr><th colspan="2" id="footer-refresh-title">DATA REFRESH INTERVALS</th></tr>
+                    <tr><th colspan="2" id="footer-refresh-title">데이터 새로고침 주기</th></tr>
                 </thead>
                 <tbody>
-                    <tr><td id="footer-refresh-1"></td><td id="footer-refresh-2"></td></tr>
-                    <tr><td id="footer-refresh-3"></td><td id="footer-refresh-4"></td></tr>
-                    <tr><td id="footer-refresh-5"></td><td id="footer-refresh-6"></td></tr>
-                    <tr><td id="footer-refresh-7"></td><td id="footer-refresh-8"></td></tr>
-                    <tr><td id="footer-refresh-9"></td><td id="footer-refresh-10"></td></tr>
+                    <tr><td id="footer-refresh-1">지도 (글로벌 임팩트): 하루 2회</td><td id="footer-refresh-2">환율: 1분</td></tr>
+                    <tr><td id="footer-refresh-3">금융캘린더: 정적 데이터</td><td id="footer-refresh-4">국채금리: 미국 70분·그외 수동</td></tr>
+                    <tr><td id="footer-refresh-5">뉴스: 1분</td><td id="footer-refresh-6">증권거래소: 1분·70분(일부)</td></tr>
+                    <tr><td id="footer-refresh-7">지나가는 뉴스: 1분</td><td id="footer-refresh-8">원자재 및 에너지: 1분·70분(일부)</td></tr>
+                    <tr><td id="footer-refresh-9">기준금리: 유럽 1시간·그외 수동</td><td id="footer-refresh-10">가상화폐: 1분</td></tr>
                 </tbody>
             </table>
             <div class="footer-right-col">
@@ -258,7 +258,7 @@
                                 <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
                             </svg>
                         </a>
-                        <input type="text" name="q" id="footer-search-input" autocomplete="off">
+                        <input type="text" name="q" id="footer-search-input" autocomplete="off" placeholder="Google 검색">
                     </form>
                     <form action="https://search.naver.com/search.naver" method="get" target="_blank" rel="noopener noreferrer" class="footer-search-form footer-search-naver" role="search">
                         <a href="https://www.naver.com" target="_blank" rel="noopener noreferrer" id="footer-search-btn-naver" aria-label="Naver Home">
@@ -267,7 +267,7 @@
                                 <path fill="#ffffff" d="M10.71 4.5v5.07L6.99 4.5H4.5v9h2.79v-5.07l3.72 5.07H13.5v-9z"/>
                             </svg>
                         </a>
-                        <input type="text" name="query" id="footer-search-input-naver" autocomplete="off">
+                        <input type="text" name="query" id="footer-search-input-naver" autocomplete="off" placeholder="네이버 검색">
                     </form>
                 </div>
                 <div class="footer-bottom-text">
