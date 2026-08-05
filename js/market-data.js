@@ -110,54 +110,35 @@ async function fetchYahooQuote(symbol) {
     const changePercent = +(((current - prevClose) / prevClose) * 100).toFixed(2);
     // The chart endpoint already returns a full month-long close-price series
     // alongside the current quote — grabbing it here for the row's sparkline
-    // costs nothing extra (same single request), unlike the FMP-covered symbols
-    // which need a dedicated fetch (see fetchChartSeriesOnly).
+    // costs nothing extra (same single request), unlike FX, which needs a
+    // dedicated fetch since its price comes from a different source (see
+    // fetchChartSeriesOnly).
     const closes = result.indicators && result.indicators.quote && result.indicators.quote[0] && result.indicators.quote[0].close;
     const series = Array.isArray(closes) ? downsample(closes.filter(v => v != null), 40) : null;
     return { current: +current.toFixed(4), change, change_percent: changePercent, series };
 }
 
 // ---------------------------------------------------------------
-// Financial Modeling Prep (FMP) — verified by direct testing on 2026-07-27 against
-// the user's own free-tier key. FMP's free "Basic" plan does NOT support batched
-// multi-symbol requests (each symbol is its own API call) and gates a somewhat
-// arbitrary subset of symbols behind paid tiers, so this list is the specific set
-// that was actually confirmed working, not everything the dashboard shows:
-//  - Indices: S&P 500, Nasdaq COMPOSITE (not Nasdaq 100 — ^NDX is paid-tier only),
-//    Dow, FTSE 100, Euro Stoxx 50, Hang Seng, Nikkei 225.
-//  - Commodities: Gold, Silver, Brent Crude (WTI/nat gas/copper/wheat are paid-tier).
-//  - US Treasury 10Y & 2Y via the dedicated treasury-rates endpoint (1 call covers
-//    both, and includes the prior reading so "change" is a real value, not synthetic).
-// Germany DAX, KOSPI, Shanghai Composite, and every non-US 10Y bond yield have no
-// free-tier source anywhere (FMP or Twelve Data, both checked) — they stay on the
-// best-effort Yahoo-proxy path below.
-//
-// Free-tier quota is a hard 250 calls/day with no batching, so at 11 calls per FMP
-// refresh (7 indices + 3 commodities + 1 treasury-rates call) the safe sustainable
-// cadence is ~65 min minimum if run continuously 24/7 (24*60/11 ≈ 22.7 max refreshes/
-// day) — refreshed every 70 min (≈20.6 refreshes/day) for a small buffer. This is
-// categorically slower than the 1-minute cadence everything else uses; there is no
-// free tier of any provider that supports true 1-minute refresh for this data.
+// Financial Modeling Prep (FMP) — was previously also used for the 7 major indices
+// and Brent/Gold/Silver, but that traded them down to a 70-minute cadence purely to
+// stay under FMP's 250-calls/day free quota. Direct testing (2026-08-05) confirmed
+// Yahoo's own chart endpoint returns valid live data for every one of those symbols
+// (they were already being used for sparklines via CHART_ONLY_SYMBOLS, just not for
+// the price) — so they've moved to the same free 1-minute Yahoo-proxy path as every
+// other index/commodity below instead. That leaves FMP with exactly one job: US
+// Treasury 2-year yield, which has no free ticker anywhere else (Yahoo only publishes
+// 13-week/5/10/30-year — verified directly, no 2-year symbol resolves). Its
+// treasury-rates endpoint happens to return the 10-year alongside the 2-year in the
+// same call, so that's kept and used for '^TNX' too as a slower cross-check, but the
+// 1-minute Yahoo fetch (below) is the primary source for it now.
+// Germany DAX, KOSPI, Shanghai Composite are on the free 1-minute Yahoo path already;
+// every non-US 10Y bond yield (UK/France/Germany/China/Japan/Korea) has no free
+// live source anywhere (Yahoo, FMP, Twelve Data all checked) and has no ticker to
+// even attempt — see allYahooSymbols() below.
+// Down to 1 call/cycle (from 11), the safe sustainable cadence is ~250 refreshes/day
+// (24*60/250 ≈ 5.8 min) — run every 10 min for a comfortable buffer (144 calls/day).
 // FMP_API_KEY itself lives in config.js (gitignored, loaded before this file) — see
 // config.example.js for the template a fresh clone needs to copy and fill in.
-const FMP_INDEX_SYMBOLS = ['^GSPC', '^IXIC', '^DJI', '^FTSE', '^STOXX50E', '^HSI', '^N225'];
-const FMP_COMMODITY_MAP = { 'BZ=F': 'BZUSD', 'GC=F': 'GCUSD', 'SI=F': 'SIUSD' };
-const FMP_COVERED_SYMBOLS = new Set([...FMP_INDEX_SYMBOLS, ...Object.keys(FMP_COMMODITY_MAP), '^TNX', 'US2Y=RR']);
-
-async function fetchFmpQuoteShort(fmpSymbol) {
-    const url = `https://financialmodelingprep.com/stable/quote-short?symbol=${encodeURIComponent(fmpSymbol)}&apikey=${FMP_API_KEY}`;
-    const res = await fetchWithTimeout(url, 8000);
-    if (!res.ok) throw new Error('http ' + res.status);
-    const data = await res.json();
-    const row = Array.isArray(data) ? data[0] : null;
-    if (!row || row.price == null) throw new Error('no data (possibly a premium-only symbol)');
-    const current = +row.price;
-    const change = +(row.change ?? 0);
-    const prevVal = current - change;
-    const changePercent = prevVal ? +((change / prevVal) * 100).toFixed(2) : 0;
-    return { current: +current.toFixed(4), change: +change.toFixed(4), change_percent: changePercent };
-}
-
 async function fetchAllFmp() {
     try {
         const res = await fetchWithTimeout(`https://financialmodelingprep.com/stable/treasury-rates?apikey=${FMP_API_KEY}`, 8000);
@@ -170,40 +151,28 @@ async function fetchAllFmp() {
                     const changePercent = prevVal ? +((change / prevVal) * 100).toFixed(2) : 0;
                     return { current: cur, change, change_percent: changePercent };
                 };
-                setQuote('^TNX', toChange(latest.year10, prevRow.year10));
                 setQuote('US2Y=RR', toChange(latest.year2, prevRow.year2));
             }
         }
     } catch (e) {
         console.warn('FMP treasury-rates fetch failed:', e.message);
     }
-
-    // Sequential, not parallel — free-tier symbol gating already trims this to ~10
-    // calls, and going one at a time avoids risking an undocumented per-second burst
-    // limit on top of the known 250/day cap.
-    for (const symbol of FMP_INDEX_SYMBOLS) {
-        try {
-            setQuote(symbol, await fetchFmpQuoteShort(symbol));
-        } catch (e) {
-            console.warn('FMP index fetch failed for', symbol, e.message);
-        }
-    }
-    for (const ourSymbol of Object.keys(FMP_COMMODITY_MAP)) {
-        try {
-            setQuote(ourSymbol, await fetchFmpQuoteShort(FMP_COMMODITY_MAP[ourSymbol]));
-        } catch (e) {
-            console.warn('FMP commodity fetch failed for', ourSymbol, e.message);
-        }
-    }
     renderAll();
 }
 // ---------------------------------------------------------------
+
+// Synthetic bond-yield identifiers this file made up for the optional local
+// FRED-backed backend (see fetchLocalBondYields) — Yahoo has no real ticker for any
+// of these, so attempting them via the Yahoo proxy would just fail every single
+// cycle. US2Y=RR is the one exception worth a dedicated exclusion comment: it's
+// covered by fetchAllFmp above instead (see the FMP section).
+const NO_YAHOO_SOURCE_SYMBOLS = ['US2Y=RR', 'GB10Y=RR', 'FR10Y=RR', 'DE10Y=RR', 'CN10Y=RR', 'JP10Y=RR', 'KR10Y=RR'];
 
 function allYahooSymbols() {
     const set = new Set();
     [...INDICES, ...PINNED_MARKET, ...COMMODITIES, ...BOND10Y, ...PINNED_FX].forEach(i => set.add(i.symbol));
     set.delete('DUBAI_CRUDE_MANUAL'); // no live source exists — see COMMODITIES comment
-    FMP_COVERED_SYMBOLS.forEach(s => set.delete(s)); // FMP handles these now — don't burn Yahoo-proxy attempts on them
+    NO_YAHOO_SOURCE_SYMBOLS.forEach(s => set.delete(s));
     return [...set];
 }
 
@@ -215,9 +184,6 @@ function seedFallbackCache() {
 
 async function fetchOneYahooSymbol(symbol) {
     try {
-        // Note: ^TNX no longer comes through here — allYahooSymbols() excludes it now
-        // that FMP's treasury-rates endpoint covers it directly in real percent terms
-        // (Yahoo's ^TNX quote is x10 the actual yield, which used to need correcting here).
         const quote = await fetchYahooQuote(symbol);
         setQuote(symbol, quote);
         if (quote.series) setSeries(symbol, quote.series);
@@ -248,30 +214,26 @@ async function fetchAllYahoo() {
     }
 }
 
-// The FMP-covered indices/commodities get their PRICE from FMP (see above — it's the
-// more reliable source for them), but FMP's free quote-short endpoint has no history of
-// its own for a sparkline. So these — PLUS every FX pair, whose price comes from
-// Frankfurter (only one point per day, too sparse for a good-looking chart; see
-// fetchAllFX) — get a sparkline-ONLY fetch through the same Yahoo-chart-via-CORS-proxy
-// path fetchYahooQuote uses. Yahoo's FX tickers use exactly the same "USDKRW=X"-style
-// symbols already used throughout this file, and carry real intraday data for FX pairs
-// (spot FX trades ~24/5, unlike exchange hours), giving these charts the same
-// resolution as the Market/Commodities ones instead of Frankfurter's ~5-point weekly
-// line. Decoupled from price so a failed chart fetch never touches the number shown;
-// runs on its own slow cadence (see the setInterval near window.onload) — a 5-40min-old
-// sparkline is fine, unlike price.
+// Every index/commodity now gets its PRICE from the 1-minute Yahoo path above
+// (fetchOneYahooSymbol), which already includes the chart series in the same call —
+// no separate sparkline fetch needed for those. The one thing still missing a chart
+// is FX: its price comes from Frankfurter (only one point per day, too sparse for a
+// good-looking chart; see fetchAllFX), so it gets a sparkline-ONLY fetch through this
+// same Yahoo-chart-via-CORS-proxy path instead. Yahoo's FX tickers use exactly the
+// same "USDKRW=X"-style symbols already used throughout this file, and carry real
+// intraday data for FX pairs (spot FX trades ~24/5, unlike exchange hours), giving
+// these charts the same resolution as the Market/Commodities ones instead of
+// Frankfurter's ~5-point weekly line. Decoupled from price so a failed chart fetch
+// never touches the number shown; runs on its own slow cadence (see the setInterval
+// near window.onload) — a 5-40min-old sparkline is fine, unlike price.
 const ALL_FX_SYMBOLS = [...new Set([...FOREX_KO, ...FOREX_EN_USD, ...FOREX_EN_GBP].map(f => f.symbol))];
 // Dollar Index and VIX only otherwise get ONE combined price+chart fetch per 60s cycle
 // (via fetchOneYahooSymbol, 5000ms timeout, no retry) — same as every other pinned/index
-// symbol. Since they have no other data source to fall back on (unlike FMP-covered
-// indices/commodities), they're added here too so they ALSO get this dedicated,
-// longer-timeout chart fetch plus the 45s retry pass below — belt-and-suspenders so a
-// single flaky proxy attempt doesn't leave the pinned rows chartless for a full minute+.
-// '^TNX' (US 10Y) is the only BOND10Y symbol Yahoo actually has a real chart history
-// for — the rest (US2Y=RR, GB10Y=RR, etc.) are synthetic identifiers this file made up
-// for the optional local FRED-backed backend (see fetchLocalBondYields), which has no
-// history endpoint, so those stay chartless (empty "—") rather than faking a series.
-const CHART_ONLY_SYMBOLS = [...FMP_INDEX_SYMBOLS, ...Object.keys(FMP_COMMODITY_MAP), ...ALL_FX_SYMBOLS, ...PINNED_FX.map(f => f.symbol), ...PINNED_MARKET.map(i => i.symbol), '^TNX'];
+// symbol. Since they have no other data source to fall back on, they're added here too
+// so they ALSO get this dedicated, longer-timeout chart fetch plus the 45s retry pass
+// below — belt-and-suspenders so a single flaky proxy attempt doesn't leave the pinned
+// rows chartless for a full minute+.
+const CHART_ONLY_SYMBOLS = [...ALL_FX_SYMBOLS, ...PINNED_FX.map(f => f.symbol), ...PINNED_MARKET.map(i => i.symbol)];
 
 async function fetchChartSeriesOnly(symbol) {
     // Same 1-month/daily window as fetchYahooQuote — see the comment there. This
@@ -287,13 +249,8 @@ async function fetchChartSeriesOnly(symbol) {
     const result = data.chart && data.chart.result && data.chart.result[0];
     const closes = result && result.indicators && result.indicators.quote && result.indicators.quote[0] && result.indicators.quote[0].close;
     if (!Array.isArray(closes)) throw new Error('no series');
-    let clean = closes.filter(v => v != null);
+    const clean = closes.filter(v => v != null);
     if (clean.length < 2) throw new Error('series too short');
-    // Yahoo's ^TNX quote is the actual yield × 10 (a known quirk of that ticker) — the
-    // price itself comes from FMP's treasury-rates endpoint already in real percent
-    // terms (see FMP_COVERED_SYMBOLS), so this chart-only series needs the same ÷10
-    // correction to land on the same scale as the number shown next to it.
-    if (symbol === '^TNX') clean = clean.map(v => v / 10);
     return downsample(clean, 40);
 }
 

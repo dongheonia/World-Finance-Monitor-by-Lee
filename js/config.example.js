@@ -1,9 +1,8 @@
 // Copy this file to config.js and fill in your own free-tier key from
-// https://site.financialmodelingprep.com/ — market-data.js's fetchFmpQuoteShort/fetchAllFmp
-// use it for S&P 500/Nasdaq/Dow/FTSE/Euro Stoxx/Hang Seng/Nikkei, Gold/Silver/Brent, and
-// US 10Y/2Y treasury yields (see the comment above FMP_API_KEY's usage in market-data.js).
-// Without it, those specific rows just fall back to the existing Yahoo-proxy path / static
-// fallback values — nothing else on the page depends on this key.
+// https://site.financialmodelingprep.com/ — market-data.js's fetchAllFmp uses it for the
+// US 2-year treasury yield, the one instrument with no free ticker anywhere else (see the
+// comment above fetchAllFmp in market-data.js). Without it, that row just falls back to
+// its static fallback value — nothing else on the page depends on this key anymore.
 //
 // NOTE: this key is used directly in browser fetch() calls, so it is visible to anyone
 // who opens devtools/view-source on the deployed page, regardless of git history. Keeping
