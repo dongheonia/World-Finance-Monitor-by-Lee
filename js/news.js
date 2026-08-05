@@ -584,7 +584,16 @@ function applyNewsPool(combined) {
 async function fetchAllNews() {
     const BATCH_SIZE = 6;
     const BATCH_DELAY_MS = 300;
-    let combined = [];
+    // Seed with whatever's already showing (cache on first load, last cycle's
+    // result on every periodic refresh) instead of starting from empty — otherwise
+    // the very first batch's applyNewsPool() call overwrites the full list with
+    // just ~6 feeds' worth, and the news box visibly SHRINKS before regrowing as
+    // later batches land. That shrink-then-regrow is what "새로고침 시 뉴스가
+    // 처음엔 조금만 보이고 시간 지나야 다 보임" was — it happened on the initial
+    // load AND every single 60s auto-refresh. Dedup in applyNewsPool means fresh
+    // items naturally take over as their batch arrives; this only prevents the
+    // list from ever having fewer items than it already did.
+    let combined = masterNews.slice();
     for (let i = 0; i < NEWS_FEEDS.length; i += BATCH_SIZE) {
         const batch = NEWS_FEEDS.slice(i, i + BATCH_SIZE);
         const results = await Promise.allSettled(batch.map(fetchFeedItems));
