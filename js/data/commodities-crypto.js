@@ -20,14 +20,22 @@ const BOND10Y = [
     // China has no live source anywhere — checked Yahoo/FMP/FRED/BIS directly, none
     // carry a China 10Y series at all (FRED's only China rate series are a
     // discontinued-since-2023 3-month bill and interbank/discount rates, nothing
-    // long-term). approxSeries is a manually curated, deliberately approximate stand-in
-    // for the sparkline ONLY — the general shape of China's 10Y over roughly the past
-    // year (gentle grind lower amid continued PBOC easing, per widely-reported
-    // financial coverage), not a day-by-day real series like every other row's chart.
-    // Seeded once in seedFallbackCache() and never overwritten (nothing will ever fetch
-    // a real one).
-    { symbol: 'CN10Y=RR', ko: '중국', en: 'China', fallback: { current: 1.72 }, prevYield: 1.73,
-      approxSeries: [1.95, 1.92, 1.90, 1.88, 1.85, 1.82, 1.80, 1.78, 1.76, 1.75, 1.74, 1.72] },
+    // long-term). fallback/prevYield and approxSeries below are calibrated against a
+    // real Investing.com 1-year chart the user shared directly (current 1.701, daily
+    // change -0.002/-0.12%, 52-week range 1.688-1.963): a rise to the 52-week high
+    // (~1.93) a few months in, a sharp correction to ~1.86, then a grinding decline
+    // with some noise down to the 52-week low (~1.688) near the end, with a small
+    // recovery back to the current reading. Still a manually curated STAND-IN for the
+    // sparkline only, not a day-by-day real series like every other row's chart — no
+    // free live source exists to replace it with. Seeded once in seedFallbackCache()
+    // and never overwritten.
+    // prevYield is 1.71 rather than the screenshot's literal previous-close (1.703) —
+    // a -0.002 gap rounds to "-0.00" at this row's 2-decimal display precision, and
+    // JS's `-0 >= 0` quirk would then show that as a green/up "+0%" instead of a real
+    // (if small) down move. A slightly wider gap avoids landing exactly on that edge
+    // case while staying an equally small, realistic daily move.
+    { symbol: 'CN10Y=RR', ko: '중국', en: 'China', fallback: { current: 1.701 }, prevYield: 1.71,
+      approxSeries: [1.80, 1.88, 1.93, 1.86, 1.83, 1.80, 1.82, 1.77, 1.74, 1.70, 1.688, 1.701] },
     { symbol: 'JP10Y=RR', ko: '일본', en: 'Japan', fallback: { current: 2.79 }, prevYield: 2.70 },
     { symbol: 'KR10Y=RR', ko: '한국', en: 'Korea', fallback: { current: 4.28 }, prevYield: 4.16 }
 ];
