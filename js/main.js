@@ -10,7 +10,7 @@ window.onload = () => {
     renderCalendar();
     requestAnimationFrame(centerCalendarOnToday); // wait a frame so layout/offsetTop are settled
     fetchAllMarketData();
-    fetchFredBondYields();
+    fetchNonUsBondYields();
     fetchECBPolicyRate();
     fetchAllNews();
     fetchProxiedSparklines();
@@ -25,10 +25,11 @@ window.onload = () => {
     // chart API has no faster official cadence to chase, and going below 60s risks
     // tripping the free CORS proxies' own rate limiting — see ALL_CORS_PROXIES — which
     // would make the numbers LESS reliable, not more real-time).
-    // The non-US bond yields (UK/France/Germany/Japan/Korea) come from FRED, which
-    // only ever publishes once a month — polling that on a 1-minute cycle would just
-    // hammer the shared CORS-proxy pool for zero benefit, so it gets its own 30-minute
-    // cadence instead (see the comment above fetchFredBondYields).
+    // The non-US bond yields (UK/Germany/Japan now daily from their own central
+    // bank/debt office; France/Korea monthly from FRED) never publish more than once a
+    // day — polling that on a 1-minute cycle would just hammer the shared CORS-proxy
+    // pool for zero benefit, so it gets its own 30-minute cadence instead (see the
+    // comment above fetchNonUsBondYields).
     // The ECB policy rate moves at most ~8x/year and only publishes once a day, so
     // there's no real data to be "more real-time" about — hourly already checks far
     // more often than the underlying series can change; the other 5 central banks have
@@ -41,7 +42,7 @@ window.onload = () => {
     // see fetchCryptoSparklines) has no such shared-proxy downside, so it runs on its
     // own much faster 2-minute cadence.
     setInterval(fetchAllMarketData, 60000);
-    setInterval(fetchFredBondYields, 30 * 60 * 1000);
+    setInterval(fetchNonUsBondYields, 30 * 60 * 1000);
     setInterval(fetchECBPolicyRate, 60 * 60 * 1000);
     setInterval(fetchAllNews, 60000);
     setInterval(fetchProxiedSparklines, 5 * 60 * 1000);

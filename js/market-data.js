@@ -120,7 +120,7 @@ async function fetchYahooQuote(symbol) {
 
 // Synthetic bond-yield identifiers this file made up (Yahoo has no real ticker for any
 // of these, so attempting them via the Yahoo proxy would just fail every single cycle)
-// — covered instead by fetchFredBondYields() below (all but China — see there).
+// — covered instead by fetchNonUsBondYields() below (all but China — see there).
 const NO_YAHOO_SOURCE_SYMBOLS = ['GB10Y=RR', 'FR10Y=RR', 'DE10Y=RR', 'CN10Y=RR', 'JP10Y=RR', 'KR10Y=RR'];
 
 function allYahooSymbols() {
@@ -447,18 +447,41 @@ async function fetchLocalBackend() {
 }
 
 // Non-US 10Y government bond yields have no CORS-enabled API anywhere (Yahoo/FMP/
-// Twelve Data all checked — see the comment above NO_YAHOO_SOURCE_SYMBOLS). FRED (St.
-// Louis Fed) republishes OECD's "long-term interest rate" series for most of them,
-// monthly, and its CSV endpoint needs no API key — but has no CORS header of its own,
-// so it's routed through the same free CORS-proxy chain fetchYahooQuote already uses
-// (fetchViaProxies) rather than needing anything new. China isn't in this OECD
-// dataset (not an OECD member) and has no free source anywhere — stays on its curated
-// fallback value, same as before.
+// Twelve Data all checked — see the comment above NO_YAHOO_SOURCE_SYMBOLS). Where the
+// country's own central bank/debt office publishes a free daily series directly, that
+// wins (real day-by-day resolution, matching what the US Yahoo-sourced row already
+// gets); everything else falls back to FRED (St. Louis Fed), which republishes OECD's
+// "long-term interest rate" series monthly. None of these have a CORS header of their
+// own, so all of them route through the same free CORS-proxy chain fetchYahooQuote
+// already uses (fetchViaProxies) rather than needing anything new.
+//   - UK: Bank of England's own IADB (Interactive Statistical Database), series
+//     IUDMNZC (nominal spot 10-year gilt yield) — daily, straight from the source that
+//     actually issues the gilts.
+//   - Germany: Bundesbank's own statistics API, series BBSIS...R10XX... (Svensson-method
+//     term structure, 10-year residual maturity) — daily, from the Bundesbank itself.
+//   - Japan: Ministry of Finance's own published JGB yield table — daily, straight from
+//     the issuer. Uses the small "current month" file (resets each month, so the very
+//     first day or two of a new month can have too few points for a change/sparkline —
+//     self-heals within a couple of days) rather than the 1.2MB full-history file,
+//     which would be wasteful to re-fetch every cycle just for the latest point.
+//   - France, Korea: no equivalent free daily source found (checked Banque de France's
+//     Webstat — the series metadata exists but its data API isn't reachable the same
+//     way ECB's is; checked Korea's KOSIS/ECOS — key-gated, and KRX/KOFIA have no free
+//     API either) — stay on FRED's monthly figures.
+//   - China: not in FRED's OECD dataset (not an OECD member) and has no free source
+//     anywhere (also checked BIS's statistics API directly — it covers policy rates and
+//     FX, not government bond yields) — stays on its curated approximate fallback (see
+//     BOND10Y in commodities-crypto.js).
+// UK is ALSO kept in FRED_BOND_SERIES even though BoE is its primary source — BoE's
+// site sits behind bot protection that occasionally 403s a proxied request (observed
+// directly while testing, inconsistently — same flaky-free-proxy story as everywhere
+// else in this file). fetchNonUsBondYields() runs the FRED fetches first as a safety
+// net, then layers the daily sources on top so they overwrite it whenever they
+// succeed — UK never regresses to being permanently stuck on the static fallback just
+// because one 30-minute cycle's BoE request happened to fail.
 const FRED_BOND_SERIES = {
     'GB10Y=RR': 'IRLTLT01GBM156N',
     'FR10Y=RR': 'IRLTLT01FRM156N',
-    'DE10Y=RR': 'IRLTLT01DEM156N',
-    'JP10Y=RR': 'IRLTLT01JPM156N',
     'KR10Y=RR': 'IRLTLT01KRM156N'
 };
 
@@ -469,33 +492,97 @@ function parseFredCsv(text) {
         .map(([date, value]) => ({ date, value: +value }));
 }
 
+function setQuoteAndSeriesFromValues(symbol, values) {
+    if (values.length < 2) throw new Error('not enough data points');
+    const current = values[values.length - 1];
+    const prev = values[values.length - 2];
+    const change = +(current - prev).toFixed(3);
+    const changePercent = prev ? +((change / prev) * 100).toFixed(2) : 0;
+    setQuote(symbol, { current, change, change_percent: changePercent });
+    setSeries(symbol, values);
+}
+
 async function fetchOneFredSeries(symbol, seriesId) {
     try {
         const res = await fetchViaProxies(`https://fred.stlouisfed.org/graph/fredgraph.csv?id=${seriesId}`, 9000);
         const rows = parseFredCsv(await res.text());
-        if (rows.length < 2) throw new Error('not enough data points');
-        const latest = rows[rows.length - 1];
-        const prev = rows[rows.length - 2];
         // "Change" here is real month-over-month, not a stale multi-month checkpoint —
         // the most standard comparison basis for a series that only ever prints once a
         // month in the first place (see the BOND10Y comment for why this replaced the
-        // old fixed-checkpoint comparison).
-        const change = +(latest.value - prev.value).toFixed(3);
-        const changePercent = prev.value ? +((change / prev.value) * 100).toFixed(2) : 0;
-        setQuote(symbol, { current: latest.value, change, change_percent: changePercent });
-        // Real (if coarse, monthly-resolution) trend data beats the "—" no-chart state
-        // these rows used to be stuck with — 24 points is 2 years of history.
-        setSeries(symbol, rows.slice(-24).map(r => r.value));
+        // old fixed-checkpoint comparison). 24 points is 2 years of history.
+        setQuoteAndSeriesFromValues(symbol, rows.slice(-24).map(r => r.value));
     } catch (e) {
         console.warn('FRED fetch failed for', symbol, e.message);
     }
 }
 
-// FRED only publishes monthly, so there's no reason to poll this on the 1-minute
-// market cycle — 30 minutes is already far more often than the data can actually
-// change; it's just here to pick up a revision shortly after FRED publishes one.
-async function fetchFredBondYields() {
+function boeDateParam(d) {
+    const mon = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()];
+    return `${String(d.getDate()).padStart(2, '0')}/${mon}/${d.getFullYear()}`;
+}
+async function fetchBoeGiltYield() {
+    try {
+        const to = new Date();
+        const from = new Date();
+        from.setDate(from.getDate() - 35); // ~1 trading month, matching every other chart's resolution
+        const target = `https://www.bankofengland.co.uk/boeapps/database/_iadb-fromshowcolumns.asp?csv.x=yes&Datefrom=${boeDateParam(from)}&Dateto=${boeDateParam(to)}&SeriesCodes=IUDMNZC&CSVF=TN&UsingCodes=Y&VPD=Y&VFD=N`;
+        const res = await fetchViaProxies(target, 9000);
+        const values = (await res.text()).trim().split('\n').slice(1)
+            .map(line => line.split(','))
+            .filter(cols => cols.length === 2 && cols[1] !== '')
+            .map(cols => +cols[1]);
+        setQuoteAndSeriesFromValues('GB10Y=RR', values);
+    } catch (e) {
+        console.warn('Bank of England gilt yield fetch failed:', e.message);
+    }
+}
+
+async function fetchBundesbankBondYield() {
+    try {
+        const from = new Date();
+        from.setDate(from.getDate() - 60); // wider window since some days publish no value (holidays)
+        const startPeriod = from.toISOString().slice(0, 10);
+        const target = `https://api.statistiken.bundesbank.de/rest/data/BBSIS/D.I.ZST.ZI.EUR.S1311.B.A604.R10XX.R.A.A._Z._Z.A?format=csv&lang=en&startPeriod=${startPeriod}`;
+        const res = await fetchViaProxies(target, 9000);
+        const values = (await res.text()).split('\n')
+            .filter(line => /^\d{4}-\d{2}-\d{2},/.test(line)) // skips the metadata header rows entirely, however many there are
+            .map(line => line.split(','))
+            .filter(cols => cols[1] && cols[1] !== '.')
+            .map(cols => +cols[1]);
+        setQuoteAndSeriesFromValues('DE10Y=RR', values.slice(-24));
+    } catch (e) {
+        console.warn('Bundesbank bond yield fetch failed:', e.message);
+    }
+}
+
+async function fetchMofJgbYield() {
+    try {
+        const res = await fetchViaProxies('https://www.mof.go.jp/english/policy/jgbs/reference/interest_rate/jgbcme.csv', 9000);
+        const lines = (await res.text()).trim().split('\n');
+        const header = lines[1].split(','); // "Date,1Y,2Y,...,10Y,15Y,..."
+        const idx10y = header.indexOf('10Y');
+        if (idx10y < 0) throw new Error('10Y column not found');
+        const values = lines.slice(2)
+            .map(line => line.split(','))
+            .filter(cols => cols.length > idx10y && /^\d{4}\/\d{1,2}\/\d{1,2}$/.test(cols[0]) && cols[idx10y] !== '-' && cols[idx10y] !== '')
+            .map(cols => +cols[idx10y]);
+        setQuoteAndSeriesFromValues('JP10Y=RR', values);
+    } catch (e) {
+        console.warn('MOF Japan JGB yield fetch failed:', e.message);
+    }
+}
+
+// None of these sources publish more than once a day, so there's no reason to poll
+// this on the 1-minute market cycle — 30 minutes is already far more often than any of
+// them can actually change; it's just here to pick up a revision shortly after it's
+// published.
+async function fetchNonUsBondYields() {
+    // FRED first, as a safety-net baseline for UK/France/Korea (see the comment above
+    // FRED_BOND_SERIES) — awaited before the daily sources below so they always
+    // overwrite it when they succeed, rather than racing and unpredictably losing to it.
     await Promise.allSettled(Object.entries(FRED_BOND_SERIES).map(([symbol, seriesId]) => fetchOneFredSeries(symbol, seriesId)));
+    renderAll();
+    await Promise.allSettled([fetchBoeGiltYield(), fetchBundesbankBondYield(), fetchMofJgbYield()]);
     renderAll();
 }
 
