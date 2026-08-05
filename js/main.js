@@ -21,8 +21,8 @@ window.onload = () => {
     // Run concurrently, not sequentially — the one-time Japan history seed (see the
     // comment above seedMofJgbHistory) fetches a 1.2MB file and can take a few seconds,
     // and there's no reason to make every other country's bond yield wait on it. Worst
-    // case, Japan's very first 30-min cycle this session has less padding than usual
-    // and picks up the rest on the next one once the seed has landed.
+    // case, Japan's first 1-min cycle this session has less padding than usual and
+    // picks up the rest on the next one once the seed has landed.
     seedMofJgbHistory();
     fetchNonUsBondYields();
     fetchECBPolicyRate();
@@ -30,7 +30,7 @@ window.onload = () => {
     fetchProxiedSparklines();
     fetchCryptoSparklines();
     setTimeout(retryMissingSparklines, 45000);
-    // FX, stock indices, commodities, and US 10Y bond yield all refresh every 1 minute
+    // FX, stock indices, commodities, and every bond yield all refresh every 1 minute
     // now — the indices/commodities that used to be throttled to FMP's 70-minute cycle
     // moved onto the same free Yahoo-proxy path everything else uses (see the note
     // above NO_YAHOO_SOURCE_SYMBOLS in market-data.js), since testing confirmed Yahoo
@@ -39,11 +39,12 @@ window.onload = () => {
     // chart API has no faster official cadence to chase, and going below 60s risks
     // tripping the free CORS proxies' own rate limiting — see ALL_CORS_PROXIES — which
     // would make the numbers LESS reliable, not more real-time).
-    // The non-US bond yields (UK/Germany/Japan now daily from their own central
-    // bank/debt office; France/Korea monthly from FRED) never publish more than once a
-    // day — polling that on a 1-minute cycle would just hammer the shared CORS-proxy
-    // pool for zero benefit, so it gets its own 30-minute cadence instead (see the
-    // comment above fetchNonUsBondYields).
+    // Non-US bond yields (UK/Germany/Japan daily from their own central bank/debt
+    // office; France/Korea monthly from FRED) are also polled every 1 minute now, per
+    // explicit request, even though none of these sources actually publish more than
+    // once a day (France/Korea: once a month) — most cycles just re-confirm the same
+    // reading rather than finding a new one, but this keeps every bond-yield row on the
+    // same cadence as the rest of the page instead of a slower 30-minute one.
     // The ECB policy rate moves at most ~8x/year and only publishes once a day, so
     // there's no real data to be "more real-time" about — hourly already checks far
     // more often than the underlying series can change; the other 5 central banks have
@@ -56,7 +57,7 @@ window.onload = () => {
     // see fetchCryptoSparklines) has no such shared-proxy downside, so it runs on its
     // own much faster 2-minute cadence.
     setInterval(fetchAllMarketData, 60000);
-    setInterval(fetchNonUsBondYields, 30 * 60 * 1000);
+    setInterval(fetchNonUsBondYields, 60000);
     setInterval(fetchECBPolicyRate, 60 * 60 * 1000);
     setInterval(fetchAllNews, 60000);
     setInterval(fetchProxiedSparklines, 5 * 60 * 1000);

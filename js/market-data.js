@@ -616,10 +616,11 @@ async function fetchMofJgbYield() {
     }
 }
 
-// None of these sources publish more than once a day, so there's no reason to poll
-// this on the 1-minute market cycle — 30 minutes is already far more often than any of
-// them can actually change; it's just here to pick up a revision shortly after it's
-// published.
+// None of these sources actually publish more than once a day (France/Korea's FRED
+// figures: once a month), so most 1-minute cycles just re-confirm the same reading
+// rather than finding a new one — but per explicit request, every bond yield row now
+// shares the same 1-minute cadence as the rest of the page (see the setInterval near
+// window.onload) instead of a slower one.
 async function fetchNonUsBondYields() {
     // FRED first, as a safety-net baseline for UK/France/Korea (see the comment above
     // FRED_BOND_SERIES) — awaited before the daily sources below so they always
