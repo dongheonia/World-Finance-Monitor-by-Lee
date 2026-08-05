@@ -1,0 +1,41 @@
+name: Refresh financial calendar
+
+# Runs itself on the 1st of every month with no developer step — see
+# scripts/refresh-calendar.mjs for exactly what it fetches and why (schedule-only:
+# new rate-decision dates for US/EU/Japan/China, nothing else). workflow_dispatch is
+# there purely so this can be re-run by hand from the Actions tab to check it's still
+# working, without needing to wait for the 1st.
+on:
+  schedule:
+    - cron: '0 0 1 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh-calendar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run calendar refresh
+        run: node scripts/refresh-calendar.mjs
+
+      - name: Commit changes if any
+        run: |
+          if git diff --quiet -- js/data/calendar-config.js; then
+            echo "No calendar changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add js/data/calendar-config.js
+          SUBJECT="Auto-refresh financial calendar schedule dates"
+          BODY="Adds newly-published rate-decision dates (US/EU/Japan/China) found by scripts/refresh-calendar.mjs -- schedule only, no values or times. See that script for sources and what is not covered."
+          git commit -m "$SUBJECT" -m "$BODY"
+          git push

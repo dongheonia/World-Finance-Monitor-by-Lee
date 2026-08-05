@@ -30,7 +30,7 @@ function calEventsInMonth(year, month) {
             const d = new Date(e.date + 'T00:00:00');
             return d.getFullYear() === year && d.getMonth() === month;
         })
-        .sort((a, b) => (a.date + (a.time || '')).localeCompare(b.date + (b.time || '')));
+        .sort((a, b) => a.date.localeCompare(b.date));
 }
 
 function calEventTagText(ev) {
@@ -77,37 +77,21 @@ function renderCalendarGrid(year, month) {
     document.getElementById('cal-grid').innerHTML = html;
 }
 
-// Speeches and meeting minutes are scheduled document releases, not a data point with a
-// number to report — showing the generic "Pending" fallback on one that's already
-// happened would read as wrong, so these get a released/scheduled status word instead.
-const CAL_NO_VALUE_CATEGORIES = new Set(['minutes', 'speech']);
-
 function renderCalendarList(year, month) {
     const events = calEventsInMonth(year, month);
     const todayStr = new Date().toISOString().slice(0, 10);
-    const pendingLabel = currentLang === 'ko' ? '발표 예정' : 'Pending';
-    const releasedLabel = currentLang === 'ko' ? '공개됨' : 'Released';
-    const scheduledLabel = currentLang === 'ko' ? '예정' : 'Scheduled';
     document.getElementById('cal-event-list').innerHTML = events.map(ev => {
         const isPast = ev.date < todayStr;
         const isToday = ev.date === todayStr;
         const dateLabel = ev.date.slice(5).replace('-', '.');
         const detail = currentLang === 'ko' ? ev.detailKo : ev.detailEn;
-        const value = CAL_NO_VALUE_CATEGORIES.has(ev.category)
-            ? (isPast ? releasedLabel : scheduledLabel)
-            : (currentLang === 'ko' ? ev.valueKo : ev.valueEn) || pendingLabel;
-        const prev = currentLang === 'ko' ? ev.prevKo : ev.prevEn;
-        // Always render a time slot (even when unknown) so the date column has a fixed
-        // width — leaving it out entirely made the title text shift left/right depending
-        // on whether that particular event happened to have a confirmed time or not.
         return `
             <div class="cal-list-item${isPast ? ' cal-past' : ''}${isToday ? ' cal-today' : ''}" data-date="${ev.date}">
-                <div class="cal-list-date">${dateLabel} ${ev.time || '--:--'}</div>
+                <div class="cal-list-date">${dateLabel}</div>
                 <div class="cal-list-body">
                     <div class="cal-list-title">${calFlagPrefix(ev.country)} ${calEventTitle(ev)}</div>
                     <div class="cal-list-detail">${detail || ''}</div>
                 </div>
-                <div class="cal-list-value">${value}${prev ? `<div class="cal-list-prev">${prev}</div>` : ''}</div>
             </div>
         `;
     }).join('') || `<div class="text-gray-600 text-sm">${currentLang === 'ko' ? '이벤트 없음' : 'No events'}</div>`;
@@ -119,12 +103,7 @@ function renderCalendar() {
     document.getElementById('cal-month-label').innerText = currentLang === 'ko'
         ? `${year}년 ${month + 1}월`
         : calendarViewDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-    // Event times are each event's own local time (see the CALENDAR_EVENTS comment
-    // above) — noted here once rather than next to every individual time, which looked
-    // cluttered.
-    document.getElementById('cal-list-title').innerHTML = currentLang === 'ko'
-        ? '이벤트 <span class="section-unit">(현지시간)</span>'
-        : 'Events <span class="section-unit">(Local Time)</span>';
+    document.getElementById('cal-list-title').innerText = currentLang === 'ko' ? '이벤트' : 'Events';
     document.getElementById('cal-today-btn').innerText = currentLang === 'ko' ? '오늘' : 'Today';
     const prevBtn = document.getElementById('cal-prev-btn');
     const nextBtn = document.getElementById('cal-next-btn');

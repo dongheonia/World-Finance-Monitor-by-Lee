@@ -233,13 +233,11 @@ body.light-mode .cal-day { background: rgb(188, 191, 196); }
 .cal-list-body { flex: 1; min-width: 0; }
 .cal-list-title { font-weight: 700; }
 .cal-list-detail { font-size: 10px; }
-.cal-list-value { text-align: right; font-family: 'Courier Prime', monospace; white-space: nowrap; }
-.cal-list-prev { font-size: 9px; }
 /* Today/future: black in light mode, white in dark mode. Past: gray in BOTH modes
    (overrides the above with !important since it needs to win over the dark-mode rule). */
-.cal-list-date, .cal-list-title, .cal-list-detail, .cal-list-value, .cal-list-prev { color: #111827; }
-body:not(.light-mode) .cal-list-date, body:not(.light-mode) .cal-list-title, body:not(.light-mode) .cal-list-detail, body:not(.light-mode) .cal-list-value, body:not(.light-mode) .cal-list-prev { color: #ffffff; }
-.cal-list-item.cal-past .cal-list-date, .cal-list-item.cal-past .cal-list-title, .cal-list-item.cal-past .cal-list-detail, .cal-list-item.cal-past .cal-list-value, .cal-list-item.cal-past .cal-list-prev { color: #6b7280 !important; }
+.cal-list-date, .cal-list-title, .cal-list-detail { color: #111827; }
+body:not(.light-mode) .cal-list-date, body:not(.light-mode) .cal-list-title, body:not(.light-mode) .cal-list-detail { color: #ffffff; }
+.cal-list-item.cal-past .cal-list-date, .cal-list-item.cal-past .cal-list-title, .cal-list-item.cal-past .cal-list-detail { color: #6b7280 !important; }
 
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
