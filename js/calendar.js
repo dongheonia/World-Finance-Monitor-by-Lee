@@ -110,7 +110,6 @@ function renderCalendar() {
     renderCalendarGrid(year, month);
     renderCalendarList(year, month);
     syncCalendarListHeight();
-    alignCalendarDivider();
 }
 
 // The month grid's height varies (5 vs 6 week rows), and grew further once day cells
@@ -124,28 +123,6 @@ function syncCalendarListHeight() {
     list.style.maxHeight = `${grid.getBoundingClientRect().height}px`;
 }
 
-// Lines up the calendar/event-list divider (border-left on #cal-right-panel) with the
-// vertical gap between the FX RATES and STOCK EXCHANGE columns (#mid-column/
-// #right-column) below, so the calendar reads as part of the same grid instead of an
-// unrelated 2:1 split. Only meaningful once those columns are actually side-by-side
-// (the lg breakpoint) — below that everything stacks, so there's no gap to match and
-// this just falls back to the plain flex-[2] ratio.
-function alignCalendarDivider() {
-    const leftPanel = document.getElementById('cal-left-panel');
-    const midColumn = document.getElementById('mid-column');
-    const rightColumn = document.getElementById('right-column');
-    if (!leftPanel || !midColumn || !rightColumn) return;
-    const col2Rect = midColumn.getBoundingClientRect();
-    const col3Rect = rightColumn.getBoundingClientRect();
-    if (col3Rect.top - col2Rect.top > 5) { // stacked (below lg) — nothing to align to
-        leftPanel.style.flex = '';
-        return;
-    }
-    const gapCenter = (col2Rect.right + col3Rect.left) / 2;
-    const GAP_PX = 16; // gap-4 between #cal-left-panel and #cal-right-panel
-    const desiredWidth = gapCenter - leftPanel.getBoundingClientRect().left - GAP_PX;
-    if (desiredWidth > 0) leftPanel.style.flex = `0 0 ${desiredWidth}px`;
-}
 
 // Shared by centerCalendarOnToday/scrollTodayToTop below — falls back to the nearest
 // upcoming event if nothing is dated exactly today, and to the last event if today is

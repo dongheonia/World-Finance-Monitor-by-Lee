@@ -53,7 +53,6 @@ window.onload = () => {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(() => {
             alignColumnBottoms();
-            alignCalendarDivider();
             if (mapInstance) mapInstance.resize();
         }, 150);
     });

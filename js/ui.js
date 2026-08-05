@@ -70,10 +70,7 @@ function watchColumnResize() {
     columnResizeObserver = new ResizeObserver(() => {
         if (aligningColumns) return;
         clearTimeout(columnResizeDebounce);
-        columnResizeDebounce = setTimeout(() => {
-            alignColumnBottoms();
-            alignCalendarDivider();
-        }, 120);
+        columnResizeDebounce = setTimeout(alignColumnBottoms, 120);
     });
     Array.from(grid.children).forEach(col => columnResizeObserver.observe(col));
 }
