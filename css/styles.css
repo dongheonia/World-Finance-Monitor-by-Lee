@@ -195,6 +195,33 @@ body:not(.light-mode) .ticker-wrapper { background: rgb(126, 128, 130); color: #
 body.light-mode .ticker-item .news-topic { color: #eab308; }
 body:not(.light-mode) .ticker-item .news-topic { color: rgb(94, 25, 36); }
 
+/* Page grid: news spans both rows in column 1 so it gets the combined height of the
+   calendar row + data row, instead of just the data row's height — the calendar only
+   occupies the middle+right columns' width, sitting above the FX/rates/bond and
+   market/commodities/crypto columns rather than spanning the full page width. Explicit
+   grid-template-areas (not Tailwind's grid-cols utilities) since this needs row-spanning
+   that a plain N-column utility class can't express. items-start (not stretch) matches
+   the old #main-grid — every column's actual pixel height is still set by JS
+   (fitNewsCardHeight/alignColumnBottoms in news.js/ui.js), not by the grid stretching
+   items to fill their track. */
+#main-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-areas: "news" "calendar" "mid" "right";
+    gap: 24px;
+    align-items: start;
+}
+@media (min-width: 1024px) {
+    #main-grid {
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-areas: "news calendar calendar" "news mid right";
+    }
+}
+#news-column { grid-area: news; min-height: 0; }
+#econ-calendar { grid-area: calendar; }
+#mid-column { grid-area: mid; }
+#right-column { grid-area: right; }
+
 /* Economic calendar */
 /* #cal-month-label/#cal-list-title otherwise inherit body's base green terminal text
    color, which reads wrong for a heading against the calendar's own dark cells — pin

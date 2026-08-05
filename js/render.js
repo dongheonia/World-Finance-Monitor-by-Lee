@@ -166,12 +166,13 @@ function toggleMarketAlerts() {
     renderAll();
 }
 
+// State is shown by color alone (map-style-active fills it green when on), same as
+// the map style / FX base toggle buttons elsewhere on the page — no "켜짐/꺼짐"(ON/OFF)
+// text needed once the fill does that job.
 function updateMarketAlertsButton() {
     const btn = document.getElementById('market-alerts-btn');
     if (!btn) return;
-    const label = currentLang === 'ko' ? '알림' : 'Alerts';
-    const state = marketAlertsEnabled ? (currentLang === 'ko' ? '켜짐' : 'ON') : (currentLang === 'ko' ? '꺼짐' : 'OFF');
-    btn.innerText = `${label}: ${state}`;
+    btn.innerText = currentLang === 'ko' ? '알림' : 'Alerts';
     btn.classList.toggle('map-style-active', marketAlertsEnabled);
 }
 

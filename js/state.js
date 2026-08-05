@@ -129,7 +129,12 @@ function loadNewsCache() {
 let mapInstance = null;
 let currentMapStyle = 'map'; // 'map' | 'satellite'
 let newsTab = 'world'; // which tab is active in the combined news box
-const NEWS_ITEMS_PER_TAB = 24; // world/economic show the same count; tuned so the 3 columns bottom-align
+// world/economic show the same count. The news card now spans the calendar row +
+// data row combined (see #main-grid in styles.css), roughly double its old height, so
+// this was raised well past the old 40-item effective floor to actually fill that
+// extra space with real content instead of just needing less scrolling to see the
+// same 40 items.
+const NEWS_ITEMS_PER_TAB = 80;
 
 // ---------------------------------------------------------------
 // LIVE DATA NOTES:

@@ -370,40 +370,45 @@ function renderNewsLists(preserveScroll = true) {
     const activeItems = newsTab === 'economy'
         ? (econItems.length ? econItems : pool)
         : (worldItems.length ? worldItems : pool);
-    const count = Math.min(activeItems.length, Math.max(NEWS_ITEMS_PER_TAB, 40));
+    const count = Math.min(activeItems.length, NEWS_ITEMS_PER_TAB);
     container.innerHTML = activeItems.slice(0, count).map(newsItemHtml).join('');
     container.scrollTop = savedScrollTop;
     fitNewsCardHeight();
 }
 
-// Pin the news card's height to the taller of the middle/right columns. Content
-// shorter than that just leaves the (already-bordered) card at full height; content
-// taller than that scrolls inside #news-container (overflow-y-auto) instead of
-// growing the card past the line — solves both directions, and re-running this on
-// resize keeps it correct at any window/aspect ratio.
-// Temporarily clearing newsCard's height (to measure the middle/right columns' natural
+// Pin the news card's height to the combined height of the calendar row PLUS the
+// taller of the middle/right columns below it (news spans both rows — see the
+// grid-template-areas in styles.css). Content shorter than that just leaves the
+// (already-bordered) card at full height; content taller than that scrolls inside
+// #news-container (overflow-y-auto) instead of growing the card past the line — solves
+// both directions, and re-running this on resize keeps it correct at any window/aspect
+// ratio.
+// Temporarily clearing newsCard's height (to measure the other columns' natural
 // height) collapses #news-container for a moment, which clamps its scrollTop — so this
 // was ALSO a source of "scrolling down jumps back to the top", independent of and in
 // addition to renderNewsLists()'s innerHTML swap. This is called from several places
 // (resize, ResizeObserver, alignColumnBottoms, renderNewsLists...), so the save/restore
 // belongs here rather than trying to wrap every call site.
+const MAIN_GRID_GAP_PX = 24; // matches #main-grid's `gap` in styles.css
 function fitNewsCardHeight() {
-    const grid = document.getElementById('main-grid');
+    const calendar = document.getElementById('econ-calendar');
+    const midColumn = document.getElementById('mid-column');
+    const rightColumn = document.getElementById('right-column');
     const newsCard = document.getElementById('news-card');
     const newsContainer = document.getElementById('news-container');
-    if (!grid || !newsCard || grid.children.length < 3) return;
+    if (!calendar || !midColumn || !rightColumn || !newsCard) return;
     const savedScrollTop = newsContainer ? newsContainer.scrollTop : 0;
     const prevHeight = newsCard.style.height;
-    newsCard.style.height = ''; // let the middle/right columns report their natural height first
-    if (!isMainGridSideBySide(Array.from(grid.children))) {
+    newsCard.style.height = ''; // let the other columns report their natural height first
+    if (!isMainGridSideBySide([midColumn, rightColumn])) {
         // Stacked layout (below lg) — the columns aren't next to each other, so there's
         // nothing to match; leave the news card at its own natural height.
         if (newsContainer) newsContainer.scrollTop = savedScrollTop;
         return;
     }
-    const middleHeight = grid.children[1].getBoundingClientRect().height;
-    const rightHeight = grid.children[2].getBoundingClientRect().height;
-    const target = Math.max(middleHeight, rightHeight);
+    const calendarHeight = calendar.getBoundingClientRect().height;
+    const dataRowHeight = Math.max(midColumn.getBoundingClientRect().height, rightColumn.getBoundingClientRect().height);
+    const target = calendarHeight + MAIN_GRID_GAP_PX + dataRowHeight;
     if (target <= 0) {
         newsCard.style.height = prevHeight;
         if (newsContainer) newsContainer.scrollTop = savedScrollTop;

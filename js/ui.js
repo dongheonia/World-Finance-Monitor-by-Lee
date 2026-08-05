@@ -1,40 +1,44 @@
 // ============================ COLUMN BOTTOM ALIGNMENT ============================
-// The 3 stacked columns below the map (news / rates / markets) hold a different
-// number of cards with variable-length live text, so their natural heights drift.
-// #main-grid is only actually 3 columns SIDE BY SIDE at the lg breakpoint and up —
-// below that it's a single stacked column (grid-cols-1). Comparing top positions (not a
-// hardcoded breakpoint width) tells the two apart directly from the real layout, however
-// it got there. Both alignColumnBottoms() and fitNewsCardHeight() need this: applied
-// while stacked, "match the tallest column's bottom/height" is nonsense — the columns
-// aren't next to each other, so it was forcing huge bogus margins/heights that read as
-// the bottom alignment "coming undone" when the window narrowed enough to stack.
+// The middle/right columns (rates / markets) hold a different number of cards with
+// variable-length live text, so their natural heights drift. They're only actually
+// side by side at the lg breakpoint and up — below that #main-grid stacks everything
+// into one column (see the grid-template-areas in styles.css). Comparing top positions
+// (not a hardcoded breakpoint width) tells the two apart directly from the real
+// layout, however it got there. Both alignColumnBottoms() and fitNewsCardHeight() need
+// this: applied while stacked, "match the tallest column's bottom/height" is nonsense
+// — the columns aren't next to each other, so it was forcing huge bogus
+// margins/heights that read as the bottom alignment "coming undone" when the window
+// narrowed enough to stack.
 function isMainGridSideBySide(columns) {
     if (columns.length < 2) return false;
     return Math.abs(columns[0].getBoundingClientRect().top - columns[1].getBoundingClientRect().top) < 5;
 }
 
-// This nudges the bottom margin of each column's LAST card so all 3 columns'
-// bottom edges land on the exact same line, without visibly stretching any card.
+// This nudges the bottom margin of the middle/right columns' LAST card so both
+// columns' bottom edges land on the exact same line, without visibly stretching any
+// card. The news column doesn't need this — it spans the calendar row + data row
+// combined, and its height is set directly by fitNewsCardHeight() rather than nudged
+// via margin, so there's no "last card" margin trick to apply there.
 let aligningColumns = false;
 function alignColumnBottoms() {
     if (aligningColumns) return; // don't re-enter while our own DOM writes are settling
-    const grid = document.getElementById('main-grid');
-    if (!grid) return;
-    const columns = Array.from(grid.children);
-    if (columns.length < 2) return;
+    const midColumn = document.getElementById('mid-column');
+    const rightColumn = document.getElementById('right-column');
+    if (!midColumn || !rightColumn) return;
+    const columns = [midColumn, rightColumn];
     aligningColumns = true;
-    // Clear every column's compensating bottom margin BEFORE measuring anything —
-    // fitNewsCardHeight() reads the middle/right columns' rendered height to size the
-    // news card, and if a PREVIOUS cycle's leftover margin were still on their last
-    // card, that measurement would come back inflated, making the news card grow to
-    // match, which then makes the next cycle's margin even bigger — a runaway feedback
-    // loop across repeated calls (every data refresh, resize, tab switch...) that's
-    // what actually produced the several-hundred-px gap under the shorter columns.
+    // Clear both columns' compensating bottom margin BEFORE measuring anything —
+    // fitNewsCardHeight() reads their rendered height to size the news card, and if a
+    // PREVIOUS cycle's leftover margin were still on their last card, that measurement
+    // would come back inflated, making the news card grow to match, which then makes
+    // the next cycle's margin even bigger — a runaway feedback loop across repeated
+    // calls (every data refresh, resize, tab switch...) that's what actually produced
+    // the several-hundred-px gap under the shorter column.
     columns.forEach(col => {
         const lastCard = col.lastElementChild;
         if (lastCard) lastCard.style.marginBottom = '0px';
     });
-    fitNewsCardHeight(); // now measures the middle/right columns' true natural height
+    fitNewsCardHeight(); // now measures the calendar + middle/right columns' true natural height
     requestAnimationFrame(() => {
         if (!isMainGridSideBySide(columns)) {
             // Stacked layout — margins are already cleared above, nothing more to do.
@@ -55,7 +59,7 @@ function alignColumnBottoms() {
 // Safety net: live data lands asynchronously and at different times (news fetch,
 // market data fetch, translation, tab switches, window resize...). Rather than trying
 // to thread an alignColumnBottoms() call through every one of those call sites
-// correctly, watch the 3 columns directly and realign whenever any of them actually
+// correctly, watch all 4 grid areas directly and realign whenever any of them actually
 // changes size, for any reason.
 let columnResizeObserver = null;
 let columnResizeDebounce = null;

@@ -91,33 +91,18 @@
         </div>
     </div>
 
-    <!-- Economic calendar: central bank rate decisions/speeches/minutes, CPI, PCE, employment,
-         GDP, PMI and trade data for the US, UK, Eurozone, Korea, China and Japan. Month grid on
-         the left, that month's events listed chronologically on the right. -->
-    <div id="econ-calendar" class="terminal-box rounded p-4 mb-6 flex flex-col lg:flex-row gap-4">
-        <div id="cal-left-panel" class="flex-[2] min-w-0">
-            <div class="flex items-center justify-between border-b border-gray-800 pb-1 mb-3 h-[21px]">
-                <button id="cal-prev-btn" onclick="calendarShiftMonth(-1)" class="px-2 text-gray-500 hover:text-white cursor-pointer text-sm disabled:hover:text-gray-500 disabled:cursor-not-allowed disabled:opacity-30">&#8249;</button>
-                <div id="cal-month-label" class="text-sm font-bold"></div>
-                <button id="cal-next-btn" onclick="calendarShiftMonth(1)" class="px-2 text-gray-500 hover:text-white cursor-pointer text-sm disabled:hover:text-gray-500 disabled:cursor-not-allowed disabled:opacity-30">&#8250;</button>
-            </div>
-            <div id="cal-grid" class="cal-grid"></div>
-        </div>
-        <div id="cal-right-panel" class="flex-1 min-w-0 lg:border-l lg:border-gray-800 lg:pl-4">
-            <div class="flex items-center justify-between border-b border-gray-800 pb-1 mb-3 h-[21px]">
-                <div id="cal-list-title" class="text-xs font-bold"></div>
-                <button id="cal-today-btn" onclick="goToTodayCalendar()" class="map-style-btn map-style-active px-1.5 py-0.5 text-[10px] rounded border border-gray-700 text-gray-300 hover:text-white cursor-pointer font-bold"></button>
-            </div>
-            <div id="cal-event-list" class="space-y-2 overflow-y-auto pr-1"></div>
-        </div>
-    </div>
+    <!-- Page grid: news spans the full left column (both rows) so it gets the combined
+         height of the calendar row + data row below it instead of just matching the
+         data row — see #main-grid in styles.css for the grid-template-areas that make
+         this "news | calendar+calendar / news | mid | right" layout, and
+         fitNewsCardHeight() in news.js for the height calculation. -->
+    <div id="main-grid">
 
-    <div id="main-grid" class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-
-        <!-- LEFT: single tabbed news box (World / Economic). Height is set by JS to match the
-             taller of the middle/right columns, so it never falls short of that line; content
-             beyond that scrolls inside the box instead of pushing the card taller. -->
-        <div class="space-y-6">
+        <!-- LEFT: single tabbed news box (World / Economic), spanning the calendar row
+             AND the data row. Height is set by JS to match that combined height, so it
+             never falls short of it; content beyond that scrolls inside the box instead
+             of pushing the card taller. -->
+        <div id="news-column">
             <div id="news-card" class="terminal-box rounded p-4 flex flex-col">
                 <div class="flex items-center mb-4 border-b border-gray-800 pb-1 flex-none">
                     <button id="tab-world-news" onclick="switchNewsTab('world')" class="flex-1 text-center text-xs section-title cursor-pointer pb-1">세계 뉴스</button>
@@ -129,8 +114,31 @@
             </div>
         </div>
 
+        <!-- Economic calendar: central bank rate decisions/speeches/minutes, CPI, PCE,
+             employment, GDP, PMI and trade data for the US, UK, Eurozone, Korea, China
+             and Japan. Month grid on the left, that month's events listed
+             chronologically on the right. Spans the middle+right columns' width only
+             (not the news column) — see #main-grid in styles.css. -->
+        <div id="econ-calendar" class="terminal-box rounded p-4 flex flex-col lg:flex-row gap-4">
+            <div id="cal-left-panel" class="flex-[2] min-w-0">
+                <div class="flex items-center justify-between border-b border-gray-800 pb-1 mb-3 h-[21px]">
+                    <button id="cal-prev-btn" onclick="calendarShiftMonth(-1)" class="px-2 text-gray-500 hover:text-white cursor-pointer text-sm disabled:hover:text-gray-500 disabled:cursor-not-allowed disabled:opacity-30">&#8249;</button>
+                    <div id="cal-month-label" class="text-sm font-bold"></div>
+                    <button id="cal-next-btn" onclick="calendarShiftMonth(1)" class="px-2 text-gray-500 hover:text-white cursor-pointer text-sm disabled:hover:text-gray-500 disabled:cursor-not-allowed disabled:opacity-30">&#8250;</button>
+                </div>
+                <div id="cal-grid" class="cal-grid"></div>
+            </div>
+            <div id="cal-right-panel" class="flex-1 min-w-0 lg:border-l lg:border-gray-800 lg:pl-4">
+                <div class="flex items-center justify-between border-b border-gray-800 pb-1 mb-3 h-[21px]">
+                    <div id="cal-list-title" class="text-xs font-bold"></div>
+                    <button id="cal-today-btn" onclick="goToTodayCalendar()" class="map-style-btn map-style-active px-1.5 py-0.5 text-[10px] rounded border border-gray-700 text-gray-300 hover:text-white cursor-pointer font-bold"></button>
+                </div>
+                <div id="cal-event-list" class="space-y-2 overflow-y-auto pr-1"></div>
+            </div>
+        </div>
+
         <!-- MIDDLE: FX Rates, Policy Rate, Bond Yield — each its own box -->
-        <div class="space-y-6">
+        <div id="mid-column" class="space-y-6">
             <div class="terminal-box rounded p-4">
                 <div class="flex items-center justify-between border-b border-gray-800 pb-1 mb-3">
                     <div id="section-forex-title" class="text-xs text-gray-500 section-title">환율 지표<span class="section-unit" id="unit-forex">(원)</span></div>
@@ -161,7 +169,7 @@
         </div>
 
         <!-- RIGHT: Stock exchange, Commodities, Crypto — each its own box -->
-        <div class="space-y-6">
+        <div id="right-column" class="space-y-6">
             <div class="terminal-box rounded p-4">
                 <div class="flex items-center justify-between border-b border-gray-800 pb-1 mb-3">
                     <div id="section-market-title" class="text-xs text-gray-500 section-title">증권거래소 지표<span class="section-unit" id="unit-market"></span></div>
@@ -169,7 +177,7 @@
                          marketAlertsEnabled). Roughly the same size as the FX RATES USD/GBP
                          toggle buttons, so this row's height still lines up with FX RATES' even
                          though this button (unlike that toggle) stays visible in both languages. -->
-                    <button id="market-alerts-btn" onclick="toggleMarketAlerts()" class="px-1.5 py-0.5 text-[10px] rounded border border-gray-700 text-gray-300 hover:text-white cursor-pointer font-bold"></button>
+                    <button id="market-alerts-btn" onclick="toggleMarketAlerts()" class="map-style-btn px-1.5 py-0.5 text-[10px] rounded border border-gray-700 text-gray-300 hover:text-white cursor-pointer font-bold"></button>
                 </div>
                 <div id="market-container" class="space-y-3">
                     <div class="text-gray-600 text-sm">로딩 중...</div>
