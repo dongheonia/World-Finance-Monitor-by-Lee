@@ -344,15 +344,16 @@ function classifyNews(title) {
     return { group: 'world', topic: DEFAULT_WORLD_TOPIC };
 }
 
+// Topic classification still drives the world/economy tab split and importance
+// sorting (see classifyNews/applyNewsPool) — only the visible "[분류]" tag in front of
+// each headline was removed, per request.
 function newsItemHtml(n) {
-    const topic = n.topic || DEFAULT_WORLD_TOPIC;
-    const topicLabel = currentLang === 'ko' ? topic.ko : topic.en;
     const title = (currentLang === 'ko' && n.titleKo) ? applyKoreanNameMap(n.titleKo) : n.title;
     const href = n.link || '#';
     return `
         <div class="news-item">
             <a href="${href}" target="_blank" rel="noopener noreferrer">
-                <span class="news-topic">[${escapeHtml(topicLabel)}]</span><span>${escapeHtml(title)}</span>
+                <span>${escapeHtml(title)}</span>
             </a>
         </div>
     `;

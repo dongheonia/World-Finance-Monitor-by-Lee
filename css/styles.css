@@ -28,6 +28,15 @@ body { padding-bottom: 0 !important; }
 .map-style-btn.map-style-active { background-color: #14532d; border-color: #22c55e !important; color: #ffffff !important; }
 body.light-mode .map-style-btn.map-style-active { background-color: #bbf7d0; border-color: #16a34a !important; color: #111827 !important; }
 
+/* Collapsed map: hide everything except #map-toggle-btn (a sibling, outside
+   #map-collapsible — see index.html) so there's still something to click to expand it
+   back. #map-wrapper has no explicit height of its own (it's driven entirely by
+   #world-map's aspect-ratio, and the overlay panels are all position:absolute and
+   don't contribute to flow height either) — collapsing just naturally shrinks it to
+   nothing on its own; min-height here only keeps a small bar for the button to sit in. */
+#map-wrapper.map-collapsed { min-height: 44px; }
+#map-wrapper.map-collapsed #map-collapsible { display: none; }
+
 .warzone-popup {
     position: absolute; z-index: 30; max-width: 260px; display: none;
     background: rgba(0,0,0,0.92); border: 1px solid #ff4646; border-radius: 6px;

@@ -50,40 +50,46 @@
     </div>
 
     <div id="map-wrapper" class="terminal-box rounded p-0 mb-4 relative terminal-grid overflow-hidden select-none">
-        <div class="absolute top-2 left-2 z-20 bg-black/85 border border-gray-800 p-2 rounded text-[11px] font-mono flex flex-col space-y-1.5 shadow-lg backdrop-blur">
-            <div class="text-gray-500 border-b border-gray-800 pb-1 font-bold" id="risk-filter-title">글로벌 임팩트</div>
-            <label class="flex items-center space-x-2 cursor-pointer text-gray-300 hover:text-white">
-                <input type="checkbox" id="chk-war" checked onchange="toggleRiskCategory('war')" class="accent-red-500 cursor-pointer">
-                <span id="lbl-chk-war">전쟁</span>
-            </label>
-            <label class="flex items-center space-x-2 cursor-pointer text-gray-300 hover:text-white">
-                <input type="checkbox" id="chk-disaster" checked onchange="toggleRiskCategory('disaster')" class="accent-yellow-500 cursor-pointer">
-                <span id="lbl-chk-disaster">재난</span>
-            </label>
-            <label class="flex items-center space-x-2 cursor-pointer text-gray-300 hover:text-white">
-                <input type="checkbox" id="chk-social" checked onchange="toggleRiskCategory('social')" class="accent-purple-500 cursor-pointer">
-                <span id="lbl-chk-social">사건</span>
-            </label>
-            <label class="flex items-center space-x-2 cursor-pointer text-gray-300 hover:text-white">
-                <input type="checkbox" id="chk-economy" checked onchange="toggleRiskCategory('economy')" class="accent-blue-500 cursor-pointer">
-                <span id="lbl-chk-economy">경제</span>
-            </label>
-        </div>
-        <div class="absolute bottom-2 left-2 z-20 bg-black/85 border border-gray-800 p-2 rounded text-[11px] font-mono flex flex-col space-y-1.5 shadow-lg backdrop-blur">
-            <div class="text-gray-500 border-b border-gray-800 pb-1 font-bold" id="mapstyle-title">지도 스타일</div>
-            <div class="flex space-x-1">
-                <button id="btn-style-map" onclick="switchMapStyle('map')" class="map-style-btn map-style-active px-2 py-1 rounded border border-gray-700 text-gray-300 hover:text-white cursor-pointer">지도</button>
-                <button id="btn-style-satellite" onclick="switchMapStyle('satellite')" class="map-style-btn px-2 py-1 rounded border border-gray-700 text-gray-300 hover:text-white cursor-pointer">위성</button>
+        <!-- Collapse/expand the map itself — default expanded. Lives OUTSIDE
+             #map-collapsible (below) so it stays visible and clickable even when the
+             map content is hidden; otherwise there'd be no way to expand it back. -->
+        <button id="map-toggle-btn" onclick="toggleMapCollapse()" class="absolute top-2 right-2 z-30 bg-black/85 border border-gray-800 rounded text-[11px] font-mono px-2 py-1 text-gray-300 hover:text-white cursor-pointer shadow-lg backdrop-blur" aria-label="지도 접기">▲</button>
+        <div id="map-collapsible">
+            <div class="absolute top-2 left-2 z-20 bg-black/85 border border-gray-800 p-2 rounded text-[11px] font-mono flex flex-col space-y-1.5 shadow-lg backdrop-blur">
+                <div class="text-gray-500 border-b border-gray-800 pb-1 font-bold" id="risk-filter-title">글로벌 임팩트</div>
+                <label class="flex items-center space-x-2 cursor-pointer text-gray-300 hover:text-white">
+                    <input type="checkbox" id="chk-war" checked onchange="toggleRiskCategory('war')" class="accent-red-500 cursor-pointer">
+                    <span id="lbl-chk-war">전쟁</span>
+                </label>
+                <label class="flex items-center space-x-2 cursor-pointer text-gray-300 hover:text-white">
+                    <input type="checkbox" id="chk-disaster" checked onchange="toggleRiskCategory('disaster')" class="accent-yellow-500 cursor-pointer">
+                    <span id="lbl-chk-disaster">재난</span>
+                </label>
+                <label class="flex items-center space-x-2 cursor-pointer text-gray-300 hover:text-white">
+                    <input type="checkbox" id="chk-social" checked onchange="toggleRiskCategory('social')" class="accent-purple-500 cursor-pointer">
+                    <span id="lbl-chk-social">사건</span>
+                </label>
+                <label class="flex items-center space-x-2 cursor-pointer text-gray-300 hover:text-white">
+                    <input type="checkbox" id="chk-economy" checked onchange="toggleRiskCategory('economy')" class="accent-blue-500 cursor-pointer">
+                    <span id="lbl-chk-economy">경제</span>
+                </label>
             </div>
-        </div>
-        <div id="map-instructions" class="absolute top-2 right-2 text-[10px] text-gray-600 font-mono pointer-events-none z-10">
-            * 휠로 확대/축소, 드래그로 이동 (UN 193개 회원국)
-        </div>
-        <div id="world-map" class="w-full relative"></div>
-        <div id="warzone-popup" class="warzone-popup">
-            <div class="wp-title" id="warzone-popup-title"></div>
-            <div class="wp-date" id="warzone-popup-date"></div>
-            <div id="warzone-popup-reason"></div>
+            <div class="absolute bottom-2 left-2 z-20 bg-black/85 border border-gray-800 p-2 rounded text-[11px] font-mono flex flex-col space-y-1.5 shadow-lg backdrop-blur">
+                <div class="text-gray-500 border-b border-gray-800 pb-1 font-bold" id="mapstyle-title">지도 스타일</div>
+                <div class="flex space-x-1">
+                    <button id="btn-style-map" onclick="switchMapStyle('map')" class="map-style-btn map-style-active px-2 py-1 rounded border border-gray-700 text-gray-300 hover:text-white cursor-pointer">지도</button>
+                    <button id="btn-style-satellite" onclick="switchMapStyle('satellite')" class="map-style-btn px-2 py-1 rounded border border-gray-700 text-gray-300 hover:text-white cursor-pointer">위성</button>
+                </div>
+            </div>
+            <div id="map-instructions" class="absolute top-11 right-2 text-[10px] text-gray-600 font-mono pointer-events-none z-10">
+                * 휠로 확대/축소, 드래그로 이동 (UN 193개 회원국)
+            </div>
+            <div id="world-map" class="w-full relative"></div>
+            <div id="warzone-popup" class="warzone-popup">
+                <div class="wp-title" id="warzone-popup-title"></div>
+                <div class="wp-date" id="warzone-popup-date"></div>
+                <div id="warzone-popup-reason"></div>
+            </div>
         </div>
     </div>
 

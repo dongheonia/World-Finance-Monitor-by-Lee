@@ -75,6 +75,24 @@ function watchColumnResize() {
     Array.from(grid.children).forEach(col => columnResizeObserver.observe(col));
 }
 
+// Default expanded (matches the static ▲/"지도 접기" markup in index.html — no JS
+// needed on load to establish that starting state, only to change out of it).
+let mapCollapsed = false;
+function toggleMapCollapse() {
+    mapCollapsed = !mapCollapsed;
+    const wrapper = document.getElementById('map-wrapper');
+    const btn = document.getElementById('map-toggle-btn');
+    wrapper.classList.toggle('map-collapsed', mapCollapsed);
+    btn.innerText = mapCollapsed ? '▼' : '▲';
+    const t = translations[currentLang];
+    btn.setAttribute('aria-label', mapCollapsed ? t.mapExpandBtn : t.mapCollapseBtn);
+    // MapLibre computes its canvas size from the container's box at the moment it was
+    // last visible — while collapsed (display:none) that box is 0×0, so it needs an
+    // explicit resize() once it's back in flow to redraw at the right size, same as
+    // window resize/orientation-change handling elsewhere in this file.
+    if (!mapCollapsed && mapInstance) requestAnimationFrame(() => mapInstance.resize());
+}
+
 function toggleTheme() {
     currentTheme = (currentTheme === 'dark') ? 'light' : 'dark';
     document.body.classList.toggle('light-mode', currentTheme === 'light');
@@ -112,6 +130,7 @@ function updateStaticLabels() {
     document.getElementById('lbl-tyo').innerText = t.tyo;
     document.getElementById('tab-world-news').innerText = t.tabWorldNews;
     document.getElementById('tab-econ-news').innerText = t.tabEconNews;
+    document.getElementById('map-toggle-btn').setAttribute('aria-label', mapCollapsed ? t.mapExpandBtn : t.mapCollapseBtn);
     updateNewsTabStyles();
     updateMarketAlertsButton();
     document.getElementById('section-forex-title').childNodes[0].nodeValue = t.secForex;
