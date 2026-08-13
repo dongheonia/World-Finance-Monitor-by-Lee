@@ -41,6 +41,12 @@ const WAR_EVENTS = [
       date: "2026-01-01", ongoing: true,
       reasonKo: "북한이 2026년 들어 순항미사일과 탄도미사일 시험을 반복하며 '치명적이고 공세적인 태세'를 주문하는 등 무력 도발을 이어가고 있습니다.",
       reasonEn: "North Korea has repeatedly test-fired cruise and ballistic missiles through 2026, with Kim Jong Un calling for a 'deadly and destructive offensive posture'." },
+    // Separate from the Strait of Hormuz entry below on purpose — that one is the
+    // shipping/economic fallout, this one is the strikes on Iranian territory itself.
+    { ko: "이란 (미국·이스라엘의 이란 본토 공습)", en: "Iran (US/Israeli strikes on Iranian territory)", coords: [53.5, 32.0], radius: 500,
+      date: "2026-02-20", ongoing: true,
+      reasonKo: "미국과 이스라엘이 이란의 핵시설·군사기지·에너지 인프라를 반복적으로 공습하면서 전면전 양상의 충돌이 이어지고 있으며, 이에 대한 보복으로 이란이 호르무즈 해협을 봉쇄하는 등 확전이 계속되고 있습니다.",
+      reasonEn: "The US and Israel have carried out repeated strikes on Iranian nuclear facilities, military bases, and energy infrastructure in a conflict that has taken on the character of full-scale war; Iran has retaliated in kind, including by closing the Strait of Hormuz, as the confrontation continues to escalate." },
     { ko: "호르무즈 해협 봉쇄", en: "Strait of Hormuz closure", coords: [56.25, 26.57], radius: 100,
       date: "2026-03-02", ongoing: true,
       reasonKo: "이스라엘·미국의 공습에 대응해 이란이 호르무즈 해협을 전 세계 상선에 전면 폐쇄하면서 하루 1,300만 배럴(세계 원유 소비의 5분의 1)에 달하는 물동량이 막혔고, 브렌트유는 배럴당 118달러까지 급등했습니다. 정상 시 하루 88척이 통항하던 해협을 이제 하루 10척만 통과합니다.",
