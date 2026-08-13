@@ -175,6 +175,13 @@ body.light-mode .tz-time, body.light-mode .clock-label { color: #ffffff; }
 body:not(.light-mode) .tz-box { background-color: #ffffff; border-color: #ffffff; }
 body:not(.light-mode) .tz-time, body:not(.light-mode) .clock-label { color: #000000; }
 
+/* City name on top, time below, split by a horizontal divider — both centered.
+   currentColor on the divider tracks whichever text color the theme rules above set,
+   so it never needs its own per-theme override. */
+.tz-box { display: flex; flex-direction: column; align-items: stretch; justify-content: center; gap: 3px; min-width: 68px; }
+.tz-box .clock-label { text-align: center; padding-bottom: 3px; border-bottom: 1px solid currentColor; }
+.tz-box .tz-time { text-align: center; }
+
 .brand-title {
     font-family: 'Courier Prime', monospace; font-weight: 700;
     font-size: 18px; color: #111827; letter-spacing: 0.5px;

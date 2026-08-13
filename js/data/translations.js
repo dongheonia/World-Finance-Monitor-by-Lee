@@ -4,7 +4,7 @@ const translations = {
     ko: {
         btn: "English", themeBtnLight: "라이트 모드", themeBtnDark: "다크 모드",
         brandTitle: "월드 파이낸스 모니터",
-        nyc: "뉴욕:", lon: "런던:", tyo: "도쿄:",
+        nyc: "뉴욕", lon: "런던", tyo: "도쿄",
         tabWorldNews: "세계 뉴스",
         tabEconNews: "경제 뉴스",
         secForex: "환율 지표",
@@ -40,7 +40,7 @@ const translations = {
     en: {
         btn: "한국어", themeBtnLight: "Light Mode", themeBtnDark: "Dark Mode",
         brandTitle: "World Finance Monitor",
-        nyc: "NEW YORK:", lon: "LONDON:", tyo: "TOKYO:",
+        nyc: "NEW YORK", lon: "LONDON", tyo: "TOKYO",
         tabWorldNews: "WORLD NEWS",
         tabEconNews: "ECONOMIC NEWS",
         secForex: "FX RATES",
