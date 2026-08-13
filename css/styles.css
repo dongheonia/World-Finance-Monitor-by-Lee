@@ -92,8 +92,6 @@ body.light-mode .bg-gray-900 { background-color: #f3f4f6 !important; border-colo
 .news-item { border-left: 2px solid #4b5563; padding-left: 8px; }
 .news-item a { color: inherit; text-decoration: none; }
 .news-item a:hover { text-decoration: underline; }
-.news-topic { font-size: 10px; font-weight: 700; letter-spacing: 0.5px; color: #eab308; margin-right: 6px; }
-body.light-mode .news-topic { color: #b45309; }
 /* Section headings (News tabs, FX/Policy/Bond/Market/Commodities/Crypto titles) at 2x
    their original text-xs (12px) size, in both themes. The adjacent .section-unit spans
    ("(USD)", dates, etc.) are excluded automatically — they set their own explicit
@@ -207,9 +205,6 @@ body.light-mode .ticker-wrapper { background: #000000; color: #ffffff; }
 body:not(.light-mode) .ticker-wrapper { background: rgb(126, 128, 130); color: #000000; }
 .ticker-track { display: inline-flex; }
 .ticker-item { display: inline-block; padding: 0 70px; font-size: 13px; }
-.ticker-item .news-topic { font-size: 13px; }
-body.light-mode .ticker-item .news-topic { color: #eab308; }
-body:not(.light-mode) .ticker-item .news-topic { color: rgb(94, 25, 36); }
 
 /* Page grid: news spans both rows in column 1 so it gets the combined height of the
    calendar row + data row, instead of just the data row's height — the calendar only

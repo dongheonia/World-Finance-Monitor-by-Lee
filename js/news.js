@@ -456,19 +456,17 @@ function fitNewsCardHeight() {
 }
 
 function renderTicker() {
-    const pool = masterNews.length ? masterNews : FALLBACK_NEWS.map(n => ({ ...n, topic: classifyNews(n.title).topic }));
+    const pool = masterNews.length ? masterNews : FALLBACK_NEWS;
     let items = pool.slice(0, 24);
     // pad up to at least 20 items so the ticker never looks sparse
     let i = 0;
     while (items.length < 20 && FALLBACK_NEWS.length) {
-        items.push({ ...FALLBACK_NEWS[i % FALLBACK_NEWS.length], topic: classifyNews(FALLBACK_NEWS[i % FALLBACK_NEWS.length].title).topic });
+        items.push(FALLBACK_NEWS[i % FALLBACK_NEWS.length]);
         i++;
     }
     const itemHtml = items.map(n => {
-        const topic = n.topic || DEFAULT_WORLD_TOPIC;
-        const topicLabel = currentLang === 'ko' ? topic.ko : topic.en;
         const title = (currentLang === 'ko' && n.titleKo) ? applyKoreanNameMap(n.titleKo) : n.title;
-        return `<span class="ticker-item"><span class="news-topic">[${escapeHtml(topicLabel)}]</span>${escapeHtml(title)}</span>`;
+        return `<span class="ticker-item">${escapeHtml(title)}</span>`;
     }).join('');
     const track = document.getElementById('ticker-track');
     // duplicate content once for a seamless loop
