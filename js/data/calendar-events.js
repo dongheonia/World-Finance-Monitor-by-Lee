@@ -321,14 +321,6 @@ const DISASTER_EVENTS = [
       date: "2026-07-20", ongoing: true,
       reasonKo: "유타주 산후안 카운티의 배빌론 화재가 9만 6,594에이커까지 번지며 미국 내 가장 큰 산불로 성장했고 진화율은 0%에 머물러 있습니다.",
       reasonEn: "The Babylon Fire in San Juan County, Utah has grown to 96,594 acres, becoming the largest active wildfire in the US, with containment still at 0%." },
-    // Drawn before (so underneath) Dunwich Heath below — DISASTER_EVENTS renders as one
-    // GeoJSON layer where later entries paint on top, and this circle is broad enough to
-    // fully cover Dunwich's; without that ordering the tiny Dunwich circle would never be
-    // clickable, since every pixel of it also falls inside this one.
-    { ko: "유럽 폭염 (이베리아·프랑스·중부유럽)", en: "European heatwave (Iberia / France / Central Europe)", coords: [8.0, 46.0], radius: 1300,
-      date: "2026-07-24", ongoing: true,
-      reasonKo: "이베리아반도와 프랑스를 중심으로 형성된 열돔이 독일·발트해 연안·중부유럽·지중해까지 확산되며 최고기온이 40~45도까지 치솟는 기록적 폭염이 유럽 대륙 대부분을 덮고 있습니다.",
-      reasonEn: "A heat dome centered over the Iberian Peninsula and France has spread across Germany, the Baltic region, Central Europe, and the Mediterranean, pushing peak temperatures to a record-challenging 40-45°C across most of the continent." },
     { ko: "던위치 히스 산불 (영국, 서퍽)", en: "Dunwich Heath wildfire, Suffolk, UK", coords: [1.63, 52.27], radius: 15,
       date: "2026-07-30", ongoing: true,
       reasonKo: "서퍽 던위치 히스에서 산불이 축구장 210개 면적(약 370에이커)까지 번지며 '메이저 인시던트'가 선포됐고, 인근 대형 원전 부지를 지키기 위해 소방대가 총력 대응하고 있습니다.",
