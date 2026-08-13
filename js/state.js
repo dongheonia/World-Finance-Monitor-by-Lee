@@ -77,7 +77,16 @@ let masterNews = []; // deduped, classified, importance-sorted news pool shared 
 // refreshes it in the background, instead of visibly regressing to the sparse fallback
 // every single time.
 const NEWS_CACHE_KEY = 'financeMonitor.newsCache.v1';
-const NEWS_CACHE_MAX_AGE_MS = 3 * 60 * 60 * 1000; // stale news isn't worth showing as if it were fresh
+// Was 3 hours — far shorter than SERIES_CACHE_MAX_AGE_MS (24h) for no real reason, and
+// short enough that any visit after a normal multi-hour gap (checking in the morning,
+// then again in the evening) would already have expired it, silently reverting to the
+// same slow cold-start ramp-up this cache exists to avoid — every visit ends up
+// hitting it, not just the rare "first ever visit" case. This is only ever a FIRST
+// PAINT anyway (fetchAllNews() always runs immediately regardless, and fully replaces
+// this within seconds), so showing a 24h-old pool for a few seconds while that live
+// fetch is in flight is still strictly better than showing nothing, and lines up with
+// how long the chart series cache already stays valid.
+const NEWS_CACHE_MAX_AGE_MS = 24 * 60 * 60 * 1000;
 
 function saveNewsCache() {
     try {
