@@ -461,19 +461,35 @@ function fitNewsCardHeight() {
     }
 }
 
+// How many consecutive items from one group before switching to the other — see
+// renderTicker.
+const TICKER_GROUP_SIZE = 3;
+
 function renderTicker() {
     // masterNews is ordered "every world item, then every econ item" (applyNewsPool
     // caps each group separately) — slicing straight off the front like the old code
-    // did meant the ticker's top 24 were always 100% world news, since econ's section
-    // starts at index 150 and never got reached. Re-sorting a copy by TRUE cross-pool
-    // importance (world and econ competing on equal footing, same comparator
-    // applyNewsPool itself uses) is what "최중요 이슈 위주로" actually requires — the
-    // main news list's own order is untouched, this only affects what the ticker picks.
-    const ranked = (masterNews.length ? masterNews : FALLBACK_NEWS)
+    // did meant the ticker's top items were always 100% world news, since econ's
+    // section starts at index 150 and never got reached. Ranking each group by TRUE
+    // importance separately (same comparator applyNewsPool itself uses) and then
+    // ALTERNATING between them in fixed-size blocks — rather than merging into one
+    // global ranking — is what "세계뉴스 셋, 경제뉴스 셋" actually needs: a single
+    // merged ranking would still have let world crowd economy out almost entirely,
+    // since war/disaster headlines score far higher than typical economic ones under
+    // importanceScore's severity tiers. The main news list's own order is untouched,
+    // this only affects what the ticker picks and in what order.
+    const pool = masterNews.length ? masterNews : FALLBACK_NEWS.map(n => ({ ...n, group: classifyNews(n.title).group }));
+    const rank = list => list
         .filter(n => !TICKER_EXCLUDE_PATTERN.test(n.title))
-        .slice()
         .sort((a, b) => (importanceScore(b.title) - importanceScore(a.title)) || ((b.pubDate || 0) - (a.pubDate || 0)));
-    let items = ranked.slice(0, 24);
+    const worldRanked = rank(pool.filter(n => n.group !== 'economy'));
+    const econRanked = rank(pool.filter(n => n.group === 'economy'));
+    let items = [];
+    let wi = 0, ei = 0;
+    while (items.length < 24 && (wi < worldRanked.length || ei < econRanked.length)) {
+        for (let k = 0; k < TICKER_GROUP_SIZE && wi < worldRanked.length; k++) items.push(worldRanked[wi++]);
+        for (let k = 0; k < TICKER_GROUP_SIZE && ei < econRanked.length; k++) items.push(econRanked[ei++]);
+    }
+    items = items.slice(0, 24);
     // pad up to at least 20 items so the ticker never looks sparse
     let i = 0;
     while (items.length < 20 && FALLBACK_NEWS.length) {
