@@ -6,8 +6,8 @@ const NEWS_FEEDS = [
     { url: 'https://feeds.bbci.co.uk/news/business/rss.xml', isBusinessFeed: true },
     { url: 'http://rss.cnn.com/rss/edition_world.rss' },
     { url: 'http://rss.cnn.com/rss/money_latest.rss', isBusinessFeed: true },
-    { url: 'https://news.google.com/rss/search?q=when:24h+site:reuters.com&hl=en-US&gl=US&ceid=US:en' },
-    { url: 'https://news.google.com/rss/search?q=when:24h+site:bloomberg.com&hl=en-US&gl=US&ceid=US:en', isBusinessFeed: true },
+    // Reuters and Bloomberg deliberately excluded — both put full article text behind a
+    // paywall, so a headline surfaced here just leads to a page the reader can't read.
     // Extra economy/business-scoped queries — the wire feeds above skew world-news
     // heavy, so without these the "economic" tab runs out of items well before 세계소식.
     { url: 'https://news.google.com/rss/search?q=when:24h+(business+OR+economy+OR+markets+OR+earnings)&hl=en-US&gl=US&ceid=US:en', isBusinessFeed: true },
@@ -24,7 +24,7 @@ const NEWS_FEEDS = [
     { url: 'https://www.forbes.com/business/feed/', isBusinessFeed: true },
     { url: 'https://www.cnbc.com/id/10001147/device/rss/rss.html', isBusinessFeed: true },
     { url: 'https://feeds.content.dowjones.io/public/rss/mw_topstories', isBusinessFeed: true },
-    { url: 'https://fortune.com/feed/fortune-feeds/?id=3230629', isBusinessFeed: true },
+    // Fortune excluded — metered paywall blocks reading past the first few free articles.
     { url: 'https://www.investing.com/rss/news.rss', isBusinessFeed: true },
     // Sub-topic queries so the pool has genuinely DIFFERENT stories, not just more
     // outlets re-covering the same handful of headline stories (dedup was collapsing
