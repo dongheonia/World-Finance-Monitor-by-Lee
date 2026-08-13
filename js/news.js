@@ -237,6 +237,12 @@ const LOW_IMPORTANCE_KEYWORDS = [
     'celebrity', 'horoscope', 'recipe', 'quiz', 'viral video', 'you won\'t believe', 'royal family style',
     'gossip', 'best deals', 'listicle'
 ];
+// Ticker-only (see renderTicker) — wire feeds routinely label opinion/analysis pieces
+// with one of these leading tags ("Opinion: ...", "Analysis: ..."). The ticker is
+// meant to be hard news/facts at a glance, not commentary, so these are excluded
+// entirely there rather than just deprioritized. The main news list is untouched —
+// this isn't in LOW_IMPORTANCE_KEYWORDS/importanceScore, which both feed it too.
+const TICKER_EXCLUDE_PATTERN = /^(opinion|analysis|editorial|commentary|op-ed|column|perspective)\s*[:|]/i;
 
 // Single-word keywords are matched on word boundaries so e.g. "invest" doesn't match
 // inside "investigate", and "war" doesn't match inside "software"/"warning"/"reward".
@@ -456,8 +462,18 @@ function fitNewsCardHeight() {
 }
 
 function renderTicker() {
-    const pool = masterNews.length ? masterNews : FALLBACK_NEWS;
-    let items = pool.slice(0, 24);
+    // masterNews is ordered "every world item, then every econ item" (applyNewsPool
+    // caps each group separately) — slicing straight off the front like the old code
+    // did meant the ticker's top 24 were always 100% world news, since econ's section
+    // starts at index 150 and never got reached. Re-sorting a copy by TRUE cross-pool
+    // importance (world and econ competing on equal footing, same comparator
+    // applyNewsPool itself uses) is what "최중요 이슈 위주로" actually requires — the
+    // main news list's own order is untouched, this only affects what the ticker picks.
+    const ranked = (masterNews.length ? masterNews : FALLBACK_NEWS)
+        .filter(n => !TICKER_EXCLUDE_PATTERN.test(n.title))
+        .slice()
+        .sort((a, b) => (importanceScore(b.title) - importanceScore(a.title)) || ((b.pubDate || 0) - (a.pubDate || 0)));
+    let items = ranked.slice(0, 24);
     // pad up to at least 20 items so the ticker never looks sparse
     let i = 0;
     while (items.length < 20 && FALLBACK_NEWS.length) {
