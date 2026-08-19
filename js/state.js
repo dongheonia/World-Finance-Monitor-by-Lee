@@ -1,4 +1,4 @@
-let currentLang = 'ko';
+let currentLang = 'en';
 let currentTheme = 'light';
 let forexBase = 'USD'; // English-mode FX base currency toggle (USD/GBP); Korean mode is always KRW-based
 let cachedData = {};
