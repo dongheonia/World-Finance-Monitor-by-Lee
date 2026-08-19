@@ -83,7 +83,6 @@ body.light-mode .text-gray-500,
 body.light-mode .text-gray-400,
 body.light-mode .text-gray-300 { color: #4b5563 !important; }
 body.light-mode .border-gray-800,
-body.light-mode .border-gray-900,
 body.light-mode .border-gray-950 { border-color: #d1d5db !important; }
 body.light-mode .bg-black\/85 { background-color: rgba(255, 255, 255, 0.9) !important; border-color: #d1d5db !important; }
 body.light-mode .hover\:bg-gray-800:hover { background-color: #e5e7eb !important; }
