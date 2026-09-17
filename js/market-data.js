@@ -10,27 +10,31 @@
 //    official rate, which is what was actually wrong before.
 //  - Crypto: the CoinGecko public API — also CORS-native, true real-time pricing.
 
-// Verified against Yahoo's chart endpoint and several RSS feeds directly (curl,
-// checking both HTTP status and actual Access-Control-Allow-Origin headers) on
-// 2026-08-01:
-//  - corsproxy.io now requires a paid plan (403 on any server-side-style request) — dead.
-//  - api.codetabs.com is returning Cloudflare 522s (origin unreachable) — dead.
-//  - api.allorigins.win, the long-time second proxy, is now HARD down (connection
-//    timeouts on every attempt, not just "flaky") — this was silently cutting the news
-//    pool (and file:// users' news pool entirely — see CORS_PROXIES below) whenever
-//    corsfix had even one bad request, since there was no working fallback left.
-//    Replaced with proxy.cors.sh, verified working with real CORS headers.
-//  - proxy.corsfix.com works when it sees a browser-style Origin header (which a real
-//    fetch() always sends), giving a second independent path.
-// Both remaining proxies are still free/anonymous services that can go down or change
-// terms at any time — see the note above fetchYahooQuote for the real fix.
-// Order matters: tried in sequence, first success wins. corsfix is the more reliable of
-// the two under normal load, so it goes first; cors.sh (no API key) rate-limits faster
-// under heavy burst but is otherwise solid, so it's the fallback. Re-test both if this
-// stops working well — their relative reliability drifts over time, it's not fixed.
+// Verified against Yahoo's chart endpoint and several RSS feeds directly (real browser
+// fetch(), checking both HTTP status and actual response bodies) on 2026-09-17 — this
+// site's news box had gone completely empty (falling back to the tiny static list) and
+// every live number (stocks/FX/bonds) had silently gone stale, because BOTH proxies below
+// had died since the last check:
+//  - proxy.cors.sh no longer resolves at all (DNS failure on every request) — dead.
+//  - proxy.corsfix.com now requires the calling site's domain to be registered on its
+//    dashboard (free tier, just gated differently than before): every request came back
+//    `{"corsfix_error":"domain_not_registered", ...}` for dongheonia.github.io. corsfix
+//    itself is otherwise healthy — registering the domain there
+//    (https://corsfix.com — free signup, add the domain, done) would make it work again
+//    and is worth doing for redundancy, but isn't done as of this fix.
+//  - cors-get-proxy.sirjosh.workers.dev (a Cloudflare Worker) verified working with real
+//    response bodies from BBC/Yahoo/Guardian/Al Jazeera, no rate-limiting across a 5x
+//    burst — added as the one functioning proxy. One known gap: its shared Worker IP
+//    gets Google's "unusual traffic" bot page instead of RSS for news.google.com/rss
+//    queries specifically (roughly a third of NEWS_FEEDS) — those feeds fail cleanly
+//    (caught by Promise.allSettled in fetchAllNews) rather than breaking anything else.
+// Free/anonymous proxies rot on this kind of timeline — re-verify with a real fetch()
+// (not just curl; corsfix in particular only responds to browser-style requests) if this
+// stops working again, rather than assuming the last-known-good list still holds.
+const CORSFIX_PROXY = target => `https://proxy.corsfix.com/?${target}`;
 const ALL_CORS_PROXIES = [
-    target => `https://proxy.corsfix.com/?${target}`,
-    target => `https://proxy.cors.sh/${target}`
+    target => `https://cors-get-proxy.sirjosh.workers.dev/?url=${encodeURIComponent(target)}`,
+    CORSFIX_PROXY
 ];
 // corsfix rejects any request with no real Origin header (confirmed via its own
 // response: x-corsfix-status: invalid_origin) — and a page opened as a local file
@@ -38,9 +42,10 @@ const ALL_CORS_PROXIES = [
 // every corsfix attempt from a file:// page is a guaranteed, wasted failure. Skip it
 // entirely in that case rather than eating its timeout on every single request.
 // (The real fix is serving this over http — see the README/instructions — but this
-// keeps file:// usage from being strictly worse than it has to be.)
+// keeps file:// usage from being strictly worse than it has to be.) Filtered by
+// reference rather than by position, since ALL_CORS_PROXIES' order isn't fixed.
 const CORS_PROXIES = window.location.protocol === 'file:'
-    ? ALL_CORS_PROXIES.slice(1)
+    ? ALL_CORS_PROXIES.filter(proxy => proxy !== CORSFIX_PROXY)
     : ALL_CORS_PROXIES;
 
 async function fetchWithTimeout(url, ms) {
