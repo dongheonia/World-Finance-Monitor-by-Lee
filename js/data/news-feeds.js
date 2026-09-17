@@ -1,6 +1,20 @@
 
 // ============================ NEWS ============================
 
+// Ordered non-Google feeds first, then Google News queries, deliberately — NOT the
+// order these were added in. Verified per-feed against the current proxy
+// (cors-get-proxy.sirjosh.workers.dev, see ALL_CORS_PROXIES in market-data.js) on
+// 2026-09-17: every non-Google feed below answers in well under a second, while EVERY
+// news.google.com/rss/search query fails, and most of those don't fail fast — they hang
+// for the entire per-feed timeout (Google evidently blocks or throttles this proxy's
+// shared IP). fetchAllNews() batches NEWS_FEEDS in fixed-size chunks in array order, so
+// with Google queries scattered throughout the old list, EVERY batch contained at least
+// one guaranteed-to-hang feed and paid the full timeout — 4 batches x ~6s of pure dead
+// air, which is what "뉴스기사나 차트가 엄청 늦게 떠" was actually measuring. With all
+// the fast, reliable feeds grouped first, those batches resolve and paint real headlines
+// in well under a second; the Google batches at the end still get tried (each feed given
+// its own shorter GOOGLE_NEWS_TIMEOUT_MS in news.js, since we already know they're very
+// unlikely to succeed) but no longer block the page from looking fully loaded first.
 const NEWS_FEEDS = [
     { url: 'https://feeds.bbci.co.uk/news/world/rss.xml' },
     { url: 'https://feeds.bbci.co.uk/news/business/rss.xml', isBusinessFeed: true },
@@ -8,15 +22,7 @@ const NEWS_FEEDS = [
     { url: 'http://rss.cnn.com/rss/money_latest.rss', isBusinessFeed: true },
     // Reuters and Bloomberg deliberately excluded — both put full article text behind a
     // paywall, so a headline surfaced here just leads to a page the reader can't read.
-    // Extra economy/business-scoped queries — the wire feeds above skew world-news
-    // heavy, so without these the "economic" tab runs out of items well before 세계소식.
-    { url: 'https://news.google.com/rss/search?q=when:24h+(business+OR+economy+OR+markets+OR+earnings)&hl=en-US&gl=US&ceid=US:en', isBusinessFeed: true },
-    { url: 'https://news.google.com/rss/search?q=when:24h+site:cnbc.com&hl=en-US&gl=US&ceid=US:en', isBusinessFeed: true },
-    // Extra serious/high-impact world-news queries — raw supply of non-economy items
-    // was the actual bottleneck keeping the news box shorter than the other columns.
-    { url: 'https://news.google.com/rss/search?q=when:24h+(war+OR+conflict+OR+crisis+OR+disaster+OR+diplomacy)&hl=en-US&gl=US&ceid=US:en' },
     { url: 'https://www.aljazeera.com/xml/rss/all.xml' },
-    { url: 'https://news.google.com/rss/search?q=when:24h+world&hl=en-US&gl=US&ceid=US:en' },
     // More dedicated business/economy wire feeds (found + verified working via curl on
     // 2026-07-27) — same proxy+XML pipeline as everything else, just more raw economic
     // supply so 경제소식 doesn't run dry before 세계소식 does.
@@ -26,6 +32,18 @@ const NEWS_FEEDS = [
     { url: 'https://feeds.content.dowjones.io/public/rss/mw_topstories', isBusinessFeed: true },
     // Fortune excluded — metered paywall blocks reading past the first few free articles.
     { url: 'https://www.investing.com/rss/news.rss', isBusinessFeed: true },
+    // Everything below is a news.google.com/rss/search query — see the comment above
+    // NEWS_FEEDS for why these are grouped last and given a short timeout instead of
+    // being removed outright (kept in case the proxy situation changes and they start
+    // working again; see the corsfix domain-registration note in market-data.js).
+    // Extra economy/business-scoped queries — the wire feeds above skew world-news
+    // heavy, so without these the "economic" tab runs out of items well before 세계소식.
+    { url: 'https://news.google.com/rss/search?q=when:24h+(business+OR+economy+OR+markets+OR+earnings)&hl=en-US&gl=US&ceid=US:en', isBusinessFeed: true },
+    { url: 'https://news.google.com/rss/search?q=when:24h+site:cnbc.com&hl=en-US&gl=US&ceid=US:en', isBusinessFeed: true },
+    // Extra serious/high-impact world-news queries — raw supply of non-economy items
+    // was the actual bottleneck keeping the news box shorter than the other columns.
+    { url: 'https://news.google.com/rss/search?q=when:24h+(war+OR+conflict+OR+crisis+OR+disaster+OR+diplomacy)&hl=en-US&gl=US&ceid=US:en' },
+    { url: 'https://news.google.com/rss/search?q=when:24h+world&hl=en-US&gl=US&ceid=US:en' },
     // Sub-topic queries so the pool has genuinely DIFFERENT stories, not just more
     // outlets re-covering the same handful of headline stories (dedup was collapsing
     // ~102 raw econ items down to ~38 unique ones — more outlets alone wasn't fixing

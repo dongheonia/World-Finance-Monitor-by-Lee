@@ -552,12 +552,24 @@ function isJunkHeadline(title) {
 
 // Races the CORS proxies (via fetchViaProxies, same helper market-data.js uses for
 // Yahoo) instead of trying them one after another. Sequential trial-then-fallback meant
-// a single down/slow proxy cost every feed a full 6s timeout before the second proxy
+// a single down/slow proxy cost every feed a full timeout before the second proxy
 // even got a turn — with 24 feeds across several batches, that's what stretched "a
 // handful of articles up front, then a long wait before the rest show up" out so long.
 // Racing means each feed only ever waits as long as whichever proxy answers first.
+// Timeout tuned down from 6000ms to 4500ms (2026-09-17): firing every non-Google feed in
+// one burst against the current proxy resolved in well under a second every time, so
+// 4.5s already leaves generous headroom for a genuinely slow-but-real response without
+// needlessly prolonging a batch that has a straggler in it.
+// news.google.com/rss/search queries get a much shorter GOOGLE_NEWS_TIMEOUT_MS instead —
+// verified (2026-09-17, see the comment above NEWS_FEEDS) that these don't just fail
+// sometimes, they fail EVERY time through the current proxy, and most don't even fail
+// fast — they hang for the entire timeout. Waiting the full 4.5s for a request that's
+// extremely unlikely to ever succeed was the main reason fetchAllNews() took ~25s
+// end-to-end; 1500ms is enough to catch a lucky success without that dead weight.
+const GOOGLE_NEWS_TIMEOUT_MS = 1500;
 async function fetchFeedItems(feed) {
-    const res = await fetchViaProxies(feed.url, 6000);
+    const isGoogleNews = feed.url.startsWith('https://news.google.com/');
+    const res = await fetchViaProxies(feed.url, isGoogleNews ? GOOGLE_NEWS_TIMEOUT_MS : 4500);
     const xmlText = await res.text();
     const doc = new DOMParser().parseFromString(xmlText, 'text/xml');
     if (doc.querySelector('parsererror')) throw new Error('xml parse error');
@@ -652,13 +664,21 @@ function applyNewsPool(combined) {
     if (currentLang === 'ko') translateNewsIfNeeded();
 }
 
-// Firing all ~29 feeds through the free corsfix proxy at once causes it to randomly
-// reject a chunk of them under the burst (observed: identical feed list yielding econ
-// counts anywhere from 26 to 56 across back-to-back runs). Fetching in small staggered
-// batches keeps peak concurrent load on the proxy low, which is far more consistent.
+// Firing all ~29 feeds through a free proxy at once causes it to randomly reject or
+// stall a chunk of them under the burst (observed: identical feed list yielding econ
+// counts anywhere from 26 to 56 across back-to-back runs, or — with the current
+// cors-get-proxy.sirjosh.workers.dev proxy — half the list hitting the 4.5s timeout
+// when all 20 fire simultaneously). Fetching in small batches of BATCH_SIZE keeps peak
+// concurrent load on the proxy low, which is far more consistent. There used to also be
+// a fixed 300ms sleep between batches "to be gentle on the proxy" — but batches already
+// only start once the previous one's Promise.allSettled has fully resolved, so that
+// pause added pure dead time (up to ~1.2s across a full cold-start run) without lowering
+// peak concurrency at all, since concurrency is capped by BATCH_SIZE regardless of any
+// gap between waves. Removed — this is exactly the "뉴스기사나 차트가 엄청 늦게 떠"
+// complaint, and every millisecond of avoidable dead time before the first real batch
+// paints matters for a cold visit with no localStorage cache to paint from instantly.
 async function fetchAllNews() {
     const BATCH_SIZE = 6;
-    const BATCH_DELAY_MS = 300;
     // Seed with whatever's already showing (cache on first load, last cycle's
     // result on every periodic refresh) instead of starting from empty — otherwise
     // the very first batch's applyNewsPool() call overwrites the full list with
@@ -676,7 +696,6 @@ async function fetchAllNews() {
         // Paint after every batch so the news box fills in progressively instead of
         // sitting on the sparse fallback/cache until the whole feed list is done.
         applyNewsPool(combined);
-        if (i + BATCH_SIZE < NEWS_FEEDS.length) await new Promise(r => setTimeout(r, BATCH_DELAY_MS));
     }
     if (combined.length === 0 && masterNews.length === 0) { renderNewsLists(); renderTicker(); }
 }
