@@ -52,37 +52,39 @@ const PINNED_FX = [
 ];
 
 // Policy rates only change on central-bank decision days (roughly 8x/year), so these
-// are curated reference values, cross-checked against a rate-comparison table the user
-// sourced directly (2026-07-30) after an earlier pass (sourced from web-search article
-// snippets, not primary data) turned out wrong on two of six rows. Both `rate` and
-// `prevRate` are always the levels set at the two most recent MEETINGS — i.e. prevRate
-// still updates on a hold (matches current), not just on an actual change. This matters:
-// an earlier version of this data instead used "level before the last ACTUAL change"
-// for prevRate, which produces a different (and, per the two rows below, wrong-looking)
-// number whenever a bank has held for multiple consecutive meetings.
-// - Fed: 3.75% (upper bound of 3.50-3.75% target range), held at the 2026-07-29 meeting;
-//   also 3.75% at the prior 2026-06-17 meeting → held.
-// - BOE: 3.75%, held 2026-06-18; also 3.75% at the prior 2026-04-30 meeting → held.
+// are curated reference values, refreshed (2026-09-17) against each bank's actual
+// September-meeting outcome. Both `rate` and `prevRate` are always the levels set at
+// the two most recent MEETINGS — i.e. prevRate still updates on a hold (matches
+// current), not just on an actual change. This matters: an earlier version of this
+// data instead used "level before the last ACTUAL change" for prevRate, which produces
+// a different (and, per the two rows below, wrong-looking) number whenever a bank has
+// held for multiple consecutive meetings.
+// - Fed: hiked 25bp to 3.75–4.00% (4.00% upper bound) on 2026-09-16, its first hike
+//   since 2023 (12-0 vote); prior meeting 2026-07-29 held at 3.50-3.75% (3.75% upper
+//   bound).
+// - BOE: held at 3.75% on 2026-09-17 (6-3 vote); also 3.75% at the prior 2026-06-18
+//   meeting → held.
 // - Eurozone/ECB: one shared rate across the whole currency union (France and Germany
 //   don't set separate rates — they were previously listed as if they did, showing
 //   identical numbers, which is what looked "off" the first time this was flagged).
 //   ECB actually publishes three rates (deposit facility / main refinancing / marginal
-//   lending) that move together but differ in level — 2.40% here is the MAIN
+//   lending) that move together but differ in level — 2.65% here is the MAIN
 //   REFINANCING rate, since that's the figure the user's source table tracks (an
-//   earlier pass here used the deposit facility rate, 2.25%, instead — a real, sourced
-//   number, just the wrong one of the three for matching that table). Held 2026-07-23;
-//   also 2.40% at the prior 2026-06-11 meeting → held.
-// - Korea: BOK hiked to 2.75% from 2.50% on 2026-07-16 (prior meeting 2026-05-28), its
-//   first hike since 2023.
-// - China: PBOC 1Y LPR held at 3.00% on 2026-07-20; also 3.00% at the prior 2026-06-22
+//   earlier pass here used the deposit facility rate instead — a real, sourced number,
+//   just the wrong one of the three for matching that table). Hiked 25bp on 2026-09-10
+//   (effective 2026-09-16); prior meeting 2026-07-23 held at 2.40%.
+// - Korea: BOK hiked to 3.00% from 2.75% on 2026-08-27 (6-1 vote), its second
+//   consecutive hike, prior meeting 2026-07-16.
+// - China: PBOC 1Y LPR held at 3.00% on 2026-08-20; also 3.00% at the prior 2026-07-20
 //   meeting → held (frozen since May 2025).
-// - Japan: BOJ hiked to 1.00% from 0.75% on 2026-06-16 (prior meeting 2026-04-28).
-const POLICY_RATES_UPDATED_AT = '2026-07-30';
+// - Japan: BOJ hiked to 1.00% from 0.75% on 2026-06-16 (prior meeting 2026-04-28); next
+//   decision due 2026-09-18, not yet announced.
+const POLICY_RATES_UPDATED_AT = '2026-09-17';
 const POLICY_RATES = [
-    { ko: '미국 (연준)', en: 'United States (Fed)', rate: 3.75, prevRate: 3.75 },
+    { ko: '미국 (연준)', en: 'United States (Fed)', rate: 4.00, prevRate: 3.75 },
     { ko: '영국 (영국은행)', en: 'United Kingdom (BOE)', rate: 3.75, prevRate: 3.75 },
-    { ko: '유로존 (유럽중앙은행)', en: 'Eurozone (ECB)', rate: 2.40, prevRate: 2.40, liveSymbol: 'ECB_MRR' },
+    { ko: '유로존 (유럽중앙은행)', en: 'Eurozone (ECB)', rate: 2.65, prevRate: 2.40, liveSymbol: 'ECB_MRR' },
     { ko: '중국 (중국인민은행)', en: 'China (PBOC)', rate: 3.00, prevRate: 3.00 },
     { ko: '일본 (일본은행)', en: 'Japan (BOJ)', rate: 1.00, prevRate: 0.75 },
-    { ko: '한국 (한국은행)', en: 'Korea (BOK)', rate: 2.75, prevRate: 2.50 }
+    { ko: '한국 (한국은행)', en: 'Korea (BOK)', rate: 3.00, prevRate: 2.75 }
 ];

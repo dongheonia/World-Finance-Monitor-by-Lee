@@ -3,13 +3,14 @@
 // rate-decision dates, with no developer step in between — run monthly by
 // .github/workflows/refresh-calendar.yml (see that file for the schedule).
 //
-// Scope is deliberately schedule-only: date + which decision is due, never a time-of-day
-// or an announced value (see the comment above CALENDAR_EVENTS in calendar-config.js for
-// why — this mirrors what the calendar UI itself shows now). That also happens to be
-// exactly what CAN be automated reliably for free: each institution publishes its
-// meeting SCHEDULE up to a year or more in advance on its own official site, but the
-// actual decision/figure only exists after the meeting happens and needs a human to
-// read the release.
+// New entries this script adds are schedule-only: date + which decision is due, never a
+// time-of-day or an announced value/previous-value (see the comment above
+// CALENDAR_EVENTS in calendar-config.js) — that's exactly what CAN be automated
+// reliably for free, since each institution publishes its meeting SCHEDULE up to a year
+// or more in advance on its own official site, but the actual decision/figure only
+// exists after the meeting happens and needs a human to read the release. Existing
+// entries already carrying time/value/prev (hand-curated separately) are preserved
+// as-is — see parseEvents()/serializeEvent() below.
 //
 // Covers 4 of the 6 countries on the calendar:
 //   - US (Federal Reserve / FOMC) — fetched from federalreserve.gov's own calendar page.
@@ -171,19 +172,28 @@ function pbocEvent(date) {
 // never execute anything beyond reading and rewriting this one array literal ----
 const COUNTRY_ORDER = ['US', 'GB', 'EU', 'KR', 'CN', 'JP'];
 const COUNTRY_HEADER = { US: 'United States', GB: 'United Kingdom', EU: 'Eurozone', KR: 'Korea', CN: 'China', JP: 'Japan' };
-const EVENT_RE = /\{\s*date:\s*'([^']*)',\s*country:\s*'([^']*)',\s*category:\s*'([^']*)',\s*titleKo:\s*'((?:[^'\\]|\\.)*)',\s*titleEn:\s*'((?:[^'\\]|\\.)*)'(?:,\s*detailKo:\s*'((?:[^'\\]|\\.)*)')?(?:,\s*detailEn:\s*'((?:[^'\\]|\\.)*)')?\s*\}/g;
+// time/value/prev are hand-curated (see the comment above CALENDAR_EVENTS) and this
+// script never has data to fill them in for the new entries it adds — but existing
+// entries DO carry them, so the parser must round-trip whatever's already there
+// (any subset, in any order after category) rather than silently dropping it.
+const EVENT_RE = /\{\s*date:\s*'([^']*)',\s*(?:time:\s*'([^']*)',\s*)?country:\s*'([^']*)',\s*category:\s*'([^']*)',\s*titleKo:\s*'((?:[^'\\]|\\.)*)',\s*titleEn:\s*'((?:[^'\\]|\\.)*)'(?:,\s*detailKo:\s*'((?:[^'\\]|\\.)*)')?(?:,\s*detailEn:\s*'((?:[^'\\]|\\.)*)')?(?:,\s*valueKo:\s*'((?:[^'\\]|\\.)*)')?(?:,\s*valueEn:\s*'((?:[^'\\]|\\.)*)')?(?:,\s*prevKo:\s*'((?:[^'\\]|\\.)*)')?(?:,\s*prevEn:\s*'((?:[^'\\]|\\.)*)')?\s*\}/g;
 
 function parseEvents(arrayText) {
     return [...arrayText.matchAll(EVENT_RE)].map(m => ({
-        date: m[1], country: m[2], category: m[3],
-        titleKo: m[4], titleEn: m[5],
-        detailKo: m[6] ?? '', detailEn: m[7] ?? ''
+        date: m[1], time: m[2] ?? '', country: m[3], category: m[4],
+        titleKo: m[5], titleEn: m[6],
+        detailKo: m[7] ?? '', detailEn: m[8] ?? '',
+        valueKo: m[9] ?? '', valueEn: m[10] ?? '',
+        prevKo: m[11] ?? '', prevEn: m[12] ?? ''
     }));
 }
 
 function serializeEvent(ev) {
+    const time = ev.time ? `, time: '${ev.time}'` : '';
     const detail = (ev.detailKo || ev.detailEn) ? `, detailKo: '${ev.detailKo}', detailEn: '${ev.detailEn}'` : '';
-    return `    { date: '${ev.date}', country: '${ev.country}', category: '${ev.category}', titleKo: '${ev.titleKo}', titleEn: '${ev.titleEn}'${detail} }`;
+    const value = (ev.valueKo || ev.valueEn) ? `, valueKo: '${ev.valueKo}', valueEn: '${ev.valueEn}'` : '';
+    const prev = (ev.prevKo || ev.prevEn) ? `, prevKo: '${ev.prevKo}', prevEn: '${ev.prevEn}'` : '';
+    return `    { date: '${ev.date}'${time}, country: '${ev.country}', category: '${ev.category}', titleKo: '${ev.titleKo}', titleEn: '${ev.titleEn}'${detail}${value}${prev} }`;
 }
 
 function serializeEvents(events) {
