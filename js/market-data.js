@@ -101,9 +101,7 @@ async function fetchYahooQuote(symbol, range = '1mo') {
     // intraday day — this only changes the SPARKLINE source; the live price/change below
     // still comes from `meta` (regularMarketPrice/previousClose), which Yahoo populates
     // the same way regardless of what range/interval the chart itself was requested at,
-    // so switching this doesn't make the quote itself any less current. `range` is
-    // overridable per-symbol (see fetchOneYahooSymbol) — '^TNX' asks for '1y' instead,
-    // to match the rest of the bond-yield section's unified 1-year window.
+    // so switching this doesn't make the quote itself any less current.
     const target = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1d&range=${range}&_=${Date.now()}`;
     const res = await fetchViaProxies(target, 5000);
     const data = await res.json();
@@ -126,9 +124,12 @@ async function fetchYahooQuote(symbol, range = '1mo') {
 }
 
 // Synthetic bond-yield identifiers this file made up (Yahoo has no real ticker for any
-// of these, so attempting them via the Yahoo proxy would just fail every single cycle)
-// — covered instead by fetchNonUsBondYields() below (all but China — see there).
-const NO_YAHOO_SOURCE_SYMBOLS = ['GB10Y=RR', 'FR10Y=RR', 'DE10Y=RR', 'CN10Y=RR', 'JP10Y=RR', 'KR10Y=RR'];
+// of these — it doesn't even publish a 2Y yield index at all, see the comment above
+// fetchUsTreasuryYields — so attempting them via the Yahoo proxy would just fail every
+// single cycle) — covered instead by fetchBondYields() below. TLT (the ETF row) is
+// deliberately NOT in this list — it's a real Yahoo ticker and goes through the normal
+// fetchAllYahoo path like any INDICES/COMMODITIES symbol.
+const NO_YAHOO_SOURCE_SYMBOLS = ['US02Y=RR', 'US10Y=RR', 'US30Y=RR', 'DE10Y=RR', 'JP10Y=RR'];
 
 function allYahooSymbols() {
     const set = new Set();
@@ -141,15 +142,11 @@ function seedFallbackCache() {
     [...INDICES, ...PINNED_MARKET, ...FOREX_KO, ...FOREX_EN_USD, ...FOREX_EN_GBP, ...PINNED_FX, ...COMMODITIES, ...CRYPTO, ...BOND10Y].forEach(i => {
         if (!cachedData[i.symbol]) cachedData[i.symbol] = i.fallback;
     });
-    // China 10Y's approximate curated sparkline (see the comment above it in
-    // commodities-crypto.js) — nothing ever fetches a real one, so this is the only
-    // place it's ever set.
-    BOND10Y.forEach(b => { if (b.approxSeries) setSeriesIfMissing(b.symbol, b.approxSeries); });
 }
 
 async function fetchOneYahooSymbol(symbol) {
     try {
-        const quote = await fetchYahooQuote(symbol, symbol === '^TNX' ? '1y' : '1mo');
+        const quote = await fetchYahooQuote(symbol);
         setQuote(symbol, quote);
         if (quote.series) setSeries(symbol, quote.series);
     } catch (e) {
@@ -453,67 +450,34 @@ async function fetchLocalBackend() {
     }
 }
 
-// Non-US 10Y government bond yields have no CORS-enabled API anywhere (Yahoo/FMP/
-// Twelve Data all checked — see the comment above NO_YAHOO_SOURCE_SYMBOLS). Where the
-// country's own central bank/debt office publishes a free daily series directly, that
-// wins (real day-by-day resolution, matching what the US Yahoo-sourced row already
-// gets); everything else falls back to FRED (St. Louis Fed), which republishes OECD's
-// "long-term interest rate" series monthly. None of these have a CORS header of their
-// own, so all of them route through the same free CORS-proxy chain fetchYahooQuote
-// already uses (fetchViaProxies) rather than needing anything new.
-// Every country's CHART is unified to a 1-year window, per explicit request — a bond
-// yield moves gradually on macro drivers, so a short window mostly shows noise; 1 year
-// is long enough to actually see a hiking/cutting cycle. current/change still always
-// come from the two most-recent real observations regardless of the chart's span (see
-// setQuoteAndSeriesFromValues) — the window only affects what the sparkline draws.
-//   - UK: Bank of England's own IADB (Interactive Statistical Database), series
-//     IUDMNZC (nominal spot 10-year gilt yield) — daily, straight from the source that
-//     actually issues the gilts.
+// The six BOND10Y rows (2026-09-22, see the comment above that array in
+// commodities-crypto.js) span three sources:
+//   - US 2Y/10Y/30Y: the U.S. Treasury Department's OWN daily par yield curve — the
+//     primary source, and genuinely CORS-enabled (verified directly: a real fetch()
+//     from this site's own origin gets response.type 'cors', not 'opaque' — no proxy
+//     needed at all). One request per year returns EVERY published tenor (1mo through
+//     30yr), which is why fetchUsTreasuryYields() fetches once and reads three columns
+//     out of it rather than three separate requests. This also fixes a real gap: Yahoo
+//     doesn't publish a 2Y yield index at all (checked directly — ^IRX/^FVX/^TNX/^TYX
+//     are the only US yield tickers it has: 13-week/5Y/10Y/30Y, no 2Y), so there was no
+//     way to get 2Y from Yahoo even before this switch.
 //   - Germany: Bundesbank's own statistics API, series BBSIS...R10XX... (Svensson-method
-//     term structure, 10-year residual maturity) — daily, from the Bundesbank itself.
+//     term structure, 10-year residual maturity) — daily, from the Bundesbank itself,
+//     via the CORS proxy chain (fetchViaProxies) since it has no CORS header of its own.
 //   - Japan: Ministry of Finance's own published JGB yield table — daily, straight from
-//     the issuer. The small "current month" file (resets each month) supplies the
-//     freshest point every 30-min cycle; a one-time seed from the 1.2MB full-history
-//     file (too big to re-fetch every cycle) supplies the rest of the 1-year window —
-//     see seedMofJgbHistory.
-//   - France: no equivalent free DAILY source found (checked Banque de France's Webstat
-//     — the series metadata exists but its data API isn't reachable the same way ECB's
-//     is), but IS covered by Eurostat's own long-term interest rate API — genuinely
-//     CORS-enabled, no proxy needed — which replaced the FRED-via-proxy path entirely
-//     on 2026-09-22 (see fetchEurostatBondYield). Still monthly (12 points = 1 year),
-//     just fetched directly instead of relaying through FRED then a CORS proxy.
-//   - Korea: no equivalent free daily OR CORS-enabled source found (checked KOSIS/ECOS —
-//     key-gated; KRX/KOFIA have no free API; not in Eurostat's dataset, which only
-//     covers EU/EEA + UK) — stays on FRED's monthly figures (12 points = 1 year) via a
-//     CORS proxy, same as UK below.
-//   - China: not in FRED's OECD dataset (not an OECD member) and has no free source
-//     anywhere (also checked BIS's statistics API directly — it covers policy rates and
-//     FX, not government bond yields) — stays on its curated approximate fallback (see
-//     BOND10Y in commodities-crypto.js), likewise scaled to represent roughly the past
-//     year rather than a longer stretch.
-// UK is ALSO kept in FRED_BOND_SERIES even though BoE is its primary source — BoE's
-// site sits behind bot protection that occasionally 403s a proxied request (observed
-// directly while testing, inconsistently — same flaky-free-proxy story as everywhere
-// else in this file). fetchNonUsBondYields() runs the FRED fetches first as a safety
-// net, then layers the daily sources on top so they overwrite it whenever they
-// succeed — UK never regresses to being permanently stuck on the static fallback just
-// because one 30-minute cycle's BoE request happened to fail.
-// France dropped from here (2026-09-22) — see fetchEurostatBondYield below, which
-// replaces it with a genuinely CORS-native direct source instead of FRED-via-proxy.
-const FRED_BOND_SERIES = {
-    'GB10Y=RR': 'IRLTLT01GBM156N',
-    'KR10Y=RR': 'IRLTLT01KRM156N'
-};
-
-function parseFredCsv(text) {
-    return text.trim().split('\n').slice(1) // drop the "observation_date,<series>" header row
-        .map(line => line.split(','))
-        .filter(cols => cols.length === 2 && cols[1] !== '' && cols[1] !== '.') // '.' is FRED's own "no observation" marker
-        .map(([date, value]) => ({ date, value: +value }));
-}
-
-// A blocked/bot-checked source (BoE, Bundesbank, FRED-via-proxy have all been observed
-// doing this — see the comments above fetchOneFredSeries/fetchBoeGiltYield) still
+//     the issuer, via the same CORS proxy chain. The small "current month" file (resets
+//     each month) supplies the freshest point every 30-min cycle; a one-time seed from
+//     the 1.2MB full-history file (too big to re-fetch every cycle) supplies the rest of
+//     the 1-year window — see seedMofJgbHistory.
+// Every chart is unified to roughly a 1-year window, per earlier explicit request — a
+// bond yield moves gradually on macro drivers, so a short window mostly shows noise; 1
+// year is long enough to actually see a hiking/cutting cycle. current/change still
+// always come from the two most-recent real observations regardless of the chart's
+// span (see setQuoteAndSeriesFromValues) — the window only affects what the sparkline
+// draws.
+//
+// A blocked/bot-checked source (BoE and Bundesbank have both been observed doing this
+// at one point or another — see the comment above assertPlausibleYields) still
 // answers with HTTP 200, just with an HTML "Sorry" page or a Cloudflare "error code: 520"
 // stub instead of real CSV. The naive comma-split parsers below have no way to tell that
 // apart from real data on their own — a handful of HTML/CSS lines happen to split into
@@ -526,14 +490,14 @@ function parseFredCsv(text) {
 // monthly series) is far more likely to be a parsing accident than a real data point.
 //
 // The range/count check ALONE turned out not to be enough (still 2026-09-22, same UK
-// row): a big HTML "Sorry" page has plenty more than 30 lines that happen to comma-split
-// into a stray "0" — clearing both the count and range bars, just with the SAME repeated
-// value, which rendered as a suspiciously perfect flat line instead of "—". A real daily
-// bond-yield series over a year is never actually flat — requireVariance (opt-in, since
-// FRED's sparse 3-12 monthly points or MOF's single-point current-month update can
-// legitimately be genuinely flat/near-flat over a short real window) rejects a result
-// with too few distinct readings or too narrow a spread to be believable as real
-// day-by-day market data.
+// row, back when this app still had a UK row sourced from BoE): a big HTML "Sorry" page
+// has plenty more than 30 lines that happen to comma-split into a stray "0" — clearing
+// both the count and range bars, just with the SAME repeated value, which rendered as a
+// suspiciously perfect flat line instead of "—". A real daily bond-yield series over a
+// year is never actually flat — requireVariance (opt-in, since MOF's single-point
+// current-month update can legitimately be genuinely flat/near-flat over a short real
+// window) rejects a result with too few distinct readings or too narrow a spread to be
+// believable as real day-by-day market data.
 function assertPlausibleYields(values, minPoints, label, requireVariance = false) {
     if (values.length < minPoints) throw new Error(`${label}: only ${values.length} point(s), expected at least ${minPoints}`);
     if (values.some(v => !Number.isFinite(v) || v < -3 || v > 25)) {
@@ -561,90 +525,57 @@ function setQuoteAndSeriesFromValues(symbol, values, seriesValues = values) {
     setSeries(symbol, seriesValues);
 }
 
-async function fetchOneFredSeries(symbol, seriesId) {
-    try {
-        const res = await fetchViaProxies(`https://fred.stlouisfed.org/graph/fredgraph.csv?id=${seriesId}`, 9000);
-        const rows = parseFredCsv(await res.text());
-        const values = rows.slice(-12).map(r => r.value);
-        // 3 (not 2) — FRED-via-proxy has been observed returning a Cloudflare
-        // "error code: 520" stub instead of real CSV (2026-09-22); parseFredCsv's own
-        // header-row-drop then blank-value filter can still leave 1-2 stray rows out of
-        // that, which would otherwise slip past setQuoteAndSeriesFromValues' >=2 check.
-        assertPlausibleYields(values, 3, `FRED ${symbol}`);
-        // "Change" here is real month-over-month, not a stale multi-month checkpoint —
-        // the most standard comparison basis for a series that only ever prints once a
-        // month in the first place (see the BOND10Y comment for why this replaced the
-        // old fixed-checkpoint comparison). 12 points = 12 months = 1 year of history.
-        setQuoteAndSeriesFromValues(symbol, values);
-    } catch (e) {
-        console.warn('FRED fetch failed for', symbol, e.message);
-    }
+// U.S. Treasury Department's own daily par yield curve — genuinely CORS-enabled
+// (verified directly, 2026-09-22: a real browser fetch() from this site's own origin
+// gets response.type 'cors', not 'opaque' — no proxy needed at all, unlike every other
+// proxied source in this file). One CSV per year covers every published tenor (1 Mo
+// through 30 Yr) for that whole year, so fetchUsTreasuryYields() fetches the current AND
+// previous year once each (covering the turn-of-year case where "this year" alone isn't
+// a full trailing year yet) and reads three columns out of the combined result, rather
+// than three separate requests. Column labels are matched by NAME (via the header row),
+// not position, so a future reordering on Treasury's end wouldn't silently read the
+// wrong tenor.
+const TREASURY_TENOR_COLUMNS = { 'US02Y=RR': '2 Yr', 'US10Y=RR': '10 Yr', 'US30Y=RR': '30 Yr' };
+
+function parseTreasuryYieldCsv(text, columnLabel) {
+    const lines = text.trim().split('\n');
+    const header = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
+    const idx = header.indexOf(columnLabel);
+    if (idx < 0) throw new Error(`column "${columnLabel}" not found`);
+    // Treasury's file lists newest date first; reverse to oldest-first, matching every
+    // other series in this app (setQuoteAndSeriesFromValues expects current/prev as the
+    // LAST two entries).
+    return lines.slice(1)
+        .map(line => line.split(','))
+        .filter(cols => cols.length > idx && cols[idx] !== '')
+        .map(cols => +cols[idx])
+        .reverse();
 }
 
-function boeDateParam(d) {
-    const mon = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()];
-    return `${String(d.getDate()).padStart(2, '0')}/${mon}/${d.getFullYear()}`;
-}
-async function fetchBoeGiltYield() {
-    try {
-        const to = new Date();
-        const from = new Date();
-        from.setDate(from.getDate() - 370); // 1 year + a small buffer
-        const target = `https://www.bankofengland.co.uk/boeapps/database/_iadb-fromshowcolumns.asp?csv.x=yes&Datefrom=${boeDateParam(from)}&Dateto=${boeDateParam(to)}&SeriesCodes=IUDMNZC&CSVF=TN&UsingCodes=Y&VPD=Y&VFD=N`;
-        const res = await fetchViaProxies(target, 9000);
-        const values = (await res.text()).trim().split('\n').slice(1)
-            .map(line => line.split(','))
-            .filter(cols => cols.length === 2 && cols[1] !== '')
-            .map(cols => +cols[1]);
-        // BoE has been observed serving its own "Sorry" bot-check HTML page instead of
-        // the CSV export (2026-09-22) — a handful of HTML/CSS lines happen to split into
-        // exactly two comma-separated fields, which without this check silently produced
-        // a plausible-looking (but fake) "0%, 0% change, no chart" UK row. 30 (not the
-        // generic 3 used for FRED's monthly data) — a real year of gilt-market trading
-        // days is ~260 rows; garbage HTML producing 30+ rows that ALSO all land inside
-        // the plausible yield range is not realistic.
-        assertPlausibleYields(values, 30, 'BoE GB10Y', true);
-        // ~260 raw trading days for a year — downsample to a clean 40-point chart, same
-        // as every Yahoo-sourced sparkline on the page.
-        setQuoteAndSeriesFromValues('GB10Y=RR', values, downsample(values, 40));
-    } catch (e) {
-        console.warn('Bank of England gilt yield fetch failed:', e.message);
-    }
+async function fetchTreasuryYearCsv(year) {
+    const url = `https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/${year}/all?type=daily_treasury_yield_curve&field_tdr_date_value=${year}&page&_format=csv`;
+    const res = await fetchWithTimeout(url, 9000);
+    if (!res.ok) throw new Error('http ' + res.status);
+    return res.text();
 }
 
-// Eurostat's long-term interest rate series (the same EMU-convergence-criterion 10Y
-// benchmark yield FRED's IRLTLT01xxM156N series republishes from OECD) is genuinely
-// CORS-enabled — verified directly against the endpoint (2026-09-22):
-// access-control-allow-origin: *, same as ECB's Data Portal (see fetchECBPolicyRate).
-// This replaces France's old FRED-via-proxy path entirely, sidestepping that failure
-// mode instead of working around it: FRED itself has no CORS header of its own (curl
-// reaches it fine; a real browser fetch() is blocked), and the only currently-working
-// CORS proxy returns a Cloudflare "error code: 520" for every fred.stlouisfed.org
-// request regardless of series — going straight to Eurostat needs no proxy at all.
-// UK is ALSO in this dataset (geo=UK), but checked directly: its last published figure
-// there is 2025-04 — over a year stale as of today, so it's deliberately NOT used as a
-// live source here (that would silently show 16+-month-old data labeled as current,
-// which is worse than the honest "no live data" fallback UK is already on). Korea isn't
-// in this dataset at all — it only covers EU/EEA member states plus the UK.
-async function fetchEurostatBondYield(symbol, geo) {
+async function fetchUsTreasuryYields() {
+    let curText, prevText;
     try {
-        const from = new Date();
-        from.setFullYear(from.getFullYear() - 1);
-        const sinceTimePeriod = from.toISOString().slice(0, 7); // YYYY-MM, Eurostat's monthly period format
-        const url = `https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/irt_lt_mcby_m?format=JSON&geo=${geo}&lang=EN&sinceTimePeriod=${sinceTimePeriod}`;
-        const res = await fetchWithTimeout(url, 8000);
-        if (!res.ok) throw new Error('http ' + res.status);
-        const data = await res.json();
-        // Eurostat's JSON-stat format: `value` is keyed by a flat numeric index, and
-        // `dimension.time.category.index` maps each period label to that same index —
-        // sorting periods by their index (not alphabetically) gives chronological order.
-        const timeIndex = data.dimension.time.category.index;
-        const orderedPeriods = Object.keys(timeIndex).sort((a, b) => timeIndex[a] - timeIndex[b]);
-        const values = orderedPeriods.map(period => data.value[String(timeIndex[period])]).filter(v => v != null);
-        assertPlausibleYields(values, 3, `Eurostat ${symbol}`);
-        setQuoteAndSeriesFromValues(symbol, values);
+        const thisYear = new Date().getFullYear();
+        [curText, prevText] = await Promise.all([fetchTreasuryYearCsv(thisYear), fetchTreasuryYearCsv(thisYear - 1)]);
     } catch (e) {
-        console.warn('Eurostat bond yield fetch failed for', symbol, e.message);
+        console.warn('U.S. Treasury yield curve fetch failed:', e.message);
+        return;
+    }
+    for (const [symbol, columnLabel] of Object.entries(TREASURY_TENOR_COLUMNS)) {
+        try {
+            const combined = [...parseTreasuryYieldCsv(prevText, columnLabel), ...parseTreasuryYieldCsv(curText, columnLabel)].slice(-260); // ~1 trading year
+            assertPlausibleYields(combined, 30, `Treasury ${symbol}`, true);
+            setQuoteAndSeriesFromValues(symbol, combined, downsample(combined, 40));
+        } catch (e) {
+            console.warn('Treasury yield parse failed for', symbol, e.message);
+        }
     }
 }
 
@@ -723,19 +654,14 @@ async function fetchMofJgbYield() {
     }
 }
 
-// None of these sources actually publish more than once a day (France/Korea's FRED
-// figures: once a month), so most 1-minute cycles just re-confirm the same reading
-// rather than finding a new one — but per explicit request, every bond yield row now
-// shares the same 1-minute cadence as the rest of the page (see the setInterval near
-// window.onload) instead of a slower one.
-async function fetchNonUsBondYields() {
-    // FRED first, as a safety-net baseline for UK/Korea (see the comment above
-    // FRED_BOND_SERIES) — awaited before the daily sources below so they always
-    // overwrite it when they succeed, rather than racing and unpredictably losing to it.
-    // France no longer goes through FRED at all — see fetchEurostatBondYield.
-    await Promise.allSettled(Object.entries(FRED_BOND_SERIES).map(([symbol, seriesId]) => fetchOneFredSeries(symbol, seriesId)));
-    renderAll();
-    await Promise.allSettled([fetchBoeGiltYield(), fetchBundesbankBondYield(), fetchMofJgbYield(), fetchEurostatBondYield('FR10Y=RR', 'FR')]);
+// None of these sources actually publish more than once a day, so most 1-minute cycles
+// just re-confirm the same reading rather than finding a new one — but per earlier
+// explicit request, every bond yield row shares the same 1-minute cadence as the rest
+// of the page (see the setInterval near window.onload) instead of a slower one.
+// Covers the five non-Yahoo rows (US 2Y/10Y/30Y, Germany, Japan) — the ETF row (TLT)
+// goes through the normal fetchAllYahoo path instead, since it's a real Yahoo ticker.
+async function fetchBondYields() {
+    await Promise.allSettled([fetchUsTreasuryYields(), fetchBundesbankBondYield(), fetchMofJgbYield()]);
     renderAll();
     saveSeriesCache(); // persists Japan's expensive one-time-seeded baseline too, so a reload within the 24h cache TTL never re-downloads MOF's 1.2MB history file
 }

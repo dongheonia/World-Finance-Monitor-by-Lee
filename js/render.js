@@ -225,12 +225,12 @@ function renderAll() {
     document.getElementById('bond-yield-container').innerHTML = BOND10Y.map(b => {
         const data = getData(b.symbol, b.fallback);
         const current = data.current;
-        // '^TNX'/UK/Germany/Japan carry a real day-over-day change (Yahoo/BoE/
-        // Bundesbank/MOF all publish daily); France/Korea carry a real month-over-month
-        // change (FRED) — China has no live source at all. All of this lands via
-        // fetchNonUsBondYields(). Prefer that real previous-period comparison whenever it
-        // exists; only fall back to the fixed curated checkpoint (b.prevYield) when
-        // nothing live has landed yet (e.g. right after page load, or China always).
+        // US 2Y/10Y/30Y/Germany/Japan all carry a real day-over-day change (Treasury.gov/
+        // Bundesbank/MOF all publish daily); the ETF row carries Yahoo's own change
+        // directly. All of this lands via fetchBondYields()/fetchAllYahoo(). Prefer that
+        // real previous-period comparison whenever it exists; only fall back to the
+        // fixed curated checkpoint (b.prevYield) when nothing live has landed yet (e.g.
+        // right after page load).
         const hasLiveChange = data.change != null;
         const change = hasLiveChange ? +data.change.toFixed(2) : +(current - b.prevYield).toFixed(2);
         const prevForDisplay = hasLiveChange ? +(current - change).toFixed(2) : b.prevYield;
@@ -238,7 +238,9 @@ function renderAll() {
         // no "Prev X%" wording — per explicit request, rather than the Policy Rate style
         // renderRateItem() normally shows.
         const changePercent = prevForDisplay ? +((change / prevForDisplay) * 100).toFixed(2) : 0;
-        return renderItem(currentLang === 'ko' ? b.ko : b.en, { current, change, change_percent: changePercent }, '%', getSeries(b.symbol));
+        // unit defaults to '%' (every row here is a yield except the ETF, which sets
+        // unit: '' explicitly — see the comment above BOND10Y).
+        return renderItem(currentLang === 'ko' ? b.ko : b.en, { current, change, change_percent: changePercent }, b.unit ?? '%', getSeries(b.symbol));
     }).join('');
 
     document.getElementById('market-container').innerHTML =
