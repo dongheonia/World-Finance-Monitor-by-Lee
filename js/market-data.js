@@ -476,10 +476,16 @@ async function fetchLocalBackend() {
 //     freshest point every 30-min cycle; a one-time seed from the 1.2MB full-history
 //     file (too big to re-fetch every cycle) supplies the rest of the 1-year window —
 //     see seedMofJgbHistory.
-//   - France, Korea: no equivalent free daily source found (checked Banque de France's
-//     Webstat — the series metadata exists but its data API isn't reachable the same
-//     way ECB's is; checked Korea's KOSIS/ECOS — key-gated, and KRX/KOFIA have no free
-//     API either) — stay on FRED's monthly figures (12 points = 1 year).
+//   - France: no equivalent free DAILY source found (checked Banque de France's Webstat
+//     — the series metadata exists but its data API isn't reachable the same way ECB's
+//     is), but IS covered by Eurostat's own long-term interest rate API — genuinely
+//     CORS-enabled, no proxy needed — which replaced the FRED-via-proxy path entirely
+//     on 2026-09-22 (see fetchEurostatBondYield). Still monthly (12 points = 1 year),
+//     just fetched directly instead of relaying through FRED then a CORS proxy.
+//   - Korea: no equivalent free daily OR CORS-enabled source found (checked KOSIS/ECOS —
+//     key-gated; KRX/KOFIA have no free API; not in Eurostat's dataset, which only
+//     covers EU/EEA + UK) — stays on FRED's monthly figures (12 points = 1 year) via a
+//     CORS proxy, same as UK below.
 //   - China: not in FRED's OECD dataset (not an OECD member) and has no free source
 //     anywhere (also checked BIS's statistics API directly — it covers policy rates and
 //     FX, not government bond yields) — stays on its curated approximate fallback (see
@@ -492,9 +498,10 @@ async function fetchLocalBackend() {
 // net, then layers the daily sources on top so they overwrite it whenever they
 // succeed — UK never regresses to being permanently stuck on the static fallback just
 // because one 30-minute cycle's BoE request happened to fail.
+// France dropped from here (2026-09-22) — see fetchEurostatBondYield below, which
+// replaces it with a genuinely CORS-native direct source instead of FRED-via-proxy.
 const FRED_BOND_SERIES = {
     'GB10Y=RR': 'IRLTLT01GBM156N',
-    'FR10Y=RR': 'IRLTLT01FRM156N',
     'KR10Y=RR': 'IRLTLT01KRM156N'
 };
 
@@ -605,6 +612,42 @@ async function fetchBoeGiltYield() {
     }
 }
 
+// Eurostat's long-term interest rate series (the same EMU-convergence-criterion 10Y
+// benchmark yield FRED's IRLTLT01xxM156N series republishes from OECD) is genuinely
+// CORS-enabled — verified directly against the endpoint (2026-09-22):
+// access-control-allow-origin: *, same as ECB's Data Portal (see fetchECBPolicyRate).
+// This replaces France's old FRED-via-proxy path entirely, sidestepping that failure
+// mode instead of working around it: FRED itself has no CORS header of its own (curl
+// reaches it fine; a real browser fetch() is blocked), and the only currently-working
+// CORS proxy returns a Cloudflare "error code: 520" for every fred.stlouisfed.org
+// request regardless of series — going straight to Eurostat needs no proxy at all.
+// UK is ALSO in this dataset (geo=UK), but checked directly: its last published figure
+// there is 2025-04 — over a year stale as of today, so it's deliberately NOT used as a
+// live source here (that would silently show 16+-month-old data labeled as current,
+// which is worse than the honest "no live data" fallback UK is already on). Korea isn't
+// in this dataset at all — it only covers EU/EEA member states plus the UK.
+async function fetchEurostatBondYield(symbol, geo) {
+    try {
+        const from = new Date();
+        from.setFullYear(from.getFullYear() - 1);
+        const sinceTimePeriod = from.toISOString().slice(0, 7); // YYYY-MM, Eurostat's monthly period format
+        const url = `https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/irt_lt_mcby_m?format=JSON&geo=${geo}&lang=EN&sinceTimePeriod=${sinceTimePeriod}`;
+        const res = await fetchWithTimeout(url, 8000);
+        if (!res.ok) throw new Error('http ' + res.status);
+        const data = await res.json();
+        // Eurostat's JSON-stat format: `value` is keyed by a flat numeric index, and
+        // `dimension.time.category.index` maps each period label to that same index —
+        // sorting periods by their index (not alphabetically) gives chronological order.
+        const timeIndex = data.dimension.time.category.index;
+        const orderedPeriods = Object.keys(timeIndex).sort((a, b) => timeIndex[a] - timeIndex[b]);
+        const values = orderedPeriods.map(period => data.value[String(timeIndex[period])]).filter(v => v != null);
+        assertPlausibleYields(values, 3, `Eurostat ${symbol}`);
+        setQuoteAndSeriesFromValues(symbol, values);
+    } catch (e) {
+        console.warn('Eurostat bond yield fetch failed for', symbol, e.message);
+    }
+}
+
 async function fetchBundesbankBondYield() {
     try {
         const from = new Date();
@@ -686,12 +729,13 @@ async function fetchMofJgbYield() {
 // shares the same 1-minute cadence as the rest of the page (see the setInterval near
 // window.onload) instead of a slower one.
 async function fetchNonUsBondYields() {
-    // FRED first, as a safety-net baseline for UK/France/Korea (see the comment above
+    // FRED first, as a safety-net baseline for UK/Korea (see the comment above
     // FRED_BOND_SERIES) — awaited before the daily sources below so they always
     // overwrite it when they succeed, rather than racing and unpredictably losing to it.
+    // France no longer goes through FRED at all — see fetchEurostatBondYield.
     await Promise.allSettled(Object.entries(FRED_BOND_SERIES).map(([symbol, seriesId]) => fetchOneFredSeries(symbol, seriesId)));
     renderAll();
-    await Promise.allSettled([fetchBoeGiltYield(), fetchBundesbankBondYield(), fetchMofJgbYield()]);
+    await Promise.allSettled([fetchBoeGiltYield(), fetchBundesbankBondYield(), fetchMofJgbYield(), fetchEurostatBondYield('FR10Y=RR', 'FR')]);
     renderAll();
     saveSeriesCache(); // persists Japan's expensive one-time-seeded baseline too, so a reload within the 24h cache TTL never re-downloads MOF's 1.2MB history file
 }

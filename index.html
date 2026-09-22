@@ -81,7 +81,10 @@
                     <button id="btn-style-satellite" onclick="switchMapStyle('satellite')" class="map-style-btn px-2 py-1 rounded border border-gray-700 text-gray-300 hover:text-white cursor-pointer">위성</button>
                 </div>
             </div>
-            <div id="map-instructions" class="absolute top-11 right-2 text-[10px] text-gray-600 font-mono pointer-events-none z-10">
+            <!-- Sits to the LEFT of #map-toggle-btn on the same row (not stacked below it
+                 anymore, per explicit request) — right offset clears that button's width
+                 (~28px) plus a small gap; z-20 (below the button's z-30, above the map). -->
+            <div id="map-instructions" class="absolute top-2 right-10 text-[10px] text-gray-600 font-mono pointer-events-none z-20 text-right leading-[26px]">
                 * 휠로 확대/축소, 드래그로 이동 (UN 193개 회원국)
             </div>
             <div id="world-map" class="w-full relative"></div>
