@@ -415,14 +415,15 @@ async function fetchCryptoSparklines() {
     renderAll();
 }
 
-// Optional local backend (main.py) — reliably covers the 7 symbols that are gated on
+// Optional local backend (main.py) — reliably covers the symbols that are gated on
 // every free cloud API's paid tier but that Yahoo itself has fine: Germany DAX,
-// Shanghai Composite, KOSPI, WTI Crude, Natural Gas, Copper, Wheat. Running it is
-// opt-in (`uvicorn main:app --port 8000`); if it's not running, this just fails
-// silently and those 7 symbols fall back to the existing (flakier) Yahoo-proxy attempt
-// in fetchAllYahoo — no regression either way, this only ever makes things better.
+// Shanghai Composite, KOSPI, Natural Gas, Copper, Wheat (WTI dropped along with the row
+// itself, 2026-09-22 — see the comment above COMMODITIES). Running it is opt-in
+// (`uvicorn main:app --port 8000`); if it's not running, this just fails silently and
+// these symbols fall back to the existing (flakier) Yahoo-proxy attempt in
+// fetchAllYahoo — no regression either way, this only ever makes things better.
 const LOCAL_BACKEND_URL = 'http://localhost:8000';
-const LOCAL_BACKEND_SYMBOLS = ['000001.SS', '^KS11', 'CL=F', 'NG=F', 'HG=F', 'ZW=F'];
+const LOCAL_BACKEND_SYMBOLS = ['000001.SS', '^KS11', 'NG=F', 'HG=F', 'ZW=F'];
 let localBackendAvailable = null; // null = unknown yet, avoids a console error spray every cycle once we know it's down
 
 async function fetchLocalBackend() {
@@ -440,12 +441,12 @@ async function fetchLocalBackend() {
             }
         });
         if (anySucceeded) {
-            if (localBackendAvailable !== true) console.info('Local backend (main.py) detected — using it for DAX/Shanghai/KOSPI/WTI/NatGas/Copper/Wheat.');
+            if (localBackendAvailable !== true) console.info('Local backend (main.py) detected — using it for DAX/Shanghai/KOSPI/NatGas/Copper/Wheat.');
             localBackendAvailable = true;
             renderAll();
         }
     } catch (e) {
-        if (localBackendAvailable !== false) console.info('Local backend not running (this is fine — falling back to the Yahoo proxy for those 7 symbols). Run `uvicorn main:app --port 8000` to enable it.');
+        if (localBackendAvailable !== false) console.info('Local backend not running (this is fine — falling back to the Yahoo proxy for those symbols). Run `uvicorn main:app --port 8000` to enable it.');
         localBackendAvailable = false;
     }
 }

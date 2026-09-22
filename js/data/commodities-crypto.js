@@ -35,9 +35,12 @@ const BOND10Y = [
 // symbol resolves to it — and FRED — POILDUBUSDM exists but is monthly-resolution IMF
 // data with no way to get a meaningful intraday reading) and was dropped rather than
 // staying stuck on a permanently-fixed value.
+// WTI Crude dropped (2026-09-22, explicit request) — Brent is the one kept of the two,
+// as the more internationally-referenced global benchmark (most of the world's crude is
+// priced off Brent, not WTI, which is more US-domestic-focused) for a page tracking
+// world markets broadly rather than US markets specifically.
 const COMMODITIES = [
     { symbol: 'BZ=F', ko: '브렌트유', en: 'Brent Crude', fallback: { current: 88.68, change: -8.10, change_percent: -8.36 } },
-    { symbol: 'CL=F', ko: 'WTI 원유', en: 'WTI Crude', fallback: { current: 81.20, change: 0.95, change_percent: 1.18 } },
     { symbol: 'NG=F', ko: '천연가스', en: 'Natural Gas', fallback: { current: 2.65, change: -0.04, change_percent: -1.49 } },
     { symbol: 'GC=F', ko: '금', en: 'Gold', fallback: { current: 4078.40, change: 7.60, change_percent: 0.19 } },
     { symbol: 'SI=F', ko: '은', en: 'Silver', fallback: { current: 58.79, change: -0.12, change_percent: -0.21 } },

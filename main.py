@@ -25,7 +25,6 @@ GAP_SYMBOLS = {
     "^GDAXI": "Germany DAX",
     "000001.SS": "Shanghai Composite",
     "^KS11": "KOSPI",
-    "CL=F": "WTI Crude",
     "NG=F": "Natural Gas",
     "HG=F": "Copper",
     "ZW=F": "Wheat",
