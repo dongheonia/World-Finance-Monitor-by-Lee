@@ -239,8 +239,12 @@ function renderAll() {
         // renderRateItem() normally shows.
         const changePercent = prevForDisplay ? +((change / prevForDisplay) * 100).toFixed(2) : 0;
         // unit defaults to '%' (every row here is a yield except the ETF, which sets
-        // unit: '' explicitly — see the comment above BOND10Y).
-        return renderItem(currentLang === 'ko' ? b.ko : b.en, { current, change, change_percent: changePercent }, b.unit ?? '%', getSeries(b.symbol));
+        // unit: '' explicitly — see the comment above BOND10Y). pinned (also ETF-only)
+        // gives it the same dark-box/white-label treatment as Dollar Index/VIX, per
+        // explicit request — it's the one row here that isn't a country's bond, same
+        // reasoning as those two being the one row each in their own sections that isn't
+        // a plain currency pair / stock index.
+        return renderItem(currentLang === 'ko' ? b.ko : b.en, { current, change, change_percent: changePercent }, b.unit ?? '%', getSeries(b.symbol), b.pinned);
     }).join('');
 
     document.getElementById('market-container').innerHTML =
