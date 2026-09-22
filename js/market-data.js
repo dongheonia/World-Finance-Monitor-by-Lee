@@ -505,6 +505,25 @@ function parseFredCsv(text) {
         .map(([date, value]) => ({ date, value: +value }));
 }
 
+// A blocked/bot-checked source (BoE, Bundesbank, FRED-via-proxy have all been observed
+// doing this — see the comments above fetchOneFredSeries/fetchBoeGiltYield) still
+// answers with HTTP 200, just with an HTML "Sorry" page or a Cloudflare "error code: 520"
+// stub instead of real CSV. The naive comma-split parsers below have no way to tell that
+// apart from real data on their own — a handful of HTML/CSS lines happen to split into
+// exactly two comma-separated fields, and stray numeric-looking fragments in there
+// (things like inline "margin: 0 0 10px") parse to a plausible-looking 0 via `+value`.
+// That's exactly what corrupted the UK row to a flat "0%, 0% change, no chart" instead
+// of leaving it on its last good value (2026-09-22). This is a minimal sanity gate, not
+// real CSV validation — every real 10Y government yield on Earth right now is well
+// within [-3, 25], so anything outside that (or too few points to be the real daily/
+// monthly series) is far more likely to be a parsing accident than a real data point.
+function assertPlausibleYields(values, minPoints, label) {
+    if (values.length < minPoints) throw new Error(`${label}: only ${values.length} point(s), expected at least ${minPoints}`);
+    if (values.some(v => !Number.isFinite(v) || v < -3 || v > 25)) {
+        throw new Error(`${label}: a parsed value is outside the plausible yield range`);
+    }
+}
+
 // `seriesValues` (defaults to `values` itself) lets a caller show a DOWNSAMPLED chart
 // while still computing current/change from the true last two RAW observations —
 // downsampling first would risk losing the actual most-recent point.
@@ -522,11 +541,17 @@ async function fetchOneFredSeries(symbol, seriesId) {
     try {
         const res = await fetchViaProxies(`https://fred.stlouisfed.org/graph/fredgraph.csv?id=${seriesId}`, 9000);
         const rows = parseFredCsv(await res.text());
+        const values = rows.slice(-12).map(r => r.value);
+        // 3 (not 2) — FRED-via-proxy has been observed returning a Cloudflare
+        // "error code: 520" stub instead of real CSV (2026-09-22); parseFredCsv's own
+        // header-row-drop then blank-value filter can still leave 1-2 stray rows out of
+        // that, which would otherwise slip past setQuoteAndSeriesFromValues' >=2 check.
+        assertPlausibleYields(values, 3, `FRED ${symbol}`);
         // "Change" here is real month-over-month, not a stale multi-month checkpoint —
         // the most standard comparison basis for a series that only ever prints once a
         // month in the first place (see the BOND10Y comment for why this replaced the
         // old fixed-checkpoint comparison). 12 points = 12 months = 1 year of history.
-        setQuoteAndSeriesFromValues(symbol, rows.slice(-12).map(r => r.value));
+        setQuoteAndSeriesFromValues(symbol, values);
     } catch (e) {
         console.warn('FRED fetch failed for', symbol, e.message);
     }
@@ -547,6 +572,14 @@ async function fetchBoeGiltYield() {
             .map(line => line.split(','))
             .filter(cols => cols.length === 2 && cols[1] !== '')
             .map(cols => +cols[1]);
+        // BoE has been observed serving its own "Sorry" bot-check HTML page instead of
+        // the CSV export (2026-09-22) — a handful of HTML/CSS lines happen to split into
+        // exactly two comma-separated fields, which without this check silently produced
+        // a plausible-looking (but fake) "0%, 0% change, no chart" UK row. 30 (not the
+        // generic 3 used for FRED's monthly data) — a real year of gilt-market trading
+        // days is ~260 rows; garbage HTML producing 30+ rows that ALSO all land inside
+        // the plausible yield range is not realistic.
+        assertPlausibleYields(values, 30, 'BoE GB10Y');
         // ~260 raw trading days for a year — downsample to a clean 40-point chart, same
         // as every Yahoo-sourced sparkline on the page.
         setQuoteAndSeriesFromValues('GB10Y=RR', values, downsample(values, 40));
@@ -567,6 +600,11 @@ async function fetchBundesbankBondYield() {
             .map(line => line.split(','))
             .filter(cols => cols[1] && cols[1] !== '.')
             .map(cols => +cols[1]);
+        // The leading-date-pattern filter above already makes a garbage/HTML response
+        // unlikely to produce anything — this is just the same defense-in-depth range
+        // check used for the other proxied bond-yield sources (see the comment above
+        // assertPlausibleYields).
+        assertPlausibleYields(values, 30, 'Bundesbank DE10Y');
         setQuoteAndSeriesFromValues('DE10Y=RR', values, downsample(values, 40));
     } catch (e) {
         console.warn('Bundesbank bond yield fetch failed:', e.message);
@@ -600,7 +638,11 @@ async function seedMofJgbHistory() {
     try {
         const res = await fetchViaProxies('https://www.mof.go.jp/english/policy/jgbs/reference/interest_rate/historical/jgbcme_all.csv', 15000);
         const values = mofExtract10y(await res.text());
-        if (values.length < 2) throw new Error('not enough data points');
+        // mofExtract10y's own header/date-pattern requirements already make a garbage
+        // response unlikely to parse into anything — this range check is just the same
+        // defense-in-depth used for the other proxied bond-yield sources (see the
+        // comment above assertPlausibleYields).
+        assertPlausibleYields(values, 2, 'MOF JGB history seed');
         mofJgbBaseline = values.slice(-MOF_JGB_WINDOW);
         setSeriesIfMissing('JP10Y=RR', downsample(mofJgbBaseline, 40));
     } catch (e) {
@@ -612,7 +654,7 @@ async function fetchMofJgbYield() {
     try {
         const res = await fetchViaProxies('https://www.mof.go.jp/english/policy/jgbs/reference/interest_rate/jgbcme.csv', 9000);
         const values = mofExtract10y(await res.text());
-        if (values.length < 1) throw new Error('no data points this month yet');
+        assertPlausibleYields(values, 1, 'MOF JGB current month');
         const older = mofJgbBaseline ? mofJgbBaseline.slice(0, Math.max(0, MOF_JGB_WINDOW - values.length)) : [];
         const combined = [...older, ...values];
         setQuoteAndSeriesFromValues('JP10Y=RR', combined, downsample(combined, 40));
