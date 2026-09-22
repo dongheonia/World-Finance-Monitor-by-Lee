@@ -517,10 +517,27 @@ function parseFredCsv(text) {
 // real CSV validation — every real 10Y government yield on Earth right now is well
 // within [-3, 25], so anything outside that (or too few points to be the real daily/
 // monthly series) is far more likely to be a parsing accident than a real data point.
-function assertPlausibleYields(values, minPoints, label) {
+//
+// The range/count check ALONE turned out not to be enough (still 2026-09-22, same UK
+// row): a big HTML "Sorry" page has plenty more than 30 lines that happen to comma-split
+// into a stray "0" — clearing both the count and range bars, just with the SAME repeated
+// value, which rendered as a suspiciously perfect flat line instead of "—". A real daily
+// bond-yield series over a year is never actually flat — requireVariance (opt-in, since
+// FRED's sparse 3-12 monthly points or MOF's single-point current-month update can
+// legitimately be genuinely flat/near-flat over a short real window) rejects a result
+// with too few distinct readings or too narrow a spread to be believable as real
+// day-by-day market data.
+function assertPlausibleYields(values, minPoints, label, requireVariance = false) {
     if (values.length < minPoints) throw new Error(`${label}: only ${values.length} point(s), expected at least ${minPoints}`);
     if (values.some(v => !Number.isFinite(v) || v < -3 || v > 25)) {
         throw new Error(`${label}: a parsed value is outside the plausible yield range`);
+    }
+    if (requireVariance) {
+        const distinctCount = new Set(values.map(v => v.toFixed(3))).size;
+        const spread = Math.max(...values) - Math.min(...values);
+        if (distinctCount < 5 || spread < 0.01) {
+            throw new Error(`${label}: values look suspiciously flat/repetitive (${distinctCount} distinct, spread ${spread.toFixed(4)})`);
+        }
     }
 }
 
@@ -579,7 +596,7 @@ async function fetchBoeGiltYield() {
         // generic 3 used for FRED's monthly data) — a real year of gilt-market trading
         // days is ~260 rows; garbage HTML producing 30+ rows that ALSO all land inside
         // the plausible yield range is not realistic.
-        assertPlausibleYields(values, 30, 'BoE GB10Y');
+        assertPlausibleYields(values, 30, 'BoE GB10Y', true);
         // ~260 raw trading days for a year — downsample to a clean 40-point chart, same
         // as every Yahoo-sourced sparkline on the page.
         setQuoteAndSeriesFromValues('GB10Y=RR', values, downsample(values, 40));
@@ -604,7 +621,7 @@ async function fetchBundesbankBondYield() {
         // unlikely to produce anything — this is just the same defense-in-depth range
         // check used for the other proxied bond-yield sources (see the comment above
         // assertPlausibleYields).
-        assertPlausibleYields(values, 30, 'Bundesbank DE10Y');
+        assertPlausibleYields(values, 30, 'Bundesbank DE10Y', true);
         setQuoteAndSeriesFromValues('DE10Y=RR', values, downsample(values, 40));
     } catch (e) {
         console.warn('Bundesbank bond yield fetch failed:', e.message);

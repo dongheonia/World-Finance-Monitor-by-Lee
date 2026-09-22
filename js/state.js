@@ -1,5 +1,5 @@
 let currentLang = 'en';
-let currentTheme = 'light';
+let currentTheme = 'dark'; // dark is the default on load, per explicit request (2026-09-22) — matches index.html's body class starting without light-mode
 let forexBase = 'USD'; // English-mode FX base currency toggle (USD/GBP); Korean mode is always KRW-based
 let cachedData = {};
 let symbolUpdatedAt = {}; // symbol -> Date.now() of its last successful live update
