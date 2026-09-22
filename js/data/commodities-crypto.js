@@ -25,7 +25,7 @@ const BOND10Y = [
     // Yahoo-sourced like COMMODITIES/INDICES (see allYahooSymbols in market-data.js) —
     // a $ price, not a yield, so this carries change/change_percent directly in its
     // fallback (COMMODITIES-style) rather than a separate prevYield checkpoint.
-    { symbol: 'TLT', ko: 'iShares 20+년 국채 ETF (TLT)', en: 'iShares 20+ Year Treasury ETF (TLT)', unit: '',
+    { symbol: 'TLT', ko: 'iShares 20Y+ ETF', en: 'iShares 20Y+ ETF', unit: '',
       fallback: { current: 81.75, change: 1.04, change_percent: 1.29 } },
     { symbol: 'DE10Y=RR', ko: '독일 10년', en: 'Germany 10Y', fallback: { current: 3.16 }, prevYield: 2.86 },
     { symbol: 'JP10Y=RR', ko: '일본 10년', en: 'Japan 10Y', fallback: { current: 2.79 }, prevYield: 2.70 }
