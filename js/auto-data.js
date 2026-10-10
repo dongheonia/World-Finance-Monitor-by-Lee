@@ -1,6 +1,6 @@
 // ============================ AUTO-COLLECTED DATA ============================
 // Map events (war/economy/social) derived from the news feeds, and actual values for
-// already-released calendar events — built every 15 minutes by
+// already-released calendar events — built daily by
 // scripts/refresh-auto-data.mjs (GitHub Actions, free) and published to this repo's
 // `auto-data` branch, so it's the same for every viewer and keeps accumulating even
 // while nobody has the page open. raw.githubusercontent.com sends

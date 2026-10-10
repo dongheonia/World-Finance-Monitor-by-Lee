@@ -29,29 +29,22 @@ window.onload = () => {
     fetchProxiedSparklines();
     fetchCryptoSparklines();
     setTimeout(retryMissingSparklines, 45000);
-    // Every live figure polls every 1 minute (2026-10-10, explicit request: everything
-    // on the shortest cadence that can actually be automated). Going below 60s risks
-    // tripping the free CORS proxies' own rate limiting (see ALL_CORS_PROXIES), which
-    // would make the numbers LESS reliable, not more real-time. How often each number
-    // actually CHANGES is up to its source — see the footer (footerRefresh* in
-    // translations.js), which states that honestly per section:
-    //  - indices/commodities/FX/TLT (Yahoo), bond yields (CNBC), crypto (CoinGecko):
-    //    intraday, so a 1-minute poll really does pick up a new value each time;
-    //  - bond-yield charts (Treasury/Bundesbank/MOF) and policy rates (ECB/BIS/ECOS):
-    //    published once a day at most, so most polls just re-confirm the last reading;
-    //  - news-derived map events and calendar values (fetchAutoData): rebuilt every 15
-    //    minutes by GitHub Actions (scripts/refresh-auto-data.mjs).
-    // The pinned-row sparkline backup (fetchProxiedSparklines) stays at 5 minutes — those
-    // rows already get a fresh chart with every 1-minute price fetch, and this only
-    // exists to catch a proxy miss without doubling the shared proxy load.
-    setInterval(fetchAllMarketData, 60000);
-    setInterval(fetchBondYields, 60000);
-    setInterval(fetchPolicyRates, 60000);
+    // Cadences match how the project is described (2026-10-10, explicit request): the
+    // 36 market indicators (FX, rates, equities, commodities, crypto) refresh every
+    // hour; map events are rebuilt daily (GitHub Actions, see
+    // .github/workflows/refresh-auto-data.yml) and GDACS disaster alerts are re-read on
+    // the same daily cadence; the news box and ticker stay live at 1 minute. Every
+    // fetch also runs once on page load (above), so a fresh visit always starts current.
+    const HOUR = 60 * 60 * 1000;
+    const DAY = 24 * HOUR;
+    setInterval(fetchAllMarketData, HOUR);
+    setInterval(fetchBondYields, HOUR);
+    setInterval(fetchPolicyRates, HOUR);
+    setInterval(fetchProxiedSparklines, HOUR);
+    setInterval(fetchCryptoSparklines, HOUR);
     setInterval(fetchAllNews, 60000);
-    setInterval(fetchDisasterEvents, 60000);
-    setInterval(fetchAutoData, 60000);
-    setInterval(fetchProxiedSparklines, 5 * 60 * 1000);
-    setInterval(fetchCryptoSparklines, 60000);
+    setInterval(fetchDisasterEvents, DAY);
+    setInterval(fetchAutoData, DAY);
     updateClocks();
     setInterval(updateClocks, 1000);
     let resizeTimer = null;

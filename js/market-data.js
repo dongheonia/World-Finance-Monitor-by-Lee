@@ -1,5 +1,5 @@
 // ============================ LIVE DATA FETCHING ============================
-// Live sources, each refreshed every 1 minute:
+// Live sources, each refreshed every hour (see the setIntervals in main.js):
 //  - Stock indices / commodities / FX / TLT: Yahoo Finance's unofficial chart and spark
 //    APIs, which have no CORS headers of their own, so they're fetched through a CHAIN
 //    of public CORS proxies (raced — a single proxy going down or rate-limiting no
@@ -181,7 +181,7 @@ const ALL_FX_SYMBOLS = [...new Set([...FOREX_KO, ...FOREX_EN_USD, ...FOREX_EN_GB
 // Live FX (2026-10-10): Yahoo's v8 "spark" endpoint returns a daily close series for
 // up to 20 symbols in ONE request — the last close is the live spot rate (FX trades
 // ~24/5), the one before it the previous day's close. So every FX row now gets a
-// 1-minute price AND its 1-month chart from a single proxied call, instead of
+// fresh price AND its 1-month chart from a single proxied call, instead of
 // Frankfurter's once-per-business-day ECB reference rate (still fetched by fetchAllFX,
 // but now only as the fallback for any pair this hasn't covered yet).
 const fxLiveSymbols = new Set();
@@ -224,7 +224,7 @@ async function fetchChartSeriesOnly(symbol) {
     // function only ever supplies the sparkline (never the price), so there's no
     // "current quote" concern to weigh here at all.
     const target = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1d&range=1mo&_=${Date.now()}`;
-    // Unlike fetchYahooQuote's 5000ms (tuned to fit a 1-minute price cycle), this runs
+    // Unlike fetchYahooQuote's 5000ms (tuned for the main price cycle), this runs
     // on its own slower 5-minute cadence with no such budget — a longer timeout here
     // just means more of the inherently flaky free proxies' slow responses actually get
     // to finish instead of being cut off early.
@@ -309,7 +309,7 @@ async function fetchAllFX() {
             const change = +(current - prevVal).toFixed(2);
             const changePercent = prevVal ? +((change / prevVal) * 100).toFixed(2) : 0;
             if (!fxLiveSymbols.has(`${cur}KRW=X`)) setQuote(`${cur}KRW=X`, { current: +current.toFixed(2), change, change_percent: changePercent });
-            // Fallback only: fetchAllFXLive's 1-minute Yahoo quote (and its series) wins
+            // Fallback only: fetchAllFXLive's Yahoo quote (and its series) wins
             // whenever it has landed for this pair — Frankfurter's ECB reference rate only
             // publishes once per business day.
             setSeriesIfMissing(`${cur}KRW=X`, series.dates.map(d => series.rates[d].KRW * mult));
@@ -565,7 +565,7 @@ async function fetchLocalBackend() {
 //     via the CORS proxy chain (fetchViaProxies) since it has no CORS header of its own.
 //   - Japan: Ministry of Finance's own published JGB yield table — daily, straight from
 //     the issuer, via the same CORS proxy chain. The small "current month" file (resets
-//     each month) supplies the freshest point every 1-min cycle; a one-time seed from
+//     each month) supplies the freshest point every cycle; a one-time seed from
 //     the 1.2MB full-history file (too big to re-fetch every cycle) supplies the rest of
 //     the 1-year window — see seedMofJgbHistory.
 // Every chart is unified to roughly a 1-year window, per earlier explicit request — a
@@ -718,7 +718,7 @@ function mofExtract10y(csvText) {
         .map(cols => +cols[idx10y]);
 }
 
-// MOF's small "current month" file (used below, every 1-min cycle) resets on the 1st
+// MOF's small "current month" file (used below, every cycle) resets on the 1st
 // of every month, so on its own it can't cover a 1-year window. mofJgbBaseline holds
 // the last ~260 RAW (pre-downsample) trading days from MOF's full historical file
 // (1.2MB — too big to re-fetch every cycle, so this only runs ONCE per page load,

@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 // Builds auto-data.json — everything on the page that used to need a human reading the
-// news, now derived automatically and for free (no paid API, no key). Run every 15
-// minutes by .github/workflows/refresh-auto-data.yml, which publishes the result
-// (auto-data.json + auto-state.json) to the separate `auto-data` branch (so main's history and the Pages deploy aren't touched
-// every run); the page fetches it from raw.githubusercontent.com (js/auto-data.js).
+// news, now derived automatically and for free (no paid API, no key). Run daily by
+// .github/workflows/refresh-auto-data.yml, which publishes the result (auto-data.json +
+// auto-state.json) to the separate `auto-data` branch (so main's history and the Pages
+// deploy aren't touched every run); the page fetches it from raw.githubusercontent.com
+// (js/auto-data.js).
 //
 // 1. Map events (war / economy / social layers) — rule-based, from the same RSS feeds
 //    the news box reads (js/data/news-feeds.js) plus a few targeted Google News

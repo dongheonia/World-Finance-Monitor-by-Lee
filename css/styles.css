@@ -238,13 +238,16 @@ body:not(.light-mode) .ticker-wrapper { background: rgb(126, 128, 130); color: #
    both white in dark mode specifically (light mode already gets a sensible dark color
    from body.light-mode's own color override, since neither has its own color class). */
 body:not(.light-mode) #cal-month-label, body:not(.light-mode) #cal-list-title { color: #ffffff; }
-.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: #1a1a1a; border: 1px solid #222222; }
+/* minmax(0, 1fr), not plain 1fr: a 1fr track's minimum is its content's min-content
+   width, so one long nowrap tag ("[US] Industrial Production") widened its column and
+   pushed the whole grid past the panel, sliding Saturday under the event list. */
+.cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 1px; background: #1a1a1a; border: 1px solid #222222; }
 body.light-mode .cal-grid { background: rgb(163, 166, 171); border-color: #9199a1; }
 .cal-weekday { background: #050505; color: #6b7280; font-size: 10px; font-weight: 700; text-align: center; padding: 4px 0; }
 body.light-mode .cal-weekday { background: rgb(188, 191, 196); }
 .cal-weekday.cal-sun { color: #f87171; }
 .cal-weekday.cal-sat { color: #60a5fa; }
-.cal-day { background: #050505; min-height: 108px; padding: 3px; font-size: 9px; }
+.cal-day { background: #050505; min-height: 108px; min-width: 0; overflow: hidden; padding: 3px; font-size: 9px; }
 body.light-mode .cal-day { background: rgb(188, 191, 196); }
 .cal-day.other-month { opacity: 0.3; }
 /* Weekend fills — only applied to in-month cells (see renderCalendarGrid, which omits

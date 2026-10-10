@@ -1,6 +1,6 @@
 name: Refresh auto data
 
-# Every 15 minutes: rebuild the news-derived map events and the auto-filled economic
+# Daily (00:30 UTC, after refresh-calendar.yml): rebuild the news-derived map events and the auto-filled economic
 # calendar values (see scripts/refresh-auto-data.mjs for sources and rules) and publish
 # them to the `auto-data` branch, which the page reads from raw.githubusercontent.com
 # (js/auto-data.js). The branch is force-pushed as a single commit each run, so neither
@@ -9,7 +9,7 @@ name: Refresh auto data
 # from the Actions tab.
 on:
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '30 0 * * *'
   workflow_dispatch:
 
 permissions:
