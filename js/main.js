@@ -22,43 +22,36 @@ window.onload = () => {
     // picks up the rest on the next one once the seed has landed.
     seedMofJgbHistory();
     fetchBondYields();
-    fetchECBPolicyRate();
+    fetchPolicyRates();
+    fetchDisasterEvents();
+    fetchAutoData();
     fetchAllNews();
     fetchProxiedSparklines();
     fetchCryptoSparklines();
     setTimeout(retryMissingSparklines, 45000);
-    // FX, stock indices, commodities, and the ETF bond-yield row (TLT) all refresh every
-    // 1 minute now — the indices/commodities that used to be throttled to FMP's
-    // 70-minute cycle moved onto the same free Yahoo-proxy path everything else uses
-    // (see the note above NO_YAHOO_SOURCE_SYMBOLS in market-data.js), since testing
-    // confirmed Yahoo serves real live data for all of them. This is already
-    // effectively real-time for a free/unofficial data source (Yahoo's unofficial
-    // chart API has no faster official cadence to chase, and going below 60s risks
-    // tripping the free CORS proxies' own rate limiting — see ALL_CORS_PROXIES — which
-    // would make the numbers LESS reliable, not more real-time).
-    // The other five bond-yield rows (US 2Y/10Y/30Y direct from Treasury.gov,
-    // Germany/Japan daily from their own central bank/debt office) are also polled every
-    // 1 minute now, per earlier explicit request, even though none of these sources
-    // actually publish more than once a day — most cycles just re-confirm the same
-    // reading rather than finding a new one, but this keeps every bond-yield row on the
-    // same cadence as the rest of the page instead of a slower 30-minute one.
-    // The ECB policy rate moves at most ~8x/year and only publishes once a day, so
-    // there's no real data to be "more real-time" about — hourly already checks far
-    // more often than the underlying series can change; the other 5 central banks have
-    // no free live source at all (see the comment above fetchECBPolicyRate) and are
-    // updated by hand whenever they actually announce a change.
-    // Sparklines are the one place there was genuine slack: the FX-only sparkline fetch
-    // shares the same CORS-proxy pool as the price fetch above, so 5 minutes balances
-    // freshness against not adding enough extra proxy load to start degrading the price
-    // numbers. Crypto's sparkline (CoinGecko's /market_chart, direct/keyless/no-proxy —
-    // see fetchCryptoSparklines) has no such shared-proxy downside, so it runs on its
-    // own much faster 2-minute cadence.
+    // Every live figure polls every 1 minute (2026-10-10, explicit request: everything
+    // on the shortest cadence that can actually be automated). Going below 60s risks
+    // tripping the free CORS proxies' own rate limiting (see ALL_CORS_PROXIES), which
+    // would make the numbers LESS reliable, not more real-time. How often each number
+    // actually CHANGES is up to its source — see the footer (footerRefresh* in
+    // translations.js), which states that honestly per section:
+    //  - indices/commodities/FX/TLT (Yahoo), bond yields (CNBC), crypto (CoinGecko):
+    //    intraday, so a 1-minute poll really does pick up a new value each time;
+    //  - bond-yield charts (Treasury/Bundesbank/MOF) and policy rates (ECB/BIS/ECOS):
+    //    published once a day at most, so most polls just re-confirm the last reading;
+    //  - news-derived map events and calendar values (fetchAutoData): rebuilt every 15
+    //    minutes by GitHub Actions (scripts/refresh-auto-data.mjs).
+    // The pinned-row sparkline backup (fetchProxiedSparklines) stays at 5 minutes — those
+    // rows already get a fresh chart with every 1-minute price fetch, and this only
+    // exists to catch a proxy miss without doubling the shared proxy load.
     setInterval(fetchAllMarketData, 60000);
     setInterval(fetchBondYields, 60000);
-    setInterval(fetchECBPolicyRate, 60 * 60 * 1000);
+    setInterval(fetchPolicyRates, 60000);
     setInterval(fetchAllNews, 60000);
+    setInterval(fetchDisasterEvents, 60000);
+    setInterval(fetchAutoData, 60000);
     setInterval(fetchProxiedSparklines, 5 * 60 * 1000);
-    setInterval(fetchCryptoSparklines, 2 * 60 * 1000);
+    setInterval(fetchCryptoSparklines, 60000);
     updateClocks();
     setInterval(updateClocks, 1000);
     let resizeTimer = null;

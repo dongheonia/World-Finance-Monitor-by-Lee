@@ -91,10 +91,13 @@ function renderCalendarList(year, month) {
         const isToday = ev.date === todayStr;
         const dateLabel = ev.date.slice(5).replace('-', '.');
         const detail = currentLang === 'ko' ? ev.detailKo : ev.detailEn;
+        // Hand-curated value first; otherwise the auto-collected one (see auto-data.js).
+        const auto = autoCalendarValue(ev);
+        const src = ev.valueKo ? ev : (auto || ev);
         const value = CAL_NO_VALUE_CATEGORIES.has(ev.category)
             ? (isPast ? releasedLabel : scheduledLabel)
-            : (currentLang === 'ko' ? ev.valueKo : ev.valueEn) || pendingLabel;
-        const prev = currentLang === 'ko' ? ev.prevKo : ev.prevEn;
+            : (currentLang === 'ko' ? src.valueKo : src.valueEn) || pendingLabel;
+        const prev = currentLang === 'ko' ? (ev.prevKo || (auto && auto.prevKo)) : (ev.prevEn || (auto && auto.prevEn));
         // Always render a time slot (even when unknown) so the date column has a fixed
         // width — leaving it out entirely made the title text shift left/right depending
         // on whether that particular event happened to have a confirmed time or not.

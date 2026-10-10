@@ -1,13 +1,13 @@
 // ============================ LIVE DATA FETCHING ============================
-// Three independent live sources, each refreshed every 1 minute:
-//  - Stock indices / commodities / bond yields: Yahoo Finance's unofficial chart API,
-//    which has no CORS headers of its own, so it's fetched through a CHAIN of public
-//    CORS proxies (tried in order until one works — a single proxy going down or
-//    rate-limiting no longer means stale numbers).
-//  - FX: the Frankfurter API (ECB reference rates) — CORS-native, no proxy or key
-//    needed, so it never fails the way the proxied Yahoo calls can. It publishes once
-//    per business day rather than tick-by-tick, but it is always the accurate latest
-//    official rate, which is what was actually wrong before.
+// Live sources, each refreshed every 1 minute:
+//  - Stock indices / commodities / FX / TLT: Yahoo Finance's unofficial chart and spark
+//    APIs, which have no CORS headers of their own, so they're fetched through a CHAIN
+//    of public CORS proxies (raced — a single proxy going down or rate-limiting no
+//    longer means stale numbers). FX falls back to the Frankfurter API (ECB reference
+//    rates, CORS-native, once per business day) for any pair Yahoo hasn't covered yet.
+//  - Bond yields: CNBC's quote service (intraday) for the current level, the issuers'
+//    own daily files (Treasury.gov / Bundesbank / MOF) for the 1-year chart.
+//  - Policy rates: ECB Data Portal, BIS, and Bank of Korea ECOS (see fetchPolicyRates).
 //  - Crypto: the CoinGecko public API — also CORS-native, true real-time pricing.
 
 // Verified against Yahoo's chart endpoint and several RSS feeds directly (real browser
@@ -176,26 +176,48 @@ async function fetchAllYahoo() {
     }
 }
 
-// Every index/commodity/US bond yield now gets its PRICE from the 1-minute Yahoo path
-// above (fetchOneYahooSymbol), which already includes the chart series in the same
-// call — no separate sparkline fetch needed for those. FX is the one thing still
-// missing a chart: its price comes from Frankfurter (only one point per day, too
-// sparse for a good-looking chart; see fetchAllFX), so it gets a sparkline-ONLY fetch
-// through this same Yahoo-chart-via-CORS-proxy path instead. Yahoo's FX tickers use
-// exactly the same "USDKRW=X"-style symbols already used throughout this file, and
-// carry real intraday data for FX pairs (spot FX trades ~24/5, unlike exchange hours),
-// giving these charts the same resolution as the Market/Commodities ones instead of
-// Frankfurter's ~5-point weekly line. Decoupled from price so a failed chart fetch
-// never touches the number shown; runs on its own slow cadence (see the setInterval
-// near window.onload) — a 5-40min-old sparkline is fine, unlike price.
 const ALL_FX_SYMBOLS = [...new Set([...FOREX_KO, ...FOREX_EN_USD, ...FOREX_EN_GBP].map(f => f.symbol))];
-// Dollar Index and VIX only otherwise get ONE combined price+chart fetch per 60s cycle
-// (via fetchOneYahooSymbol, 5000ms timeout, no retry) — same as every other pinned/index
-// symbol. Since they have no other data source to fall back on, they're added here too
-// so they ALSO get this dedicated, longer-timeout chart fetch plus the 45s retry pass
-// below — belt-and-suspenders so a single flaky proxy attempt doesn't leave the pinned
-// rows chartless for a full minute+.
-const CHART_ONLY_SYMBOLS = [...ALL_FX_SYMBOLS, ...PINNED_FX.map(f => f.symbol), ...PINNED_MARKET.map(i => i.symbol)];
+
+// Live FX (2026-10-10): Yahoo's v8 "spark" endpoint returns a daily close series for
+// up to 20 symbols in ONE request — the last close is the live spot rate (FX trades
+// ~24/5), the one before it the previous day's close. So every FX row now gets a
+// 1-minute price AND its 1-month chart from a single proxied call, instead of
+// Frankfurter's once-per-business-day ECB reference rate (still fetched by fetchAllFX,
+// but now only as the fallback for any pair this hasn't covered yet).
+const fxLiveSymbols = new Set();
+async function fetchAllFXLive() {
+    try {
+        const target = `https://query1.finance.yahoo.com/v8/finance/spark?symbols=${ALL_FX_SYMBOLS.join(',')}&range=1mo&interval=1d&_=${Date.now()}`;
+        const res = await fetchViaProxies(target, 8000);
+        const data = await res.json();
+        ALL_FX_SYMBOLS.forEach(symbol => {
+            const d = data[symbol];
+            const mult = symbol === 'JPYKRW=X' ? 100 : 1; // displayed as "원 / 엔 (100엔)"
+            const closes = d && Array.isArray(d.close) ? d.close.filter(v => v != null).map(v => v * mult) : [];
+            if (closes.length < 2) return;
+            const decimals = symbol.endsWith('KRW=X') ? 2 : 4;
+            const current = closes[closes.length - 1];
+            const prev = closes[closes.length - 2];
+            const change = +(current - prev).toFixed(decimals);
+            const changePercent = prev ? +((change / prev) * 100).toFixed(2) : 0;
+            setQuote(symbol, { current: +current.toFixed(decimals), change, change_percent: changePercent });
+            setSeries(symbol, downsample(closes, 40));
+            fxLiveSymbols.add(symbol);
+        });
+        saveSeriesCache();
+    } catch (e) {
+        console.warn('Yahoo live FX fetch failed:', e.message);
+    }
+    renderAll();
+}
+
+// Every index/commodity/FX row gets its chart series in the same call as its price
+// (fetchOneYahooSymbol / fetchAllFXLive). Dollar Index and VIX only otherwise get ONE
+// combined price+chart fetch per 60s cycle (5000ms timeout, no retry) and have no
+// other data source to fall back on, so they ALSO get this dedicated, longer-timeout
+// chart fetch plus the 45s retry pass below — belt-and-suspenders so a single flaky
+// proxy attempt doesn't leave the pinned rows chartless.
+const CHART_ONLY_SYMBOLS = [...PINNED_FX.map(f => f.symbol), ...PINNED_MARKET.map(i => i.symbol)];
 
 async function fetchChartSeriesOnly(symbol) {
     // Same 1-month/daily window as fetchYahooQuote — see the comment there. This
@@ -286,10 +308,10 @@ async function fetchAllFX() {
             const prevVal = series.prev.KRW * mult;
             const change = +(current - prevVal).toFixed(2);
             const changePercent = prevVal ? +((change / prevVal) * 100).toFixed(2) : 0;
-            setQuote(`${cur}KRW=X`, { current: +current.toFixed(2), change, change_percent: changePercent });
-            // fetchProxiedSparklines fetches a much denser real intraday series for
-            // every FX symbol via Yahoo — this daily-resolution one only fills the gap
-            // until that lands (or as a fallback if it never does), never overwrites it.
+            if (!fxLiveSymbols.has(`${cur}KRW=X`)) setQuote(`${cur}KRW=X`, { current: +current.toFixed(2), change, change_percent: changePercent });
+            // Fallback only: fetchAllFXLive's 1-minute Yahoo quote (and its series) wins
+            // whenever it has landed for this pair — Frankfurter's ECB reference rate only
+            // publishes once per business day.
             setSeriesIfMissing(`${cur}KRW=X`, series.dates.map(d => series.rates[d].KRW * mult));
         });
         const setCrossSeries = (base, series, quotes) => {
@@ -299,7 +321,7 @@ async function fetchAllFX() {
                 if (current == null || prevVal == null) return;
                 const change = +(current - prevVal).toFixed(4);
                 const changePercent = prevVal ? +((change / prevVal) * 100).toFixed(2) : 0;
-                setQuote(`${base}${cur}=X`, { current: +current.toFixed(4), change, change_percent: changePercent });
+                if (!fxLiveSymbols.has(`${base}${cur}=X`)) setQuote(`${base}${cur}=X`, { current: +current.toFixed(4), change, change_percent: changePercent });
                 setSeriesIfMissing(`${base}${cur}=X`, series.dates.map(d => series.rates[d][cur]).filter(v => v != null));
             });
         };
@@ -312,56 +334,132 @@ async function fetchAllFX() {
     renderAll();
 }
 
-// The ECB Data Portal's REST API is public, keyless, and genuinely CORS-enabled
-// (access-control-allow-origin: *, verified directly against the endpoint) — unlike
-// Yahoo/every other source in this file, it needs no proxy. FM.D.U2.EUR.4F.KR.MRR_FR.LEV
-// is the daily main-refinancing-rate series (the rate POLICY_RATES' Eurozone row tracks;
-// see the comment above POLICY_RATES for why that one of ECB's three published rates was
-// chosen). The other five central banks here (Fed, BOE, BOJ, BOK, PBOC) do NOT have an
-// equivalent free+keyless+CORS-open API (checked directly): FRED and BOK's ECOS both
-// gate their real API behind a free-registration key this app has no way to hold, and
-// BOE/BOJ/PBOC's own data pages send no CORS header at all, meaning it'd need a CORS
-// proxy — the same flaky, rate-limited pattern already visible in the news fetching
-// below, which is a worse failure mode for a number people might act on financially.
-// So only this one row can safely self-correct; the rest stay on the curated figures
-// above, with the "as of" date next to the section title making that staleness visible
-// instead of silently implying they're as fresh as this one.
-async function fetchECBPolicyRate() {
-    try {
-        const url = `https://data-api.ecb.europa.eu/service/data/FM/D.U2.EUR.4F.KR.MRR_FR.LEV?format=jsondata&lastNObservations=140&_=${Date.now()}`;
-        const res = await fetchWithTimeout(url, 8000);
-        if (!res.ok) throw new Error('http ' + res.status);
-        const data = await res.json();
-        const series = data.dataSets[0].series['0:0:0:0:0:0:0'];
-        const dates = data.structure.dimensions.observation[0].values.map(v => v.id);
-        const points = Object.keys(series.observations)
-            .map(k => ({ date: dates[+k], value: series.observations[k][0] }))
-            .sort((a, b) => a.date.localeCompare(b.date));
-        if (!points.length) throw new Error('no ECB observations returned');
+// Policy rates — all six rows now self-update (2026-10-10, explicit request to automate
+// whatever can be), each from the most direct free source that actually works:
+//   - Eurozone: the ECB Data Portal's own REST API — keyless, CORS-native.
+//     FM.D.U2.EUR.4F.KR.MRR_FR.LEV is the daily main-refinancing-rate series (see the
+//     comment above POLICY_RATES for why that one of ECB's three rates).
+//   - US/UK/Japan/China: the BIS central-bank policy-rate dataset (WS_CBPOL) — one
+//     keyless, CORS-enabled request covers all four. BIS compiles each bank's own
+//     published rate daily, typically a few business days behind. The Fed series is the
+//     MIDPOINT of the target range, so +0.125 turns it back into the upper bound this
+//     row has always shown (e.g. 3.875 → 4.00 for a 3.75–4.00% range).
+//   - Korea: BIS's Korea series lags ~6 weeks, so it comes straight from the Bank of
+//     Korea's own ECOS API instead, via its public "sample" key (keyless, but capped at
+//     10 rows per request — enough for a 10-day window) and the CORS proxy chain, since
+//     ECOS sends no CORS header.
+// prevRate stays "the level set at the previous meeting" (see the comment above
+// POLICY_RATES): the rate in effect the day before the most recent decision date
+// already listed in CALENDAR_EVENTS. A source whose newest observation predates that
+// decision hasn't caught up yet, so it's rejected and the row keeps its curated/last
+// good value rather than showing a pre-decision number as current.
+const POLICY_RATE_SOURCES = {
+    POLICY_EU: { calendar: 'EU' },
+    POLICY_US: { calendar: 'US', bis: 'US', adjust: 0.125 },
+    POLICY_GB: { calendar: 'GB', bis: 'GB' },
+    POLICY_JP: { calendar: 'JP', bis: 'JP' },
+    POLICY_CN: { calendar: 'CN', bis: 'CN' },
+    POLICY_KR: { calendar: 'KR' }
+};
 
-        const latest = points[points.length - 1];
-        // ECB's Governing Council meets roughly every 6 weeks (~42 days) — walking back
-        // that far and taking the level in effect at that point approximates "the rate
-        // set at the previous meeting" (matching a held rate when nothing changed,
-        // exactly like POLICY_RATES' other rows), without needing the exact meeting
-        // calendar.
-        const cutoff = new Date(latest.date);
-        cutoff.setDate(cutoff.getDate() - 42);
-        const cutoffStr = cutoff.toISOString().slice(0, 10);
-        let prevPoint = points[0];
-        for (const p of points) {
-            if (p.date <= cutoffStr) prevPoint = p; else break;
-        }
+function isoDay(d) { return d.toISOString().slice(0, 10); }
 
-        const current = latest.value;
-        const prevRate = prevPoint.value;
-        const change = +(current - prevRate).toFixed(2);
-        const changePercent = prevRate ? +((change / prevRate) * 100).toFixed(2) : 0;
-        setQuote('ECB_MRR', { current, change, change_percent: changePercent, prevRate });
-        renderAll();
-    } catch (e) {
-        console.warn('ECB policy-rate fetch failed:', e.message);
+function latestRateDecisionDate(country) {
+    const today = isoDay(new Date());
+    const dates = CALENDAR_EVENTS
+        .filter(e => e.country === country && e.category === 'rate' && e.date <= today)
+        .map(e => e.date)
+        .sort();
+    return dates[dates.length - 1] || null;
+}
+
+// points: [{ date: 'YYYY-MM-DD', value }], any order.
+function setPolicyRateFromPoints(symbol, points) {
+    const { calendar, adjust = 0 } = POLICY_RATE_SOURCES[symbol];
+    const sorted = points.filter(p => Number.isFinite(p.value)).sort((a, b) => a.date.localeCompare(b.date));
+    if (!sorted.length) throw new Error(`${symbol}: no observations`);
+    const latest = sorted[sorted.length - 1];
+    let cutoff = latestRateDecisionDate(calendar);
+    if (cutoff && latest.date < cutoff) throw new Error(`${symbol}: newest observation ${latest.date} predates the ${cutoff} decision`);
+    if (!cutoff) {
+        // No decision on the calendar yet — fall back to ~one meeting cycle back.
+        const d = new Date(latest.date);
+        d.setDate(d.getDate() - 45);
+        cutoff = isoDay(d);
     }
+    const before = sorted.filter(p => p.date < cutoff);
+    if (!before.length) throw new Error(`${symbol}: no observation before ${cutoff}`);
+    const current = +(latest.value + adjust).toFixed(3);
+    const prevRate = +(before[before.length - 1].value + adjust).toFixed(3);
+    if ([current, prevRate].some(v => v < -5 || v > 30)) throw new Error(`${symbol}: implausible rate`);
+    const change = +(current - prevRate).toFixed(2);
+    const changePercent = prevRate ? +((change / prevRate) * 100).toFixed(2) : 0;
+    setQuote(symbol, { current, change, change_percent: changePercent, prevRate, asOf: latest.date });
+}
+
+async function fetchEcbPolicyRate() {
+    const url = `https://data-api.ecb.europa.eu/service/data/FM/D.U2.EUR.4F.KR.MRR_FR.LEV?format=jsondata&lastNObservations=140&_=${Date.now()}`;
+    const res = await fetchWithTimeout(url, 8000);
+    if (!res.ok) throw new Error('http ' + res.status);
+    const data = await res.json();
+    const series = data.dataSets[0].series['0:0:0:0:0:0:0'];
+    const dates = data.structure.dimensions.observation[0].values.map(v => v.id);
+    setPolicyRateFromPoints('POLICY_EU', Object.keys(series.observations)
+        .map(k => ({ date: dates[+k], value: series.observations[k][0] })));
+}
+
+async function fetchBisPolicyRates() {
+    const symbols = Object.keys(POLICY_RATE_SOURCES).filter(s => POLICY_RATE_SOURCES[s].bis);
+    const areas = symbols.map(s => POLICY_RATE_SOURCES[s].bis);
+    // ~150 business days ≈ 7 months — comfortably covers the gap back to the previous
+    // meeting for every bank here.
+    const url = `https://stats.bis.org/api/v2/data/dataflow/BIS/WS_CBPOL/1.0/D.${areas.join('+')}?lastNObservations=150&format=csv&detail=dataonly`;
+    const res = await fetchWithTimeout(url, 10000);
+    if (!res.ok) throw new Error('http ' + res.status);
+    const lines = (await res.text()).trim().split('\n');
+    const header = lines[0].split(',');
+    const [areaIdx, dateIdx, valueIdx] = ['REF_AREA', 'TIME_PERIOD', 'OBS_VALUE'].map(h => header.indexOf(h));
+    if ([areaIdx, dateIdx, valueIdx].some(i => i < 0)) throw new Error('unexpected BIS CSV header');
+    const byArea = {};
+    lines.slice(1).forEach(line => {
+        const cols = line.split(',');
+        if (cols[valueIdx] === '' || cols[valueIdx] == null) return;
+        (byArea[cols[areaIdx]] ||= []).push({ date: cols[dateIdx], value: +cols[valueIdx] });
+    });
+    symbols.forEach(symbol => {
+        try {
+            setPolicyRateFromPoints(symbol, byArea[POLICY_RATE_SOURCES[symbol].bis] || []);
+        } catch (e) {
+            console.warn('BIS policy-rate parse failed:', e.message);
+        }
+    });
+}
+
+async function fetchEcosBaseRate(fromDate, toDate) {
+    const ymd = d => isoDay(d).replace(/-/g, '');
+    const target = `https://ecos.bok.or.kr/api/StatisticSearch/sample/json/kr/1/10/722Y001/D/${ymd(fromDate)}/${ymd(toDate)}/0101000`;
+    const res = await fetchViaProxies(target, 9000);
+    const data = await res.json();
+    const rows = (data.StatisticSearch && data.StatisticSearch.row) || [];
+    return rows.map(r => ({ date: `${r.TIME.slice(0, 4)}-${r.TIME.slice(4, 6)}-${r.TIME.slice(6, 8)}`, value: +r.DATA_VALUE }));
+}
+
+async function fetchBokPolicyRate() {
+    const daysBefore = (d, n) => { const x = new Date(d); x.setDate(x.getDate() - n); return x; };
+    const today = new Date();
+    const decision = latestRateDecisionDate('KR');
+    // Two 10-day windows (the sample key's row cap): the most recent days for the
+    // current rate, and the days just before the latest decision for prevRate.
+    const windows = [fetchEcosBaseRate(daysBefore(today, 9), today)];
+    if (decision) windows.push(fetchEcosBaseRate(daysBefore(decision, 10), daysBefore(decision, 1)));
+    const results = await Promise.all(windows);
+    setPolicyRateFromPoints('POLICY_KR', results.flat());
+}
+
+async function fetchPolicyRates() {
+    const results = await Promise.allSettled([fetchEcbPolicyRate(), fetchBisPolicyRates(), fetchBokPolicyRate()]);
+    results.forEach(r => { if (r.status === 'rejected') console.warn('Policy-rate fetch failed:', r.reason && r.reason.message); });
+    renderAll();
 }
 
 async function fetchAllCrypto() {
@@ -467,7 +565,7 @@ async function fetchLocalBackend() {
 //     via the CORS proxy chain (fetchViaProxies) since it has no CORS header of its own.
 //   - Japan: Ministry of Finance's own published JGB yield table — daily, straight from
 //     the issuer, via the same CORS proxy chain. The small "current month" file (resets
-//     each month) supplies the freshest point every 30-min cycle; a one-time seed from
+//     each month) supplies the freshest point every 1-min cycle; a one-time seed from
 //     the 1.2MB full-history file (too big to re-fetch every cycle) supplies the rest of
 //     the 1-year window — see seedMofJgbHistory.
 // Every chart is unified to roughly a 1-year window, per earlier explicit request — a
@@ -518,6 +616,12 @@ function assertPlausibleYields(values, minPoints, label, requireVariance = false
 // downsampling first would risk losing the actual most-recent point.
 function setQuoteAndSeriesFromValues(symbol, values, seriesValues = values) {
     if (values.length < 2) throw new Error('not enough data points');
+    // An intraday CNBC quote (fetchCnbcBondYields) is always fresher than these daily
+    // files — keep it, and only take the chart from here.
+    if (liveBondSymbols.has(symbol)) {
+        setSeries(symbol, seriesValues);
+        return;
+    }
     const current = values[values.length - 1];
     const prev = values[values.length - 2];
     const change = +(current - prev).toFixed(3);
@@ -614,7 +718,7 @@ function mofExtract10y(csvText) {
         .map(cols => +cols[idx10y]);
 }
 
-// MOF's small "current month" file (used below, every 30-min cycle) resets on the 1st
+// MOF's small "current month" file (used below, every 1-min cycle) resets on the 1st
 // of every month, so on its own it can't cover a 1-year window. mofJgbBaseline holds
 // the last ~260 RAW (pre-downsample) trading days from MOF's full historical file
 // (1.2MB — too big to re-fetch every cycle, so this only runs ONCE per page load,
@@ -655,20 +759,49 @@ async function fetchMofJgbYield() {
     }
 }
 
-// None of these sources actually publish more than once a day, so most 1-minute cycles
-// just re-confirm the same reading rather than finding a new one — but per earlier
-// explicit request, every bond yield row shares the same 1-minute cadence as the rest
-// of the page (see the setInterval near window.onload) instead of a slower one.
+// Intraday yields (2026-10-10): the official sources above only publish once a day, so
+// the CURRENT level of all five rows now comes from CNBC's quote service — one request
+// returns live Tradeweb yields plus the previous day's close for every symbol. It sends
+// access-control-allow-origin: * (no proxy needed) but its CDN rejects non-browser
+// user agents, so the proxy chain is kept as a fallback. Once a row has a CNBC quote,
+// the daily official series only supplies its chart (see setQuoteAndSeriesFromValues).
+const CNBC_BOND_SYMBOLS = { 'US2Y': 'US02Y=RR', 'US10Y': 'US10Y=RR', 'US30Y': 'US30Y=RR', 'DE10Y-DE': 'DE10Y=RR', 'JP10Y-JP': 'JP10Y=RR' };
+const liveBondSymbols = new Set();
+async function fetchCnbcBondYields() {
+    const target = `https://quote.cnbc.com/quote-html-webservice/restQuote/symbolType/symbol?symbols=${Object.keys(CNBC_BOND_SYMBOLS).join('%7C')}&requestMethod=itv&noform=1&partnerId=2&fund=1&exthrs=1&output=json&events=1&_=${Date.now()}`;
+    let res;
+    try {
+        res = await fetchWithTimeout(target, 6000);
+        if (!res.ok) throw new Error('http ' + res.status);
+    } catch (e) {
+        res = await fetchViaProxies(target, 8000);
+    }
+    const data = await res.json();
+    const quotes = (data.FormattedQuoteResult && data.FormattedQuoteResult.FormattedQuote) || [];
+    quotes.forEach(q => {
+        const symbol = CNBC_BOND_SYMBOLS[q.symbol];
+        const current = parseFloat(q.last);
+        const prev = parseFloat(q.previous_day_closing);
+        if (!symbol || !Number.isFinite(current) || !Number.isFinite(prev)) return;
+        if ([current, prev].some(v => v < -3 || v > 25)) return;
+        const change = +(current - prev).toFixed(3);
+        const changePercent = prev ? +((change / prev) * 100).toFixed(2) : 0;
+        setQuote(symbol, { current, change, change_percent: changePercent });
+        liveBondSymbols.add(symbol);
+    });
+}
+
 // Covers the five non-Yahoo rows (US 2Y/10Y/30Y, Germany, Japan) — the ETF row (TLT)
 // goes through the normal fetchAllYahoo path instead, since it's a real Yahoo ticker.
 async function fetchBondYields() {
-    await Promise.allSettled([fetchUsTreasuryYields(), fetchBundesbankBondYield(), fetchMofJgbYield()]);
+    await Promise.allSettled([fetchCnbcBondYields(), fetchUsTreasuryYields(), fetchBundesbankBondYield(), fetchMofJgbYield()]);
     renderAll();
     saveSeriesCache(); // persists Japan's expensive one-time-seeded baseline too, so a reload within the 24h cache TTL never re-downloads MOF's 1.2MB history file
 }
 
 function fetchAllMarketData() {
     fetchAllYahoo();
+    fetchAllFXLive();
     fetchAllFX();
     fetchAllCrypto();
     fetchLocalBackend();

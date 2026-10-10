@@ -208,19 +208,20 @@ function localizeMapLabels(lang) {
 // finishes loading (see onMapStyleReady). War/disaster ONLY — economy/social always
 // render as plain point markers instead (see addEconomyMarkers/addSocialMarkers below),
 // regardless of scale, per an explicit call to keep those two categories dot-only.
+function circleFeatureCollection(events) {
+    return {
+        type: 'FeatureCollection',
+        features: events.map(e => ({
+            type: 'Feature',
+            properties: { ko: e.ko, en: e.en, reasonKo: e.reasonKo, reasonEn: e.reasonEn, date: e.date, ongoing: e.ongoing, endDate: e.endDate || null },
+            geometry: { type: 'Polygon', coordinates: [circlePolygon(e.coords, e.radius)] }
+        }))
+    };
+}
+
 function addCircleLayer(id, events, fillColor, lineColor, visible) {
     if (!mapInstance || mapInstance.getSource(id + '-events')) return;
-    mapInstance.addSource(id + '-events', {
-        type: 'geojson',
-        data: {
-            type: 'FeatureCollection',
-            features: events.map(e => ({
-                type: 'Feature',
-                properties: { ko: e.ko, en: e.en, reasonKo: e.reasonKo, reasonEn: e.reasonEn, date: e.date, ongoing: e.ongoing, endDate: e.endDate || null },
-                geometry: { type: 'Polygon', coordinates: [circlePolygon(e.coords, e.radius)] }
-            }))
-        }
-    });
+    mapInstance.addSource(id + '-events', { type: 'geojson', data: circleFeatureCollection(events) });
     const vis = visible ? 'visible' : 'none';
     mapInstance.addLayer({
         id: `${id}-fill`, type: 'fill', source: `${id}-events`,
@@ -240,25 +241,115 @@ function addCircleLayer(id, events, fillColor, lineColor, visible) {
     mapInstance.on('mouseleave', `${id}-fill`, () => { mapInstance.getCanvas().style.cursor = ''; });
 }
 
-function addWarLayer() { addCircleLayer('war', WAR_EVENTS, 'rgba(255, 70, 70, 0.32)', '#dc2626', warVisible); }
-function addDisasterLayer() { addCircleLayer('disaster', DISASTER_EVENTS, 'rgba(250, 204, 21, 0.28)', '#eab308', disasterVisible); }
+function allWarEvents() { return [...WAR_EVENTS, ...autoMapEventsFor('war')]; }
+function addWarLayer() { addCircleLayer('war', allWarEvents(), 'rgba(255, 70, 70, 0.32)', '#dc2626', warVisible); }
+function addDisasterLayer() { addCircleLayer('disaster', allDisasterEvents(), 'rgba(250, 204, 21, 0.28)', '#eab308', disasterVisible); }
+
+// Live disasters (2026-10-10): GDACS — the UN/EU Global Disaster Alert and Coordination
+// System — publishes every Orange/Red-alert earthquake, tropical cyclone, flood,
+// volcanic eruption and wildfire worldwide through a keyless, CORS-open API, so these
+// now appear on the map automatically alongside the hand-curated DISASTER_EVENTS
+// (which keep their richer written context). Droughts are left out: GDACS reports
+// them as continent-spanning areas that would blanket the map. War/economy/social
+// events have no comparable free structured feed, so those stay hand-curated.
+let liveDisasterEvents = [];
+function allDisasterEvents() { return [...DISASTER_EVENTS, ...liveDisasterEvents]; }
+
+const GDACS_TYPES = {
+    EQ: { ko: '지진', en: 'Earthquake' },
+    TC: { ko: '열대성 저기압', en: 'Tropical Cyclone' },
+    FL: { ko: '홍수', en: 'Flood' },
+    VO: { ko: '화산 분화', en: 'Volcanic Eruption' },
+    WF: { ko: '산불', en: 'Wildfire' }
+};
+const GDACS_RADIUS_KM = { EQ: 150, TC: 300, FL: 150, VO: 40, WF: 60 };
+
+function regionName(iso2, lang, fallback) {
+    try {
+        return (iso2 && new Intl.DisplayNames([lang], { type: 'region' }).of(iso2)) || fallback;
+    } catch (e) {
+        return fallback;
+    }
+}
+
+function gdacsToEvent(f) {
+    const p = f.properties;
+    const type = GDACS_TYPES[p.eventtype];
+    if (!type || !f.geometry || f.geometry.type !== 'Point') return null;
+    const iso2 = p.affectedcountries && p.affectedcountries[0] && p.affectedcountries[0].iso2;
+    const countryKo = regionName(iso2, 'ko', p.country || '');
+    const countryEn = regionName(iso2, 'en', p.country || '');
+    const levelKo = p.alertlevel === 'Red' ? '적색' : '주황';
+    const sev = (p.severitydata && p.severitydata.severitytext) || '';
+    const name = (p.eventname || '').trim();
+    let ko, en, detailKo, detailEn;
+    if (p.eventtype === 'EQ') {
+        const mag = (sev.match(/Magnitude\s*([\d.]+)/) || [])[1];
+        const depth = (sev.match(/Depth:\s*([\d.]+)/) || [])[1];
+        ko = `${countryKo} ${mag ? `규모 ${mag} ` : ''}지진`;
+        en = `${mag ? `M${mag} ` : ''}earthquake, ${countryEn}`;
+        detailKo = mag ? `규모 ${mag}${depth ? `, 진원 깊이 약 ${Math.round(depth)}km` : ''}의 지진이 발생했습니다.` : '강한 지진이 발생했습니다.';
+        detailEn = mag ? `A magnitude-${mag} earthquake${depth ? ` at a depth of about ${Math.round(depth)} km` : ''}.` : 'A strong earthquake.';
+    } else if (p.eventtype === 'TC') {
+        const wind = p.severitydata && p.severitydata.severityunit === 'km/h' ? Math.round(p.severitydata.severity) : null;
+        ko = `${type.ko} ${name} (${countryKo})`;
+        en = `${type.en} ${name} (${countryEn})`;
+        detailKo = wind ? `최대 풍속 ${wind}km/h의 열대성 저기압입니다.` : '열대성 저기압입니다.';
+        detailEn = wind ? `A tropical cyclone with maximum winds of ${wind} km/h.` : 'A tropical cyclone.';
+    } else {
+        ko = p.eventtype === 'VO' && name ? `${name} ${type.ko} (${countryKo})` : `${countryKo} ${type.ko}`;
+        en = p.eventtype === 'VO' && name ? `${name} ${type.en.toLowerCase()} (${countryEn})` : `${type.en}, ${countryEn}`;
+        detailKo = `${type.ko} 피해가 보고됐습니다.`;
+        detailEn = `${type.en} impacts reported.`;
+    }
+    const ongoing = p.iscurrent === 'true';
+    let radius = GDACS_RADIUS_KM[p.eventtype];
+    if (p.alertlevel === 'Red') radius = Math.round(radius * 1.3);
+    return {
+        ko, en, coords: f.geometry.coordinates.slice(0, 2), radius,
+        date: (p.fromdate || '').slice(0, 10), ongoing,
+        endDate: ongoing ? undefined : (p.todate || '').slice(0, 10),
+        reasonKo: `${detailKo} (GDACS ${levelKo} 경보, 자동 수집)`,
+        reasonEn: `${detailEn} (GDACS ${p.alertlevel} alert, auto-collected)`
+    };
+}
+
+async function fetchDisasterEvents() {
+    try {
+        const day = n => new Date(Date.now() - n * 24 * 3600 * 1000).toISOString().slice(0, 10);
+        const url = `https://www.gdacs.org/gdacsapi/api/events/geteventlist/SEARCH?alertlevel=Orange;Red&fromDate=${day(30)}&toDate=${day(0)}`;
+        const res = await fetch(url, { cache: 'no-store' });
+        if (!res.ok) throw new Error('http ' + res.status);
+        const data = await res.json();
+        const recentCutoff = day(7);
+        liveDisasterEvents = (data.features || [])
+            .filter(f => f.properties && (f.properties.iscurrent === 'true' || (f.properties.todate || '').slice(0, 10) >= recentCutoff))
+            .map(gdacsToEvent)
+            .filter(Boolean);
+        const source = mapInstance && mapInstance.getSource('disaster-events');
+        if (source) source.setData(circleFeatureCollection(allDisasterEvents()));
+    } catch (e) {
+        console.warn('GDACS disaster fetch failed:', e.message);
+    }
+}
 
 // Economy/social dots are plain DOM markers (points, not affected-area circles) —
 // unlike the war/disaster layer they only need to be created once, since Markers live
 // outside the GL style and survive setStyle() calls on their own.
 let economyMarkerEls = [];
-function addEconomyMarkers() {
-    economyMarkerEls = ECONOMY_EVENTS.map(ev => {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'econ-marker';
-        wrapper.innerHTML = '<span class="econ-dot"></span>';
-        wrapper.addEventListener('click', (e) => {
-            e.stopPropagation();
-            showRiskPopup(ev.coords, ev);
-        });
-        new maplibregl.Marker({ element: wrapper, anchor: 'center' }).setLngLat(ev.coords).addTo(mapInstance);
-        return wrapper;
+function addRiskMarker(ev, markerClass, dotClass) {
+    const wrapper = document.createElement('div');
+    wrapper.className = markerClass;
+    wrapper.innerHTML = `<span class="${dotClass}"></span>`;
+    wrapper.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showRiskPopup(ev.coords, ev);
     });
+    return new maplibregl.Marker({ element: wrapper, anchor: 'center' }).setLngLat(ev.coords).addTo(mapInstance);
+}
+
+function addEconomyMarkers() {
+    economyMarkerEls = ECONOMY_EVENTS.map(ev => addRiskMarker(ev, 'econ-marker', 'econ-dot').getElement());
     updateEconomyVisibility();
 }
 
@@ -271,18 +362,23 @@ function updateEconomyVisibility() {
 // be toggled independently.
 let socialMarkerEls = [];
 function addSocialMarkers() {
-    socialMarkerEls = SOCIAL_EVENTS.map(ev => {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'social-marker';
-        wrapper.innerHTML = '<span class="social-dot"></span>';
-        wrapper.addEventListener('click', (e) => {
-            e.stopPropagation();
-            showRiskPopup(ev.coords, ev);
-        });
-        new maplibregl.Marker({ element: wrapper, anchor: 'center' }).setLngLat(ev.coords).addTo(mapInstance);
-        return wrapper;
-    });
+    socialMarkerEls = SOCIAL_EVENTS.map(ev => addRiskMarker(ev, 'social-marker', 'social-dot').getElement());
     updateSocialVisibility();
+}
+
+// News-derived events (see auto-data.js): war ones join the war circle layer, economy/
+// social ones get the same dots as the curated ones. Rebuilt whenever a fresh
+// auto-data.json lands, since events come and go as their lifetimes run out.
+let autoMarkers = [];
+function refreshAutoMapEvents() {
+    if (!mapInstance) return;
+    const warSource = mapInstance.getSource('war-events');
+    if (warSource) warSource.setData(circleFeatureCollection(allWarEvents()));
+    autoMarkers.forEach(m => m.remove());
+    autoMarkers = [
+        ...autoMapEventsFor('economy').map(ev => addRiskMarker(ev, 'econ-marker', 'econ-dot')),
+        ...autoMapEventsFor('social').map(ev => addRiskMarker(ev, 'social-marker', 'social-dot'))
+    ];
 }
 
 function updateSocialVisibility() {

@@ -1,13 +1,16 @@
 name: Refresh financial calendar
 
-# Runs itself on the 1st of every month with no developer step — see
+# Runs itself every day (00:00 UTC) with no developer step — see
 # scripts/refresh-calendar.mjs for exactly what it fetches and why (schedule-only:
 # new rate-decision dates for US/EU/Japan/China, nothing else). workflow_dispatch is
 # there purely so this can be re-run by hand from the Actions tab to check it's still
-# working, without needing to wait for the 1st.
+# working, without needing to wait for the next run.
 on:
   schedule:
-    - cron: '0 0 1 * *'
+    # Daily rather than monthly (2026-10-10, explicit request: shortest cadence that can
+    # be automated) — the script only ever adds new entries, so a run with nothing new
+    # is a no-op with no commit.
+    - cron: '0 0 * * *'
   workflow_dispatch:
 
 permissions:

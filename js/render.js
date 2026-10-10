@@ -212,10 +212,8 @@ function renderAll() {
         forexList.map(f => renderItem(currentLang === 'ko' ? f.ko : f.en, getData(f.symbol, f.fallback), '', getSeries(f.symbol))).join('');
 
     document.getElementById('policy-rate-container').innerHTML = POLICY_RATES.map(p => {
-        // ECB is the one central bank here with a public, CORS-enabled data API (see
-        // fetchECBPolicyRate) — when that live fetch has landed, it overrides the
-        // curated fallback; the other five have no equivalent free/keyless/CORS-open
-        // source, so they stay on curated figures (see POLICY_RATES_UPDATED_AT above).
+        // Every row has a live source (see fetchPolicyRates) — once it has landed it
+        // overrides the curated fallback in POLICY_RATES.
         const live = p.liveSymbol && cachedData[p.liveSymbol];
         const rate = live ? live.current : p.rate;
         const prevRate = live ? live.prevRate : p.prevRate;

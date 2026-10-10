@@ -11,3 +11,6 @@ __pycache__/
 # OS / editor
 .DS_Store
 .claude/
+
+# Local output of scripts/refresh-auto-data.mjs (published to the auto-data branch by CI)
+auto-data/

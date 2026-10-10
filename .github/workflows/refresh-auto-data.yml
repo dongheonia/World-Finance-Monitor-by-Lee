@@ -1,0 +1,56 @@
+name: Refresh auto data
+
+# Every 15 minutes: rebuild the news-derived map events and the auto-filled economic
+# calendar values (see scripts/refresh-auto-data.mjs for sources and rules) and publish
+# them to the `auto-data` branch, which the page reads from raw.githubusercontent.com
+# (js/auto-data.js). The branch is force-pushed as a single commit each run, so neither
+# its history nor main's grows, and main's GitHub Pages deploy isn't retriggered.
+# GitHub may delay scheduled runs at busy times; workflow_dispatch allows a manual run
+# from the Actions tab.
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-auto-data
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Restore previous auto data
+        run: |
+          mkdir -p auto-data
+          if git fetch --depth=1 origin auto-data 2>/dev/null; then
+            git show FETCH_HEAD:auto-data.json > auto-data/auto-data.json || true
+            git show FETCH_HEAD:auto-state.json > auto-data/auto-state.json || true
+          else
+            echo "No auto-data branch yet — starting fresh."
+          fi
+
+      - name: Build auto data
+        run: node scripts/refresh-auto-data.mjs
+
+      - name: Publish to auto-data branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd auto-data
+          git init -q -b auto-data
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add auto-data.json auto-state.json
+          git commit -q -m "Auto data $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push -q -f "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" auto-data

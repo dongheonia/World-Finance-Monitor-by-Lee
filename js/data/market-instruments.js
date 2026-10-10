@@ -51,9 +51,10 @@ const PINNED_FX = [
     { symbol: 'DX-Y.NYB', ko: '달러인덱스', en: 'Dollar Index', fallback: { current: 100.91, change: 0.00, change_percent: 0.00 } }
 ];
 
-// Policy rates only change on central-bank decision days (roughly 8x/year), so these
-// are curated reference values, refreshed (2026-09-17) against each bank's actual
-// September-meeting outcome. Both `rate` and `prevRate` are always the levels set at
+// Policy rates only change on central-bank decision days (roughly 8x/year). Every row
+// now self-updates via its liveSymbol (see fetchPolicyRates in market-data.js, ECB/BIS/
+// BOK ECOS); the figures below are only the fallback shown until that lands or if it
+// fails, last refreshed (2026-10-10) against each bank's actual most recent outcome. Both `rate` and `prevRate` are always the levels set at
 // the two most recent MEETINGS — i.e. prevRate still updates on a hold (matches
 // current), not just on an actual change. This matters: an earlier version of this
 // data instead used "level before the last ACTUAL change" for prevRate, which produces
@@ -77,14 +78,14 @@ const PINNED_FX = [
 //   consecutive hike, prior meeting 2026-07-16.
 // - China: PBOC 1Y LPR held at 3.00% on 2026-08-20; also 3.00% at the prior 2026-07-20
 //   meeting → held (frozen since May 2025).
-// - Japan: BOJ hiked to 1.00% from 0.75% on 2026-06-16 (prior meeting 2026-04-28); next
-//   decision due 2026-09-18, not yet announced.
-const POLICY_RATES_UPDATED_AT = '2026-09-17';
+// - Japan: BOJ hiked to 1.25% from 1.00% on 2026-09-18 (effective 2026-09-24, per
+//   BIS's WS_CBPOL notes); prior meeting 2026-07-31 held at 1.00%.
+const POLICY_RATES_UPDATED_AT = '2026-10-10';
 const POLICY_RATES = [
-    { ko: '미국 (연준)', en: 'United States (Fed)', rate: 4.00, prevRate: 3.75 },
-    { ko: '영국 (영국은행)', en: 'United Kingdom (BOE)', rate: 3.75, prevRate: 3.75 },
-    { ko: '유로존 (유럽중앙은행)', en: 'Eurozone (ECB)', rate: 2.65, prevRate: 2.40, liveSymbol: 'ECB_MRR' },
-    { ko: '중국 (중국인민은행)', en: 'China (PBOC)', rate: 3.00, prevRate: 3.00 },
-    { ko: '일본 (일본은행)', en: 'Japan (BOJ)', rate: 1.00, prevRate: 0.75 },
-    { ko: '한국 (한국은행)', en: 'Korea (BOK)', rate: 3.00, prevRate: 2.75 }
+    { ko: '미국 (연준)', en: 'United States (Fed)', rate: 4.00, prevRate: 3.75, liveSymbol: 'POLICY_US' },
+    { ko: '영국 (영국은행)', en: 'United Kingdom (BOE)', rate: 3.75, prevRate: 3.75, liveSymbol: 'POLICY_GB' },
+    { ko: '유로존 (유럽중앙은행)', en: 'Eurozone (ECB)', rate: 2.65, prevRate: 2.40, liveSymbol: 'POLICY_EU' },
+    { ko: '중국 (중국인민은행)', en: 'China (PBOC)', rate: 3.00, prevRate: 3.00, liveSymbol: 'POLICY_CN' },
+    { ko: '일본 (일본은행)', en: 'Japan (BOJ)', rate: 1.25, prevRate: 1.00, liveSymbol: 'POLICY_JP' },
+    { ko: '한국 (한국은행)', en: 'Korea (BOK)', rate: 3.00, prevRate: 2.75, liveSymbol: 'POLICY_KR' }
 ];
