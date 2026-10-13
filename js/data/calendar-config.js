@@ -161,6 +161,7 @@ const CALENDAR_EVENTS = [
     { date: '2027-03-24', time: '07:00', country: 'GB', category: 'cpi', titleKo: '영국 2월 CPI', titleEn: 'UK February CPI', detailKo: '소비자물가 (YoY)', detailEn: 'Consumer Price Index (YoY)' },
     { date: '2027-04-14', time: '07:00', country: 'GB', category: 'gdp', titleKo: '영국 2월 월간 GDP', titleEn: 'UK February Monthly GDP', detailKo: '전월 대비', detailEn: 'Month-on-month' },
     { date: '2027-04-20', time: '07:00', country: 'GB', category: 'employment', titleKo: '영국 4월 노동시장 보고서', titleEn: 'UK April Labour Market Report', detailKo: '실업률 (ILO, 3개월)', detailEn: 'Unemployment Rate (ILO, 3-month)' },
+    { date: '2027-04-21', time: '07:00', country: 'GB', category: 'cpi', titleKo: '영국 3월 CPI', titleEn: 'UK March CPI', detailKo: '소비자물가 (YoY)', detailEn: 'Consumer Price Index (YoY)' },
     { date: '2027-04-29', time: '12:00', country: 'GB', category: 'rate', titleKo: '영란은행 4월 통화정책회의', titleEn: 'Bank of England April Decision', detailKo: '기준금리', detailEn: 'Bank Rate' },
 
     // ---- Eurozone ----
