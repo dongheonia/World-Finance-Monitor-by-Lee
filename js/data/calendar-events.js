@@ -281,7 +281,15 @@ const DISASTER_EVENTS = [
     { ko: "소말리아 기근 위기", en: "Somalia hunger crisis", coords: [44.0, 2.5], radius: 280,
       date: "2025-10-01", ongoing: true,
       reasonKo: "가뭄과 분쟁, 엘니뇨가 겹치며 소말리아의 기근 위기가 심화하고 있습니다.",
-      reasonEn: "Drought, conflict and El Niño are combining to deepen Somalia's hunger emergency." }
+      reasonEn: "Drought, conflict and El Niño are combining to deepen Somalia's hunger emergency." },
+    { ko: "중국 티베트 바칭 지진", en: "Tibet earthquake (Baqen county), China", coords: [94.05, 31.95], radius: 100,
+      date: "2026-10-22", ongoing: false,
+      reasonKo: "바칭현 인근에서 규모 7.0 지진이 발생해 최소 16명이 숨지고 수십~70여 명이 다쳤으며 주택 300여 채가 붕괴됐습니다.",
+      reasonEn: "A magnitude-7.0 earthquake struck near Baqen county, killing at least 16 people, injuring dozens more, and collapsing over 300 homes." },
+    { ko: "태풍 참피 대만 통과", en: "Typhoon Champi passes Taiwan", coords: [121.56, 25.03], radius: 250,
+      date: "2026-10-22", ongoing: false, endDate: "2026-10-24",
+      reasonKo: "올해 최강 태풍인 참피가 대만을 비켜 지나갔지만 1명이 숨지고 500명 넘게 다쳤으며, 수천 가구가 정전되고 학교와 항공편이 중단됐습니다.",
+      reasonEn: "Typhoon Champi, the strongest storm of the year, brushed past Taiwan without a direct hit but still killed one person, injured over 500, cut power to thousands of households, and shut down schools and flights." }
 ];
 
 // Major social-impact situations — protests and unrest, terrorism, mass shootings,
