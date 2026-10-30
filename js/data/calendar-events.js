@@ -258,7 +258,11 @@ const ECONOMY_EVENTS = [
     { ko: "브라질 대선 결선투표 결과", en: "Brazil presidential runoff result", coords: [-47.9, -15.8],
       date: "2026-10-04", ongoing: false, endDate: "2026-10-25",
       reasonKo: "10월 25일 결선투표에서 룰라가 51.7%를 얻어 플라비우 보우소나루(48.3%)를 꺾고 4번째 임기를 확정했으나, 보우소나루 측은 결과에 이의를 제기하고 있습니다.",
-      reasonEn: "Lula won the October 25 runoff with 51.7% to Flávio Bolsonaro's 48.3%, securing a fourth term, though the Bolsonaro camp is contesting the result." }
+      reasonEn: "Lula won the October 25 runoff with 51.7% to Flávio Bolsonaro's 48.3%, securing a fourth term, though the Bolsonaro camp is contesting the result." },
+    { ko: "브라질 B3 서킷브레이커 발동 (대선 결선 이후 헤알화 급락)", en: "Brazil B3 circuit breaker (real plunges after presidential runoff)", coords: [-46.65, -23.56],
+      date: "2026-10-26", ongoing: false, endDate: "2026-10-26",
+      reasonKo: "룰라의 대선 결선투표 승리 이후 헤알화가 달러당 5.60헤알까지 12.52% 급락하면서 상파울루 B3 거래소의 이보베스파 지수가 개장 직후 10% 떨어져 서킷브레이커가 발동됐으며, 2020년 3월 이후 처음 있는 일이었습니다.",
+      reasonEn: "The Brazilian real plunged 12.52% to R$5.60 per dollar after Lula's presidential runoff win, driving the Ibovespa down 10% at the open on October 26 and triggering a 30-minute circuit breaker on the B3 exchange for the first time since March 2020." }
 ];
 
 // Major natural disasters and public-health emergencies, source-checked 2026-10-10 —
