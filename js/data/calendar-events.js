@@ -147,7 +147,15 @@ const WAR_EVENTS = [
     { ko: "한반도 미사일 경쟁", en: "Korean Peninsula missile race", coords: [126.5, 38.6], radius: 150,
       date: "2026-01-01", ongoing: true,
       reasonKo: "북한의 극초음속 미사일 시험 몇 주 뒤 한국도 첫 극초음속 미사일 시험을 실시하는 등 남북 간 미사일 경쟁이 이어지고 있습니다.",
-      reasonEn: "Weeks after a North Korean hypersonic test, South Korea conducted its own first hypersonic missile test." }
+      reasonEn: "Weeks after a North Korean hypersonic test, South Korea conducted its own first hypersonic missile test." },
+    { ko: "에티오피아 오로미아 정교회 마을 공격 (OLA 연루 의혹)", en: "Ethiopia: attacks on Orthodox Christian villages in Oromia (OLA blamed)", coords: [39.3, 7.9], radius: 100,
+      date: "2026-10-20", ongoing: true,
+      reasonKo: "아르시주 메르티·시르카 지역에서 열흘 사이 두 차례 공격으로 정교회 기독교인 60명이 숨졌고, 오로미아 주정부는 오로모해방군(OLA)을 지목했으나 독립적으로 확인되지는 않았습니다.",
+      reasonEn: "Two attacks ten days apart in the Merti and Shirka districts of Arsi Zone killed at least 60 Orthodox Christians; the Oromia regional government has blamed the Oromo Liberation Army (OLA), though the claim is unverified." },
+    { ko: "나이지리아 타라바주 비나리 마을 무장단체 공격", en: "Nigeria: armed attack on Binnari village, Taraba State", coords: [11.18, 9.32], radius: 150,
+      date: "2026-10-23", ongoing: true,
+      reasonKo: "타라바주 카림라미도 지역 비나리 마을을 무장괴한들이 공격해 최소 62명이 숨지고 52명이 다쳤으며, 주택과 상점이 불에 타고 수천 명이 피란했습니다.",
+      reasonEn: "Gunmen attacked Binnari village in Taraba State's Karim-Lamido area, killing at least 62 people and wounding 52 others; homes and shops were burned and thousands were displaced." }
 ];
 
 // Structural or breaking economic risks — things that move markets, supply chains or
@@ -239,10 +247,10 @@ const ECONOMY_EVENTS = [
       date: "2020-11-13", ongoing: true,
       reasonKo: "잠비아가 두 번째 IMF 프로그램을 확보했고, 아프렉심은행과의 채무 재조정 합의도 막바지에 이르렀습니다.",
       reasonEn: "Zambia has secured a second IMF programme and is close to a debt-restructuring deal with Afreximbank." },
-    { ko: "코스피 외국인 매도", en: "KOSPI foreign selling", coords: [126.98, 37.57],
+    { ko: "코스피 AI 밸류에이션 충격·서킷브레이커", en: "KOSPI AI valuation shock and circuit breakers", coords: [126.98, 37.57],
       date: "2026-10-08", ongoing: true,
-      reasonKo: "자사주 매입 효과가 끝나고 외국인 매도가 이어지면서 코스피 7,000선 지지 여부가 시험대에 올랐습니다.",
-      reasonEn: "With the buyback boost fading and foreign investors selling, the KOSPI is testing support at 7,000." },
+      reasonKo: "AI 랠리에 대한 불안과 미국 빅테크 실적 우려로 코스피가 10월 중순 8% 넘게 급락해 서킷브레이커가 발동됐고, 10월 30일에도 장중 4.75% 떨어지며 매도 사이드카가 다시 발동됐습니다.",
+      reasonEn: "Doubts over the AI rally and weak US big-tech earnings drove KOSPI down more than 8% in mid-October, triggering a circuit breaker, and the index fell another 4.75% intraday on October 30, activating a sell-side sidecar again." },
     { ko: "베네수엘라 볼리바르화 급락", en: "Venezuelan bolivar slide", coords: [-66.9, 10.48],
       date: "2026-10-08", ongoing: true,
       reasonKo: "달러 공급이 줄면서 볼리바르화 가치가 새로운 저점을 기록했습니다.",
@@ -372,7 +380,11 @@ const SOCIAL_EVENTS = [
     { ko: "기니비사우 쿠데타 후 선거 연기", en: "Guinea-Bissau: post-coup election delay", coords: [-15.6, 11.86],
       date: "2025-11-26", ongoing: true,
       reasonKo: "쿠데타 이후 들어선 군정이 12월 6일 선거를 치를 여건이 안 된다며 연기 방침을 밝혔습니다.",
-      reasonEn: "The post-coup government says conditions are not ripe for the 6 December election and plans to delay it." }
+      reasonEn: "The post-coup government says conditions are not ripe for the 6 December election and plans to delay it." },
+    { ko: "베네수엘라 반정부 전국 시위 (선거 일정 요구)", en: "Venezuela: nationwide opposition protests (demanding an election date)", coords: [-66.9, 10.48], radius: 500,
+      date: "2026-10-22", ongoing: true,
+      reasonKo: "마두로 체포 이후 들어선 과도정부가 선거 일정을 내놓지 않자 거의 2년 만에 전국적인 반정부 시위가 벌어졌으며, 포로페날은 10월 5일 기준 정치범이 322명에 이른다고 밝혔습니다.",
+      reasonEn: "Nearly two years after the last nationwide demonstration, opposition supporters marched across Venezuela on October 22 to demand a presidential election date from the post-Maduro transitional government; rights group Foro Penal counted 322 political prisoners still held as of October 5." }
 ];
 
 // ============================ MARKET DATA ============================
