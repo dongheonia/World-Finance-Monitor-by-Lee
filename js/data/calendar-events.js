@@ -266,7 +266,15 @@ const ECONOMY_EVENTS = [
     { ko: "브라질 B3 서킷브레이커 발동 (대선 결선 이후 헤알화 급락)", en: "Brazil B3 circuit breaker (real plunges after presidential runoff)", coords: [-46.65, -23.56],
       date: "2026-10-26", ongoing: false, endDate: "2026-10-26",
       reasonKo: "룰라의 대선 결선투표 승리 이후 헤알화가 달러당 5.60헤알까지 12.52% 급락하면서 상파울루 B3 거래소의 이보베스파 지수가 개장 직후 10% 떨어져 서킷브레이커가 발동됐으며, 2020년 3월 이후 처음 있는 일이었습니다.",
-      reasonEn: "The Brazilian real plunged 12.52% to R$5.60 per dollar after Lula's presidential runoff win, driving the Ibovespa down 10% at the open on October 26 and triggering a 30-minute circuit breaker on the B3 exchange for the first time since March 2020." }
+      reasonEn: "The Brazilian real plunged 12.52% to R$5.60 per dollar after Lula's presidential runoff win, driving the Ibovespa down 10% at the open on October 26 and triggering a 30-minute circuit breaker on the B3 exchange for the first time since March 2020." },
+    { ko: "바이낸스 63억 달러 해킹 (사상 최대 암호화폐 도난)", en: "Binance $6.3 billion hack (largest-ever crypto theft)", coords: [54.37, 24.45],
+      date: "2026-10-29", ongoing: false,
+      reasonKo: "10월 29일 바이낸스에서 해커들이 10개 블록체인에 걸친 지갑에서 약 63억 6천만 달러를 20분 만에 빼내는 사상 최대 규모의 암호화폐 해킹이 발생했습니다. FBI는 북한의 해킹조직 '트레이더트레이터'를 배후로 지목했으며, 바이낸스는 입출금을 중단하고 손실 전액을 보전하겠다고 밝혔습니다.",
+      reasonEn: "Hackers drained roughly $6.36 billion from Binance wallets across ten blockchains in about 20 minutes on October 29, the largest crypto theft on record; the FBI attributed the attack to North Korea's TraderTraitor hacking unit, and Binance suspended withdrawals and pledged to cover all losses." },
+    { ko: "라가르드 ECB 총재 조기 사퇴 발표", en: "ECB President Lagarde announces early resignation", coords: [8.68, 50.11],
+      date: "2026-10-29", ongoing: false,
+      reasonKo: "크리스틴 라가르드 유럽중앙은행(ECB) 총재가 임기 만료를 1년 가까이 앞둔 2027년 2월 7일 조기 사퇴하겠다고 발표했습니다. 라가르드는 더 이상 정치적 중립을 지킬 수 없다고 밝혔으며, 프랑스 대선을 앞두고 EU가 후임 총재를 선출할 수 있게 됐습니다.",
+      reasonEn: "ECB President Christine Lagarde announced on October 29 that she will step down on February 7, 2027, nearly a year before her term was due to end, saying she can no longer remain politically neutral; the early exit lets EU leaders pick her successor before France's presidential election." }
 ];
 
 // Major natural disasters and public-health emergencies, source-checked 2026-10-10 —
@@ -321,7 +329,11 @@ const DISASTER_EVENTS = [
     { ko: "파나마 강진 (아수에로 반도)", en: "Panama earthquake (Azuero Peninsula)", coords: [-80.5, 7.85], radius: 150,
       date: "2026-10-09", ongoing: false,
       reasonKo: "10월 9일 아수에로 반도 인근에서 규모 7.7 지진이 발생해 전국 10개 주와 원주민 자치구 2곳에서 주택 900여 채가 파손되고 27명 이상이 다쳤으며, 정부는 국가 비상사태를 선포하고 1억 달러 규모의 복구 예산을 투입했습니다. 300회 넘는 여진이 이어진 가운데 10월 말까지 최소 3명의 사망이 확인됐습니다.",
-      reasonEn: "A magnitude-7.7 earthquake struck near the Azuero Peninsula on October 9, damaging roughly 900 homes across all 10 provinces and two Indigenous territories and injuring at least 27 people; the government declared a national state of emergency and committed $100 million for relief. More than 300 aftershocks followed, and at least three deaths had been confirmed by late October." }
+      reasonEn: "A magnitude-7.7 earthquake struck near the Azuero Peninsula on October 9, damaging roughly 900 homes across all 10 provinces and two Indigenous territories and injuring at least 27 people; the government declared a national state of emergency and committed $100 million for relief. More than 300 aftershocks followed, and at least three deaths had been confirmed by late October." },
+    { ko: "나이지리아 전국 홍수", en: "Nationwide floods, Nigeria", coords: [8.0, 9.0], radius: 600,
+      date: "2026-07-01", ongoing: true,
+      reasonKo: "7월부터 이어진 홍수로 나이지리아 28개 주, 134개 지방정부구역에서 67만 3,350명이 피해를 입었고 21만 5천 명이 대피했으며 최소 245명이 사망했습니다. 국가긴급관리청(NEMA)은 콜레라·에볼라 대응까지 겹쳐 대응이 어려운 상황이라고 밝혔습니다.",
+      reasonEn: "Floods across Nigeria since July have affected 673,350 people in 134 local government areas across 28 states, displacing about 215,000 and killing at least 245, National Emergency Management Agency figures show; NEMA said the response is complicated by simultaneous cholera and Ebola outbreaks." }
 ];
 
 // Major social-impact situations — protests and unrest, terrorism, mass shootings,
@@ -339,8 +351,8 @@ const SOCIAL_EVENTS = [
       reasonEn: "Thousands protested government austerity; some clashed with police, and 21 people were remanded in custody." },
     { ko: "프랑스 전국 소요 (생활비·예산안 시위)", en: "France: nationwide unrest (cost-of-living and budget protests)", coords: [2.33, 48.85], radius: 600,
       date: "2026-09-29", ongoing: true,
-      reasonKo: "예산안을 앞두고 시작된 고등학생 시위와 공공부문 파업이 10월 들어 전국적인 소요로 번져 10월 24일에는 수십만 명이 거리로 나왔고, 약탈과 방화로 상점 1,500여 곳이 피해를 입었습니다. 전국에서 1,800명 넘게 연행되고 경찰 수백 명이 다쳤으며, 정부는 일부 지역에 외출금지령과 시위 금지 조치를 내렸습니다.",
-      reasonEn: "High-school protests and public-sector strikes that began ahead of the budget grew into nationwide unrest through October; hundreds of thousands marched on October 24, and looting and arson damaged roughly 1,500 businesses. More than 1,800 people have been arrested nationwide and hundreds of police officers injured, prompting the government to impose curfews and protest bans in some areas." },
+      reasonKo: "예산안을 앞두고 시작된 고등학생 시위와 공공부문 파업이 10월 들어 전국적인 소요로 번져 10월 24일에는 수십만 명이 거리로 나왔고, 약탈과 방화로 상점 1,500여 곳이 피해를 입었습니다. 전국에서 1,800명 넘게 연행되고 경찰 수백 명이 다쳤으며, 정부는 일부 지역에 외출금지령과 시위 금지 조치를 내렸습니다. 10월 31일에는 경찰 7만 명이 배치된 가운데 전국에서 41만 명이 시위에 나섰고, 노조들은 11월 5일 총파업을 예고했습니다.",
+      reasonEn: "High-school protests and public-sector strikes that began ahead of the budget grew into nationwide unrest through October; hundreds of thousands marched on October 24, and looting and arson damaged roughly 1,500 businesses. More than 1,800 people have been arrested nationwide and hundreds of police officers injured, prompting the government to impose curfews and protest bans in some areas. On October 31, some 410,000 people marched nationwide as 70,000 police were deployed, and unions have called a general strike for November 5." },
     { ko: "스페인 주거난 시위·총파업 예고", en: "Spain housing protests and planned general strike", coords: [-3.7, 40.42],
       date: "2026-09-24", ongoing: true,
       reasonKo: "주거난에 항의하는 시위가 이어지자 노동계가 11월 11일 전국 총파업을 예고했습니다.",
@@ -392,7 +404,11 @@ const SOCIAL_EVENTS = [
     { ko: "베네수엘라 반정부 전국 시위 (선거 일정 요구)", en: "Venezuela: nationwide opposition protests (demanding an election date)", coords: [-66.9, 10.48], radius: 500,
       date: "2026-10-22", ongoing: true,
       reasonKo: "마두로 체포 이후 들어선 과도정부가 선거 일정을 내놓지 않자 거의 2년 만에 전국적인 반정부 시위가 벌어졌으며, 포로페날은 10월 5일 기준 정치범이 322명에 이른다고 밝혔습니다.",
-      reasonEn: "Nearly two years after the last nationwide demonstration, opposition supporters marched across Venezuela on October 22 to demand a presidential election date from the post-Maduro transitional government; rights group Foro Penal counted 322 political prisoners still held as of October 5." }
+      reasonEn: "Nearly two years after the last nationwide demonstration, opposition supporters marched across Venezuela on October 22 to demand a presidential election date from the post-Maduro transitional government; rights group Foro Penal counted 322 political prisoners still held as of October 5." },
+    { ko: "이탈리아 생활비·국방비 반대 총파업", en: "Italy: general strike over cost of living and defence spending", coords: [12.5, 41.9], radius: 300,
+      date: "2026-10-30", ongoing: false,
+      reasonKo: "10월 30일 기층노조 USB가 주도한 24시간 총파업과 함께 40여 개 도시에서 생활비 상승과 국방비 증액에 반대하는 시위가 열렸습니다. 10월 물가상승률이 3년 만에 최고인 5.4%를 기록한 가운데, 로마에서는 시위대 8명이 연행되고 토리노에서는 경찰이 물대포를 사용했습니다.",
+      reasonEn: "A 24-hour general strike called by the grassroots union USB brought protests over the cost of living and rising defence spending to more than 40 Italian cities on October 30, as annual inflation hit a three-year high of 5.4%; eight protesters were detained in Rome and police used a water cannon on demonstrators in Turin." }
 ];
 
 // ============================ MARKET DATA ============================
