@@ -119,6 +119,12 @@ const CALENDAR_EVENTS = [
     { date: '2027-04-28', country: 'US', category: 'rate', titleKo: '4월 FOMC 기준금리 결정', titleEn: 'April FOMC Rate Decision', detailKo: '정책금리 목표범위', detailEn: 'Target Range' },
     { date: '2027-04-29', time: '08:30', country: 'US', category: 'gdp', titleKo: '미국 1분기 GDP (속보치)', titleEn: 'US Q1 GDP (Advance Estimate)', detailKo: '연율 환산 성장률', detailEn: 'Annualized Growth Rate' },
     { date: '2027-04-29', time: '08:30', country: 'US', category: 'pce', titleKo: '미국 3월 PCE 물가지수', titleEn: 'US March PCE Price Index', detailKo: '헤드라인 PCE (YoY)', detailEn: 'Headline PCE (YoY)' },
+    { date: '2027-05-03', time: '10:00', country: 'US', category: 'pmi', titleKo: '미국 4월 ISM 제조업 PMI', titleEn: 'US April ISM Manufacturing PMI', detailKo: 'ISM 제조업 지수', detailEn: 'ISM Manufacturing Index' },
+    { date: '2027-05-05', time: '10:00', country: 'US', category: 'pmi', titleKo: '미국 4월 ISM 비제조업 PMI', titleEn: 'US April ISM Services PMI', detailKo: 'ISM 서비스업 지수', detailEn: 'ISM Services Index' },
+    { date: '2027-05-14', time: '08:30', country: 'US', category: 'retail', titleKo: '미국 4월 소매판매', titleEn: 'US April Retail Sales', detailKo: '전월 대비', detailEn: 'Month-on-month' },
+    { date: '2027-05-17', time: '09:15', country: 'US', category: 'industrial', titleKo: '미국 4월 산업생산', titleEn: 'US April Industrial Production', detailKo: '전월 대비', detailEn: 'Month-on-month' },
+    { date: '2027-05-27', time: '08:30', country: 'US', category: 'gdp', titleKo: '미국 1분기 GDP (수정치)', titleEn: 'US Q1 GDP (Second Estimate)', detailKo: '연율 환산 성장률', detailEn: 'Annualized Growth Rate' },
+    { date: '2027-05-27', time: '08:30', country: 'US', category: 'pce', titleKo: '미국 4월 PCE 물가지수', titleEn: 'US April PCE Price Index', detailKo: '헤드라인 PCE (YoY)', detailEn: 'Headline PCE (YoY)' },
 
     // ---- United Kingdom ----
     { date: '2026-05-14', time: '07:00', country: 'GB', category: 'gdp', titleKo: '영국 3월 월간 GDP', titleEn: 'UK March Monthly GDP', detailKo: '전월 대비', detailEn: 'Month-on-month', valueKo: '+0.3%', valueEn: '+0.3%', prevKo: '이전 +0.4%', prevEn: 'Prev +0.4%' },
@@ -167,6 +173,9 @@ const CALENDAR_EVENTS = [
     { date: '2027-04-20', time: '07:00', country: 'GB', category: 'employment', titleKo: '영국 4월 노동시장 보고서', titleEn: 'UK April Labour Market Report', detailKo: '실업률 (ILO, 3개월)', detailEn: 'Unemployment Rate (ILO, 3-month)' },
     { date: '2027-04-21', time: '07:00', country: 'GB', category: 'cpi', titleKo: '영국 3월 CPI', titleEn: 'UK March CPI', detailKo: '소비자물가 (YoY)', detailEn: 'Consumer Price Index (YoY)' },
     { date: '2027-04-29', time: '12:00', country: 'GB', category: 'rate', titleKo: '영란은행 4월 통화정책회의', titleEn: 'Bank of England April Decision', detailKo: '기준금리', detailEn: 'Bank Rate' },
+    { date: '2027-05-14', time: '07:00', country: 'GB', category: 'gdp', titleKo: '영국 3월 월간 GDP', titleEn: 'UK March Monthly GDP', detailKo: '전월 대비', detailEn: 'Month-on-month' },
+    { date: '2027-05-18', time: '07:00', country: 'GB', category: 'employment', titleKo: '영국 5월 노동시장 보고서', titleEn: 'UK May Labour Market Report', detailKo: '실업률 (ILO, 3개월)', detailEn: 'Unemployment Rate (ILO, 3-month)' },
+    { date: '2027-05-19', time: '07:00', country: 'GB', category: 'cpi', titleKo: '영국 4월 CPI', titleEn: 'UK April CPI', detailKo: '소비자물가 (YoY)', detailEn: 'Consumer Price Index (YoY)' },
 
     // ---- Eurozone ----
     { date: '2026-05-13', country: 'EU', category: 'gdp', titleKo: '유로존 1분기 GDP (수정치)', titleEn: 'Eurozone Q1 GDP (t+45 Estimate)', detailKo: '전분기 대비', detailEn: 'Quarter-on-quarter', valueKo: '+0.1%', valueEn: '+0.1%', prevKo: '이전 +0.3%', prevEn: 'Prev +0.3%' },
@@ -233,6 +242,11 @@ const CALENDAR_EVENTS = [
     { date: '2027-04-29', country: 'EU', category: 'rate', titleKo: 'ECB 4월 통화정책회의', titleEn: 'ECB April Policy Meeting', detailKo: '주요 재융자금리', detailEn: 'Main Refinancing Rate' },
     { date: '2027-04-30', time: '11:00', country: 'EU', category: 'gdp', titleKo: '유로존 1분기 GDP (예비 속보치)', titleEn: 'Eurozone Q1 GDP (Preliminary Flash)', detailKo: '전분기 대비', detailEn: 'Quarter-on-quarter' },
     { date: '2027-04-30', time: '11:00', country: 'EU', category: 'employment', titleKo: '유로존 3월 실업률', titleEn: 'Eurozone March Unemployment Rate', detailKo: '실업률', detailEn: 'Unemployment Rate' },
+    { date: '2027-05-03', time: '11:00', country: 'EU', category: 'cpi', titleKo: '유로존 4월 HICP (속보치)', titleEn: 'Eurozone April HICP (Flash)', detailKo: '소비자물가 (YoY)', detailEn: 'Consumer Price Index (YoY)' },
+    { date: '2027-05-05', time: '11:00', country: 'EU', category: 'ppi', titleKo: '유로존 3월 생산자물가(PPI)', titleEn: 'Eurozone March PPI', detailKo: '생산자물가 (YoY)', detailEn: 'Producer Prices (YoY)' },
+    { date: '2027-05-10', time: '11:00', country: 'EU', category: 'retail', titleKo: '유로존 3월 소매판매', titleEn: 'Eurozone March Retail Sales', detailKo: '전월 대비', detailEn: 'Month-on-month' },
+    { date: '2027-05-13', time: '11:00', country: 'EU', category: 'industrial', titleKo: '유로존 3월 산업생산', titleEn: 'Eurozone March Industrial Production', detailKo: '전월 대비', detailEn: 'Month-on-month' },
+    { date: '2027-05-14', time: '11:00', country: 'EU', category: 'gdp', titleKo: '유로존 1분기 GDP (속보치)', titleEn: 'Eurozone Q1 GDP (Flash)', detailKo: '전분기 대비', detailEn: 'Quarter-on-quarter' },
 
     // ---- Korea ----
     { date: '2026-05-01', country: 'KR', category: 'trade', titleKo: '한국 4월 수출입동향', titleEn: 'Korea April Trade Statistics', detailKo: '수출 증가율 / 무역수지', detailEn: 'Export Growth / Trade Balance', valueKo: '+48.0%, +237.7억달러', valueEn: '+48.0% YoY, +$23.77bn' },
@@ -259,6 +273,7 @@ const CALENDAR_EVENTS = [
     { date: '2027-02-01', time: '09:00', country: 'KR', category: 'trade', titleKo: '한국 1월 수출입동향', titleEn: 'Korea January Trade Statistics', detailKo: '수출 증가율 / 무역수지', detailEn: 'Export Growth / Trade Balance' },
     { date: '2027-03-01', time: '09:00', country: 'KR', category: 'trade', titleKo: '한국 2월 수출입동향', titleEn: 'Korea February Trade Statistics', detailKo: '수출 증가율 / 무역수지', detailEn: 'Export Growth / Trade Balance' },
     { date: '2027-04-01', time: '09:00', country: 'KR', category: 'trade', titleKo: '한국 3월 수출입동향', titleEn: 'Korea March Trade Statistics', detailKo: '수출 증가율 / 무역수지', detailEn: 'Export Growth / Trade Balance' },
+    { date: '2027-05-01', time: '09:00', country: 'KR', category: 'trade', titleKo: '한국 4월 수출입동향', titleEn: 'Korea April Trade Statistics', detailKo: '수출 증가율 / 무역수지', detailEn: 'Export Growth / Trade Balance' },
 
     // ---- China ----
     { date: '2026-05-01', country: 'CN', category: 'pmi', titleKo: '중국 4월 차이신 제조업 PMI', titleEn: 'China April Caixin Manufacturing PMI', detailKo: '차이신(Caixin) 지수', detailEn: 'Caixin Index', valueKo: '52.2', valueEn: '52.2', prevKo: '이전 50.8', prevEn: 'Prev 50.8' },
@@ -313,6 +328,8 @@ const CALENDAR_EVENTS = [
     { date: '2027-03-31', time: '09:30', country: 'CN', category: 'pmi', titleKo: '중국 3월 국가통계국 제조업 PMI', titleEn: 'China March NBS Manufacturing PMI', detailKo: '국가통계국(NBS) 지수', detailEn: 'NBS Index' },
     { date: '2027-04-20', country: 'CN', category: 'rate', titleKo: '중국 대출우대금리(LPR) 4월', titleEn: 'PBOC LPR April', detailKo: '1년 LPR / 5년+ LPR (날짜 추정)', detailEn: '1Y LPR / 5Y+ LPR (date approximate)' },
     { date: '2027-04-30', time: '09:30', country: 'CN', category: 'pmi', titleKo: '중국 4월 국가통계국 제조업 PMI', titleEn: 'China April NBS Manufacturing PMI', detailKo: '국가통계국(NBS) 지수', detailEn: 'NBS Index' },
+    { date: '2027-05-20', country: 'CN', category: 'rate', titleKo: '중국 대출우대금리(LPR) 5월', titleEn: 'PBOC LPR May', detailKo: '1년 LPR / 5년+ LPR (날짜 추정)', detailEn: '1Y LPR / 5Y+ LPR (date approximate)' },
+    { date: '2027-05-31', time: '09:30', country: 'CN', category: 'pmi', titleKo: '중국 5월 국가통계국 제조업 PMI', titleEn: 'China May NBS Manufacturing PMI', detailKo: '국가통계국(NBS) 지수', detailEn: 'NBS Index' },
 
     // ---- Japan ----
     { date: '2026-05-07', time: '08:50', country: 'JP', category: 'minutes', titleKo: '일본은행 의사록 공개 (3월 회의)', titleEn: 'BOJ Minutes (March Meeting)', detailKo: '금융정책결정회의 의사록', detailEn: 'Monetary Policy Meeting Minutes' },
