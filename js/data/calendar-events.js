@@ -317,7 +317,11 @@ const DISASTER_EVENTS = [
     { ko: "태풍 참피 대만 통과", en: "Typhoon Champi passes Taiwan", coords: [121.56, 25.03], radius: 250,
       date: "2026-10-22", ongoing: false, endDate: "2026-10-24",
       reasonKo: "올해 최강 태풍인 참피가 대만을 비켜 지나갔지만 1명이 숨지고 500명 넘게 다쳤으며, 수천 가구가 정전되고 학교와 항공편이 중단됐습니다.",
-      reasonEn: "Typhoon Champi, the strongest storm of the year, brushed past Taiwan without a direct hit but still killed one person, injured over 500, cut power to thousands of households, and shut down schools and flights." }
+      reasonEn: "Typhoon Champi, the strongest storm of the year, brushed past Taiwan without a direct hit but still killed one person, injured over 500, cut power to thousands of households, and shut down schools and flights." },
+    { ko: "파나마 강진 (아수에로 반도)", en: "Panama earthquake (Azuero Peninsula)", coords: [-80.5, 7.85], radius: 150,
+      date: "2026-10-09", ongoing: false,
+      reasonKo: "10월 9일 아수에로 반도 인근에서 규모 7.7 지진이 발생해 전국 10개 주와 원주민 자치구 2곳에서 주택 900여 채가 파손되고 27명 이상이 다쳤으며, 정부는 국가 비상사태를 선포하고 1억 달러 규모의 복구 예산을 투입했습니다. 300회 넘는 여진이 이어진 가운데 10월 말까지 최소 3명의 사망이 확인됐습니다.",
+      reasonEn: "A magnitude-7.7 earthquake struck near the Azuero Peninsula on October 9, damaging roughly 900 homes across all 10 provinces and two Indigenous territories and injuring at least 27 people; the government declared a national state of emergency and committed $100 million for relief. More than 300 aftershocks followed, and at least three deaths had been confirmed by late October." }
 ];
 
 // Major social-impact situations — protests and unrest, terrorism, mass shootings,
@@ -333,10 +337,10 @@ const SOCIAL_EVENTS = [
       date: "2026-10-09", ongoing: true,
       reasonKo: "수천 명이 정부 긴축 정책에 반대하는 시위를 벌였고, 일부가 경찰과 충돌해 21명이 구금됐습니다.",
       reasonEn: "Thousands protested government austerity; some clashed with police, and 21 people were remanded in custody." },
-    { ko: "프랑스 학생 시위·공공부문 파업", en: "France student protests and public-sector strikes", coords: [2.33, 48.85],
+    { ko: "프랑스 전국 소요 (생활비·예산안 시위)", en: "France: nationwide unrest (cost-of-living and budget protests)", coords: [2.33, 48.85], radius: 600,
       date: "2026-09-29", ongoing: true,
-      reasonKo: "예산안을 앞두고 고등학생 시위와 공공부문 파업이 전국으로 번졌고, 수백 명이 연행됐습니다.",
-      reasonEn: "High-school protests and public-sector strikes spread nationwide ahead of the budget, and hundreds have been detained." },
+      reasonKo: "예산안을 앞두고 시작된 고등학생 시위와 공공부문 파업이 10월 들어 전국적인 소요로 번져 10월 24일에는 수십만 명이 거리로 나왔고, 약탈과 방화로 상점 1,500여 곳이 피해를 입었습니다. 전국에서 1,800명 넘게 연행되고 경찰 수백 명이 다쳤으며, 정부는 일부 지역에 외출금지령과 시위 금지 조치를 내렸습니다.",
+      reasonEn: "High-school protests and public-sector strikes that began ahead of the budget grew into nationwide unrest through October; hundreds of thousands marched on October 24, and looting and arson damaged roughly 1,500 businesses. More than 1,800 people have been arrested nationwide and hundreds of police officers injured, prompting the government to impose curfews and protest bans in some areas." },
     { ko: "스페인 주거난 시위·총파업 예고", en: "Spain housing protests and planned general strike", coords: [-3.7, 40.42],
       date: "2026-09-24", ongoing: true,
       reasonKo: "주거난에 항의하는 시위가 이어지자 노동계가 11월 11일 전국 총파업을 예고했습니다.",
@@ -349,10 +353,6 @@ const SOCIAL_EVENTS = [
       date: "2026-10-09", ongoing: false,
       reasonKo: "한 주택에서 총기 난사가 일어나 어린이 2명을 포함해 8명이 숨졌고, 범인도 스스로 목숨을 끊었습니다.",
       reasonEn: "A shooting at a home killed eight people, including two children, before the gunman killed himself." },
-    { ko: "flydubai 여객기 납치 시도 (벤구리온 공항 표적)", en: "Attempted flydubai hijacking (Ben Gurion targeted)", coords: [34.88, 32.0],
-      date: "2026-09-30", ongoing: false,
-      reasonKo: "텔아비브행 flydubai 여객기의 부기장이 조종실을 장악하려다 승객과 승무원에게 제압됐고, 여객기는 사우디 타북에 비상착륙했습니다. 벤구리온 공항 터미널을 노렸다는 보도가 나왔습니다.",
-      reasonEn: "The co-pilot of a Tel Aviv-bound flydubai flight tried to seize the cockpit and was subdued by passengers and crew; the plane landed in Tabuk, Saudi Arabia. Reports say he was targeting Ben Gurion's terminal." },
     { ko: "요르단 카라크 교회 총격 테러", en: "Karak church shooting, Jordan", coords: [35.70, 31.19],
       date: "2026-10-23", ongoing: false,
       reasonKo: "카라크의 한 교회에서 장례식 도중 무장괴한들이 총격을 가해 9명이 숨지고 40명 가까이 다쳤으며, 요르단은 사흘간의 국가 애도기간을 선포했습니다.",
