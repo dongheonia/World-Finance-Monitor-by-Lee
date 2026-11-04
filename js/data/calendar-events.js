@@ -38,12 +38,12 @@ const WAR_EVENTS = [
       reasonEn: "Three sea drones struck a Greek-managed container ship in the Black Sea near Shabla, Bulgaria, on October 28, badly damaging and listing the vessel, though all 18 crew members (14 Filipino, 4 Ukrainian) were evacuated safely; it was the ninth attack on a merchant vessel in the Black Sea since the start of October, and Bulgaria has pointed to Russia as a suspect." },
     { ko: "이란 전쟁 (미국·이스라엘의 이란 공습)", en: "Iran war (US and Israeli strikes on Iran)", coords: [53.7, 32.4], radius: 450,
       date: "2026-02-20", ongoing: true,
-      reasonKo: "미국·이스라엘의 공습이 이어지는 가운데에도 이란이 미사일 생산 능력을 유지하고 있다는 분석이 나오고, 미국이 이스라엘의 추가 단독 작전을 압박했다는 보도도 나왔습니다.",
-      reasonEn: "Strikes continue while analysts say Iran can still produce missiles, and reports say Washington pressed Israel to mount another solo operation." },
+      reasonKo: "미국·이스라엘의 공습이 이어지는 가운데, 트럼프 대통령이 11월 3일 중간선거 전까지 이란을 공격하지 않겠다던 약속의 시한이 끝나면서 미국과 이스라엘이 이란의 에너지 기반시설·핵시설·미사일·드론 전력을 겨냥한 대규모 추가 공습을 검토하고 있다는 보도가 나왔습니다.",
+      reasonEn: "Strikes continue, and with President Trump's pledge not to hit Iran before the November 3 midterms now expired, reports say the US and Israel are weighing larger follow-on strikes targeting Iran's energy infrastructure, nuclear sites, and missile and drone arsenals." },
     { ko: "호르무즈 해협 봉쇄·유조선 공격", en: "Strait of Hormuz closure and tanker attacks", coords: [56.25, 26.57], radius: 120,
       date: "2026-03-02", ongoing: true,
-      reasonKo: "10월 들어 선박 공격이 거의 매일 발생하고 있으며, 초대형 유조선이 기뢰에 부딪혀 폭발했습니다. 이란은 해협 밖 유조선까지 공격하고 있습니다.",
-      reasonEn: "Ships have been struck almost daily in October, a supertanker exploded after hitting a mine, and Iran is now attacking tankers beyond the strait." },
+      reasonKo: "10월 들어 선박 공격이 거의 매일 발생하고 있으며, 초대형 유조선이 기뢰에 부딪혀 폭발했습니다. 이란은 해협 밖 유조선까지 공격하고 있습니다. 11월 3일에는 미군이 케슘섬 일대 이란군 목표물에 방어적 공습을 가했고, 이란혁명수비대(IRGC)는 미군 드론 2대를 격추했다고 주장했습니다.",
+      reasonEn: "Ships have been struck almost daily in October, a supertanker exploded after hitting a mine, and Iran is now attacking tankers beyond the strait. On November 3 the US carried out defensive strikes on Iranian targets around Qeshm Island, and Iran's Revolutionary Guard claimed it shot down two US drones." },
     { ko: "가자지구", en: "Gaza Strip", coords: [34.4, 31.45], radius: 25,
       date: "2023-10-07", ongoing: true,
       reasonKo: "휴전 1년이 지났지만 이스라엘군 공습이 거의 매일 이어져 하루에도 수 명씩 숨지고 있으며, 구호단체들은 휴전이 '이름뿐'이라고 지적합니다.",
@@ -274,7 +274,11 @@ const ECONOMY_EVENTS = [
     { ko: "라가르드 ECB 총재 조기 사퇴 발표", en: "ECB President Lagarde announces early resignation", coords: [8.68, 50.11],
       date: "2026-10-29", ongoing: false,
       reasonKo: "크리스틴 라가르드 유럽중앙은행(ECB) 총재가 임기 만료를 1년 가까이 앞둔 2027년 2월 7일 조기 사퇴하겠다고 발표했습니다. 라가르드는 더 이상 정치적 중립을 지킬 수 없다고 밝혔으며, 프랑스 대선을 앞두고 EU가 후임 총재를 선출할 수 있게 됐습니다.",
-      reasonEn: "ECB President Christine Lagarde announced on October 29 that she will step down on February 7, 2027, nearly a year before her term was due to end, saying she can no longer remain politically neutral; the early exit lets EU leaders pick her successor before France's presidential election." }
+      reasonEn: "ECB President Christine Lagarde announced on October 29 that she will step down on February 7, 2027, nearly a year before her term was due to end, saying she can no longer remain politically neutral; the early exit lets EU leaders pick her successor before France's presidential election." },
+    { ko: "미국 AI 밸류에이션 충격 매도 (나스닥·인텔 급락)", en: "US AI-valuation selloff (Nasdaq and Intel plunge)", coords: [-74.0, 40.71],
+      date: "2026-10-30", ongoing: true,
+      reasonKo: "10월 30일 인텔이 현금 소진 경고 속에 하루 만에 29% 폭락하며 사상 최대 일일 하락을 기록하고 필라델피아 반도체지수가 7.2% 급락하는 등 AI 투자 밸류에이션 불안으로 나스닥지수가 2.86% 떨어져 6월 이후 최악의 하루를 보냈으며, 나스닥 100 시가총액이 1조 달러 넘게 증발했습니다. 11월 3일에는 애플의 부진한 이익률 전망과 이란 공습에 따른 유가 급등까지 겹쳐 다우 선물이 323포인트 추가로 급락했습니다.",
+      reasonEn: "Intel plunged nearly 29% on October 30, its steepest one-day drop on record after warning of cash burn, and the Philadelphia Semiconductor Index fell 7.2% as AI-valuation worries dragged the Nasdaq Composite down 2.86% in its worst session since June, wiping out more than $1 trillion in Nasdaq 100 market value. Dow futures fell another 323 points on November 3 after a weak Apple profit-margin forecast and an oil-price spike tied to fresh US strikes on Iran." }
 ];
 
 // Major natural disasters and public-health emergencies, source-checked 2026-10-10 —
