@@ -416,7 +416,11 @@ const SOCIAL_EVENTS = [
     { ko: "이탈리아 생활비·국방비 반대 총파업", en: "Italy: general strike over cost of living and defence spending", coords: [12.5, 41.9], radius: 300,
       date: "2026-10-30", ongoing: false,
       reasonKo: "10월 30일 기층노조 USB가 주도한 24시간 총파업과 함께 40여 개 도시에서 생활비 상승과 국방비 증액에 반대하는 시위가 열렸습니다. 10월 물가상승률이 3년 만에 최고인 5.4%를 기록한 가운데, 로마에서는 시위대 8명이 연행되고 토리노에서는 경찰이 물대포를 사용했습니다.",
-      reasonEn: "A 24-hour general strike called by the grassroots union USB brought protests over the cost of living and rising defence spending to more than 40 Italian cities on October 30, as annual inflation hit a three-year high of 5.4%; eight protesters were detained in Rome and police used a water cannon on demonstrators in Turin." }
+      reasonEn: "A 24-hour general strike called by the grassroots union USB brought protests over the cost of living and rising defence spending to more than 40 Italian cities on October 30, as annual inflation hit a three-year high of 5.4%; eight protesters were detained in Rome and police used a water cannon on demonstrators in Turin." },
+    { ko: "폴란드 헌법재판소 권력 다툼 ('친위 쿠데타' 공방)", en: "Poland: Constitutional Tribunal power struggle ('coup' standoff)", coords: [21.01, 52.23], radius: 300,
+      date: "2026-10-30", ongoing: true,
+      reasonKo: "10월 30일 헌법재판관 코르빈-피오트로프스카가 재판소장 시비엥치코프스키와 부소장의 직무를 한 달간 정지시키고 소장 권한을 대행하겠다고 나서면서 위기가 터졌습니다. 재판소 청사에 폭동 경찰이 배치됐고, 나브로츠키 대통령은 세네갈 순방을 중단하고 귀국해 '국가 안보 위협'이라며 긴급 회의를 소집했으며 야권은 '친위 쿠데타'라고 규정했습니다. 투스크 총리는 새 재판관 임명이 헌법에 따른 것이라고 반박했고, 법무장관은 재판소가 몇 주 안에 업무를 재개할 수 있을 것이라고 밝혔습니다.",
+      reasonEn: "Crisis erupted on October 30 when judge Anna Korwin-Piotrowska suspended Tribunal President Bogdan Święczkowski and his deputy for a month and moved to take over leadership of the court herself. Riot police were deployed at the Tribunal's Warsaw headquarters, President Nawrocki cut short a trip to Senegal to call emergency talks over what he called a threat to national security, and the opposition branded it a 'self-coup'; Prime Minister Tusk countered that the new judges' appointment was constitutional, and the justice minister said the court could resume work within a few weeks." }
 ];
 
 // ============================ MARKET DATA ============================
