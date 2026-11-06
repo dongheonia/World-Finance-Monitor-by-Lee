@@ -337,7 +337,11 @@ const DISASTER_EVENTS = [
     { ko: "나이지리아 전국 홍수", en: "Nationwide floods, Nigeria", coords: [8.0, 9.0], radius: 600,
       date: "2026-07-01", ongoing: true,
       reasonKo: "7월부터 이어진 홍수로 나이지리아 28개 주, 134개 지방정부구역에서 67만 3,350명이 피해를 입었고 21만 5천 명이 대피했으며 최소 245명이 사망했습니다. 국가긴급관리청(NEMA)은 콜레라·에볼라 대응까지 겹쳐 대응이 어려운 상황이라고 밝혔습니다.",
-      reasonEn: "Floods across Nigeria since July have affected 673,350 people in 134 local government areas across 28 states, displacing about 215,000 and killing at least 245, National Emergency Management Agency figures show; NEMA said the response is complicated by simultaneous cholera and Ebola outbreaks." }
+      reasonEn: "Floods across Nigeria since July have affected 673,350 people in 134 local government areas across 28 states, displacing about 215,000 and killing at least 245, National Emergency Management Agency figures show; NEMA said the response is complicated by simultaneous cholera and Ebola outbreaks." },
+    { ko: "사이클론 무라수 인도 안드라프라데시 상륙", en: "Cyclone Murasu lands on Andhra Pradesh coast, India", coords: [80.05, 15.5], radius: 250,
+      date: "2026-11-03", ongoing: false, endDate: "2026-11-04",
+      reasonKo: "사이클론 아르나브에 이어 일주일 만에 두 번째로 강한 사이클론 무라수가 11월 3일 새벽 안드라프라데시 온골레 인근(넬로르-나르사푸람 사이)에 상륙해 최고 시속 120km의 강풍을 몰고 왔습니다. 안드라프라데시에서 2명이 숨지고 농경지 약 5만 2천 헥타르가 피해를 입었으며, 오디샤·텔랑가나·타밀나두 등에도 비 피해가 이어졌지만 폭풍은 상륙 당일 저압부로 약화됐습니다.",
+      reasonEn: "Cyclone Murasu, the second severe cyclonic storm to hit India's east coast in a week after Cyclone Arnab, made landfall near Ongole, Andhra Pradesh (between Nellore and Narasapuram) in the early hours of November 3 with winds up to 120 km/h. At least two people were killed and roughly 52,000 hectares of cropland were damaged in Andhra Pradesh, with heavy rain also affecting Odisha, Telangana, Tamil Nadu and other states, before the storm weakened into a depression later the same day." }
 ];
 
 // Major social-impact situations — protests and unrest, terrorism, mass shootings,
