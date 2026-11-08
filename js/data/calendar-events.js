@@ -290,10 +290,6 @@ const ECONOMY_EVENTS = [
 // Fresh hurricanes, earthquakes, floods and eruptions also arrive automatically from
 // GDACS (fetchDisasterEvents in map.js), so this list covers what GDACS doesn't.
 const DISASTER_EVENTS = [
-    { ko: "네팔 대홍수", en: "Nepal floods", coords: [84.1, 28.2], radius: 200,
-      date: "2026-08-26", ongoing: false, endDate: "2026-10-07",
-      reasonKo: "8월 말 돌발 홍수로 1,455명이 숨지고 5,285명이 실종된 가운데, 네팔 정부는 10월 초 약 40일간의 수색·구조 작업을 공식 종료했습니다.",
-      reasonEn: "The late-August flash floods killed 1,455 people and left 5,285 missing; Nepal formally ended its roughly 40-day search-and-rescue operation in early October." },
     { ko: "인도 아삼 홍수", en: "Assam floods, India", coords: [92.9, 26.2], radius: 200,
       date: "2026-07-20", ongoing: true,
       reasonKo: "수년 만의 최악의 홍수가 이어지면서 인도군이 '잘 라하트' 구호 작전을 시작했습니다.",
