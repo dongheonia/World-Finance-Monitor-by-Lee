@@ -1,0 +1,2087 @@
+{
+ "updatedAt": "2026-11-14T06:52:16.596Z",
+ "mapEvents": [
+  {
+   "id": "war:war:CN",
+   "layer": "war",
+   "ko": "중국 전쟁·무력 충돌",
+   "en": "China: armed conflict",
+   "coords": [
+    116.4,
+    39.9
+   ],
+   "radius": 150,
+   "date": "2026-10-10",
+   "ongoing": true,
+   "expires": "2026-12-26",
+   "reasonKo": "젠슨 황의 스파이 스캔들 뒤에는 중국에 대한 트럼프의 귀를 위한 그림자 전쟁이 있다 외 관련 보도 9건. (뉴스 자동 수집 · 2026-12-26까지 표시)",
+   "reasonEn": "Behind Jensen Huang’s spy scandal, a shadow war for Trump’s ear on China (+9 related reports). (Auto-collected from news · shown until 2026-12-26)",
+   "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxQNV83TGNqLXB1TGRFV1otMFAwS3poMGY4dHp6V05vWllwcmJ0SGN1QkxXdHpob3czaXJSLW1jcjkta1FpRFR1emR3SVZtWWlUclVIWDlFODZHRDFabzcxR2JfamFhU3VxTnVRNG16Z0F2Y09wRUU0ZmxRazVwTDVSV0V2dlFNNm1WazBoUXg2U1kxM1p0Ym5NSmREU1htSDk2SF9jR2hSTXFYLU85ZHFnaW5YMzY?oc=5"
+  },
+  {
+   "id": "war:war:US-Texas",
+   "layer": "war",
+   "ko": "텍사스 전쟁·무력 충돌",
+   "en": "Texas: armed conflict",
+   "coords": [
+    -99,
+    31
+   ],
+   "radius": 40,
+   "date": "2026-10-12",
+   "ongoing": true,
+   "expires": "2026-12-26",
+   "reasonKo": "텍사스 A&M 대학교, 전쟁과 사회 연구 센터 설립 외 관련 보도 18건. (뉴스 자동 수집 · 2026-12-26까지 표시)",
+   "reasonEn": "Texas A&M University establishes Center for the Study of War and Society (+18 related reports). (Auto-collected from news · shown until 2026-12-26)",
+   "link": "https://news.google.com/rss/articles/CBMiswFBVV95cUxPMlFXOHBpYmg5VEROanhPX09SWGs2QjJDTEQxYWF1aW9ZR1diNVFVMk5TNmE1VElXTFhocFBRNTFvNG5zU1ZDSUduVHhMejhKb2syLW15YW1UM0F3WXNkUzNWdWtxcDlkT2Q0NnpDcGRvTHg4LU1mSmIzUS1KdU5nVC1rdk1vdEVIR3RmaHdBLWFKc1lCVHpBeWtWVmRYcmxYeHptZjFQLXo0aF9veWpzWUh6SQ?oc=5"
+  },
+  {
+   "id": "war:strikes:IQ",
+   "layer": "war",
+   "ko": "이라크 공습",
+   "en": "Iraq: strikes",
+   "coords": [
+    43.7,
+    33.2
+   ],
+   "radius": 150,
+   "date": "2026-10-25",
+   "ongoing": true,
+   "expires": "2026-11-28",
+   "reasonKo": "이라크, 공습으로 무장세력 용의자 3명 사망 보도 외 관련 보도 66건. (뉴스 자동 수집 · 2026-11-28까지 표시)",
+   "reasonEn": "Iraq reports three suspected militants killed in airstrike (+66 related reports). (Auto-collected from news · shown until 2026-11-28)",
+   "link": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxQTVA2ZUpCcnZDRldMOU43Uk9kUnpRWFJvdE1EVWNYNlBpbHJOOXBFSEhCRlRiendJMWM2Z2RDRFdwXzk4M1hDbm55VXdnMWVPNTRBdjUzdkdZeW4wOGdQVFZCWER1SzFDUFJYZjkySUtsTnpldXRZdm40RFNhUEZZanVqVDhZTEZtYmdKQnJtZnFOaks1Z0JhWGxEWGtnc1lQZndrRnZKQld1b1BENlN6MG5Qd0JZaXVi?oc=5"
+  },
+  {
+   "id": "war:fighting:PY",
+   "layer": "war",
+   "ko": "파라과이 교전",
+   "en": "Paraguay: fighting",
+   "coords": [
+    -58.4,
+    -23.4
+   ],
+   "radius": 150,
+   "date": "2026-11-13",
+   "ongoing": true,
+   "expires": "2026-11-27",
+   "reasonKo": "비트코인과 AI가 파라과이 댐 건설을 놓고 3억 5천만 달러 규모의 전쟁을 벌이고 있습니다. (뉴스 자동 수집 · 2026-11-27까지 표시)",
+   "reasonEn": "Bitcoin and AI are fighting a $350 million battle over a dam in Paraguay. (Auto-collected from news · shown until 2026-11-27)",
+   "link": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxQdDdUdHpvVE5rQ1FtTzYtYmlIdzNsTkN0NGZiekhPYzhpTUF4RzlaMk00VFBVcVloMkJhWGlSV0ZPOGJtSHhwYWI2ODVoZ2tDTG8zcnJCa0JjUWNpT2hRYThiNHA1b3AyWVZWVW5Fal8zMGNKOUprWFd2d1dORDZyZFE4TWlSRDRPVWl3UU5oM005UnZtaHhFY2k2aUFYbm9kNmNqNmxvdWFfT0xLY3o3NjVLYUhmMEtl?oc=5"
+  },
+  {
+   "id": "war:war:RU",
+   "layer": "war",
+   "ko": "러시아 전쟁·무력 충돌",
+   "en": "Russia: armed conflict",
+   "coords": [
+    37.6,
+    55.75
+   ],
+   "radius": 150,
+   "date": "2026-10-10",
+   "ongoing": true,
+   "expires": "2026-12-25",
+   "reasonKo": "우크라이나, 전쟁이 계속되면서 하루 만에 러시아인 사상자 3000명 기록 외 관련 보도 63건. (뉴스 자동 수집 · 2026-12-25까지 표시)",
+   "reasonEn": "Ukraine claims record 3,000 Russian casualties in one day as war drags on (+63 related reports). (Auto-collected from news · shown until 2026-12-25)",
+   "link": "https://news.google.com/rss/articles/CBMirwFBVV95cUxNTWk2V05hQVJ1VFBPdFFySGw4SU4tZGlNT3JYdDl4akdMQUJVQmhDeVZkR0VOSV9TN0tsaGZnZlJPYTJvZGRGc19KOU1aOFlHTlkzZG5qMFdjSjhXQk5xd1pLdkdlUHdkcFRTcnNSUVM5a2F1S0p6OTd0WjR6dUE4VGpqWHVLbVZYZHc5MkNESjhSdjN6bEh6TmZXYnY2a2EtN21SUXhRX1R2Tkw1QVRZ0gG0AUFVX3lxTE9OYXAyaC1NazBMTk5GdVYyeV9ZU1lmUTFGbFRkWTdHM1hEa3I0VDE5VXQtVkVjR2xuUkUxTWVMc0lLeEMxYW1fWFlSeE1aMnNoVkNjM2hBRE5OREE2QU93Z0JJeURrNHgxVVU1QmR1Vm5jRjVJbl9XQk9UY3dBTFUwdVIwZVRaMmFOaWdIUmhDUWR1aWtLcnpzcWdsaXlzS1V3THRRSWdpR2tPZDRkUmJ5UkUySg?oc=5"
+  },
+  {
+   "id": "war:strikes:SY",
+   "layer": "war",
+   "ko": "시리아 공습",
+   "en": "Syria: strikes",
+   "coords": [
+    39,
+    34.8
+   ],
+   "radius": 150,
+   "date": "2026-10-22",
+   "ongoing": true,
+   "expires": "2026-11-26",
+   "reasonKo": "시리아 언론은 쿠네이트라에서 포격을 가해 남성 2명을 제거했다고 보도했습니다 외 관련 보도 9건. (뉴스 자동 수집 · 2026-11-26까지 표시)",
+   "reasonEn": "Syrian media report shelling in Quneitra and removal of two men (+9 related reports). (Auto-collected from news · shown until 2026-11-26)",
+   "link": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxQVlpMS2tPa3N3SVdaRDk0QTdKQkl2VDhEXy1icHVCSEM3ZlZLdFhqRUZPNWpiQVk3aWdtV09jSUtYUS00bXZVZ1JJXzY5cElWTmx5SHd3dEtOd3owYUk3endvOXNCcVlpejNEal9pQUp1VDhqWHY4Y0VOeGxIQjJOWlFQVkE1d3dqVDJjNXJSYU5zamxFUlNFN2lVbjI3emRzNUItU3pVcnY5Vk5pYjIxQnlBTDNzODVvWmp5SnhMOFBtNjA?oc=5"
+  },
+  {
+   "id": "war:strikes:CO",
+   "layer": "war",
+   "ko": "콜롬비아 공습",
+   "en": "Colombia: strikes",
+   "coords": [
+    -74.3,
+    4.6
+   ],
+   "radius": 150,
+   "date": "2026-11-03",
+   "ongoing": true,
+   "expires": "2026-11-26",
+   "reasonKo": "'마약테러' 드론 공격으로 콜롬비아 군인 4명 사망 외 관련 보도 21건. (뉴스 자동 수집 · 2026-11-26까지 표시)",
+   "reasonEn": "Four Colombian soldiers killed in 'narcoterrorist' drone attack (+21 related reports). (Auto-collected from news · shown until 2026-11-26)",
+   "link": "https://news.google.com/rss/articles/CBMirAFBVV95cUxOcXkzNmdVaEZ0Wmx6ZW9YOFhad0ZYZ3J5Q0VteVZPV2hQYUI1VmhSbmt3TWVhSnYxbENhOVZ3SlJEZjBGVUNNSndEU3pWSG0xWHlBY2tBbXZqYWZsU1JRYUI0Y0wwZ1V1c0RGNGZxZmx0SlVFVjdWaDN3ckVIT2FCS0x3R0NKZ3AzYm5ZUVBsRmNnUHVXVWgzc0k2RWJ4eHBKeFlxeXVpMy1VMjhM?oc=5"
+  },
+  {
+   "id": "war:strikes:FI",
+   "layer": "war",
+   "ko": "핀란드 공습",
+   "en": "Finland: strikes",
+   "coords": [
+    25.7,
+    61.9
+   ],
+   "radius": 150,
+   "date": "2026-11-12",
+   "ongoing": true,
+   "expires": "2026-11-19",
+   "reasonKo": "핀란드 만에서 우크라이나 드론 공격으로 의심되는 러시아 미사일 선박 손상. (뉴스 자동 수집 · 2026-11-19까지 표시)",
+   "reasonEn": "Russian missile ship damaged in suspected Ukrainian drone attack in Gulf of Finland. (Auto-collected from news · shown until 2026-11-19)",
+   "link": "https://news.google.com/rss/articles/CBMiU0FVX3lxTE83VE5sX1ljZ3o4SmQzNU9Tc0FyUUdiM29GQUJqUTJZOFNRcGEzUWF5Zk1vYkYxTDUyVGpVaXZhdWxQUEgzUHIwdGhEN1I2VkJ1M2NV?oc=5"
+  },
+  {
+   "id": "war:war:GB",
+   "layer": "war",
+   "ko": "영국 전쟁·무력 충돌",
+   "en": "United Kingdom: armed conflict",
+   "coords": [
+    -2,
+    54
+   ],
+   "radius": 150,
+   "date": "2026-10-15",
+   "ongoing": true,
+   "expires": "2026-12-24",
+   "reasonKo": "'전면전': 영국 스포츠는 새로운 조직이 창설된 후 불확실한 미래를 두려워합니다 외 관련 보도 9건. (뉴스 자동 수집 · 2026-12-24까지 표시)",
+   "reasonEn": "‘All-out war’: UK sports fear an uncertain future after new body created (+9 related reports). (Auto-collected from news · shown until 2026-12-24)",
+   "link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxNcHM5VHZvOHRSNjlJT1ZacmpVbXF1aTBHRi1SOVdwUjBrcFZURE5oR0V0c1JTUnNFUVdicjFmMkoyUUpUMEZnbGhzTnN0YndQT3IyM3Q3MFpjVUt0Z1E0bGlQeTVHcGlKdTNKSnhyVi02OWMwbENhR1VnakJ2QlJFRUp4S3ctaHhnVXZhLTc0bw?oc=5"
+  },
+  {
+   "id": "war:war:YE",
+   "layer": "war",
+   "ko": "예멘 전쟁·무력 충돌",
+   "en": "Yemen: armed conflict",
+   "coords": [
+    48.5,
+    15.6
+   ],
+   "radius": 150,
+   "date": "2026-10-10",
+   "ongoing": true,
+   "expires": "2026-12-24",
+   "reasonKo": "예멘에서 재개된 지상전, 인도주의적 재난 재현 외 관련 보도 29건. (뉴스 자동 수집 · 2026-12-24까지 표시)",
+   "reasonEn": "Renewed Ground War in Yemen Reprises Humanitarian Disaster (+29 related reports). (Auto-collected from news · shown until 2026-12-24)",
+   "link": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE4tOHdraFkzVW9rRHZyWDZHbUdSSldERkFNUDlBbWdWVjVycDBqaWRiYTluYW1mTGZ0M3ViSWtYZTZ1VzJBOHVweTBQQldLWHk2dmpyMjVqbmswTm01VU9TRnd0Y1VzMTQ?oc=5"
+  },
+  {
+   "id": "war:fighting:YE",
+   "layer": "war",
+   "ko": "예멘 교전",
+   "en": "Yemen: fighting",
+   "coords": [
+    48.5,
+    15.6
+   ],
+   "radius": 150,
+   "date": "2026-10-14",
+   "ongoing": true,
+   "expires": "2026-12-10",
+   "reasonKo": "후티 반군이 메카 공격을 거부함에 따라 예멘에서 전투가 격화 외 관련 보도 33건. (뉴스 자동 수집 · 2026-12-10까지 표시)",
+   "reasonEn": "Fighting intensifies in Yemen as Houthis deny targeting Mecca (+33 related reports). (Auto-collected from news · shown until 2026-12-10)",
+   "link": "https://www.aljazeera.com/news/2026/11/12/fighting-intensifies-in-yemen-as-houthis-deny-targeting-mecca?traffic_source=rss"
+  },
+  {
+   "id": "war:strikes:RU-St Petersburg",
+   "layer": "war",
+   "ko": "상트페테르부르크 공습",
+   "en": "St Petersburg: strikes",
+   "coords": [
+    30.36,
+    59.93
+   ],
+   "radius": 40,
+   "date": "2026-11-11",
+   "ongoing": true,
+   "expires": "2026-11-25",
+   "reasonKo": "러시아, 상트페테르부르크에 대한 드론 공격을 격퇴하다 조종사가 사망했다고 보고 외 관련 보도 679건. (뉴스 자동 수집 · 2026-11-25까지 표시)",
+   "reasonEn": "Russia Reports Pilots Killed While Repelling Drone Attack on St Petersburg (+679 related reports). (Auto-collected from news · shown until 2026-11-25)",
+   "link": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxNcGtBeHZFYXMwc0FJUWc4NGU3VUFZNmFkMTVpRF9ocFE2ekUwTjNNeGQ1dWJQdkV5a3ltX3o2UG5LeDFBMzVmZnlVdzVUVnJvcWVfRjA4OHRDNG8xa1pjRmlucjlfQ21VVEw2dVYyQmhiRHpmX2owNzgybFdDQzBkWURQUUtGZUpXbFV3VnNJRFVWT21qSTZHSFJUc0dXRndiNm5xZHN0WWFldw?oc=5"
+  },
+  {
+   "id": "war:war:IT",
+   "layer": "war",
+   "ko": "이탈리아 전쟁·무력 충돌",
+   "en": "Italy: armed conflict",
+   "coords": [
+    12.6,
+    41.9
+   ],
+   "radius": 150,
+   "date": "2026-10-12",
+   "ongoing": true,
+   "expires": "2026-12-12",
+   "reasonKo": "로열스 이탈리아 헤리티지 게임에서 한국전 참전용사 표창 외 관련 보도 2건. (뉴스 자동 수집 · 2026-12-12까지 표시)",
+   "reasonEn": "Korean War Veteran Honored at Royals’ Italian Heritage Game (+2 related reports). (Auto-collected from news · shown until 2026-12-12)",
+   "link": "https://news.google.com/rss/articles/CBMilgFBVV95cUxPZVZQaGJDbU1HV2tUZ19TQnNFMEsydDVPNmtuSm40dlREa1dmaDlFbl93Wk9xUm5VdWJNSGtldU9jYk0yaTRxWUh1aHJxZ2VzUU5EdFdQY0NFa20tWjNIMk92OU1kdEs4ZHhDSF92UHl2VnFyOVRHRkZUZ2MtdUllVEhVNDU5UERIdEJqRzNFWU9kTy1Lcnc?oc=5"
+  },
+  {
+   "id": "war:war:VN",
+   "layer": "war",
+   "ko": "베트남 전쟁·무력 충돌",
+   "en": "Vietnam: armed conflict",
+   "coords": [
+    108.3,
+    14.1
+   ],
+   "radius": 150,
+   "date": "2026-10-12",
+   "ongoing": true,
+   "expires": "2026-12-23",
+   "reasonKo": "아내의 추방을 막기 위해 싸운 베트남전 참전용사 외 관련 보도 19건. (뉴스 자동 수집 · 2026-12-23까지 표시)",
+   "reasonEn": "Vietnam war veteran fights to stop his wife's deportation (+19 related reports). (Auto-collected from news · shown until 2026-12-23)",
+   "link": "https://news.google.com/rss/articles/CBMiowFBVV95cUxQLWM5NDhQakdIdFBQcmJhX2c3YU0tTjdTaXR1TzNIMnI1Z0hYdXd0VGh3ZlFYN3h6bUhNb1lJQkhCLV9hMDhDSjBSdHZyOEREY213QzRzWjM2WGdDM3dwaWkzQ2tDbmFVRDd1QWM1Njg2ZzJPSHpxWGc5MjJhLTZhemtzbUZKZjhQLUsyUWZxbDJxSXdaRmRGenVoVWxQckhBb3RN0gGrAUFVX3lxTE1tdkVSU1VJNFpERzVHaFZ0S05sazNSWFQ0dUw5RHN5ZTdEVHQwLTZKcU5KcFFucWFSXy1RSlBYY3ViX3ZkbDNpT0JtQ1ZtcmROa3F5dzZ4WG13MGR3dm5KX0t2WVVkOG9TMkl1bjg1c1BsRkY0LUhQTERHbzVTT29MYjdiMDFBUGc5WnBrMWRKVzN5RndUVmhtVXNFNF9FSDBDM3NFTFJLdFlmSQ?oc=5"
+  },
+  {
+   "id": "war:war:AE-Abu Dhabi",
+   "layer": "war",
+   "ko": "아부다비 전쟁·무력 충돌",
+   "en": "Abu Dhabi: armed conflict",
+   "coords": [
+    54.38,
+    24.45
+   ],
+   "radius": 40,
+   "date": "2026-11-03",
+   "ongoing": true,
+   "expires": "2026-12-23",
+   "reasonKo": "우크라이나 전쟁 브리핑: 젤렌스키는 아부다비 회담이 진행되는 동안 푸틴은 '다른 현실에 살고 있다'고 말했습니다 외 관련 보도 5건. (뉴스 자동 수집 · 2026-12-23까지 표시)",
+   "reasonEn": "Ukraine war briefing: Zelenskyy says Putin ‘lives in a different reality’ as Abu Dhabi talks get under way (+5 related reports). (Auto-collected from news · shown until 2026-12-23)",
+   "link": "https://news.google.com/rss/articles/CBMi4wFBVV95cUxOaDF0RG9vblhsZXZRZTNwWFRYU285N2dfTHhFbzdnR21Vc2dPTjVMOEV5djBRdzhqZlNIZ2hCZ0hwVGVPcWZQNGFJdERxTW9pbVdqd3hYMml4YVpEcXZsTk0zYUZkWVJldlBFZ2pmeVFEMWNabUU3TkNzQU45aER2OE91RDFqM19Pemp2dWp0cTFIeUVvMEcwWDVEZDBUV3pzcy1uc2pFUzFjUXQ1VWUtWXRRdG5RZVZkdC1wbzB3VC1zLVVNQzhTWTlKX0ZLbFpaU0VFR251MTJyZXozTVdrdXZ2RQ?oc=5"
+  },
+  {
+   "id": "war:strikes:AE",
+   "layer": "war",
+   "ko": "아랍에미리트 공습",
+   "en": "United Arab Emirates: strikes",
+   "coords": [
+    53.8,
+    23.4
+   ],
+   "radius": 150,
+   "date": "2026-11-10",
+   "ongoing": true,
+   "expires": "2026-11-17",
+   "reasonKo": "UAE 원자력 발전소에 대한 드론 공격 이후 유가가 2주 최고치를 기록했습니다. (뉴스 자동 수집 · 2026-11-17까지 표시)",
+   "reasonEn": "Oil Touches Two-Week High After Drone Attack on UAE Nuclear Power Plant. (Auto-collected from news · shown until 2026-11-17)",
+   "link": "https://news.google.com/rss/articles/CBMipAFBVV95cUxOOFR4cExqSkJkMUFiVmlJTTFvN3lQeUZKT1ZYRWlGTldSQ19Zc3pjU2pSeXZUZGQwb3JfaFZyWXFteU03aTRtaUY5aVhkLXBiTXdLMU9EaWpZU1Z4ekRLck1QTVRvdE95Ml9ramNEVTlWUW9MVEFtR3BTakRCRzlEd2tRNXJ1LVJtSnBHT05oSUdWeVpuYm1aSFJrc2JTZTJaSUUtcQ?oc=5"
+  },
+  {
+   "id": "war:war:PL",
+   "layer": "war",
+   "ko": "폴란드 전쟁·무력 충돌",
+   "en": "Poland: armed conflict",
+   "coords": [
+    19.1,
+    51.9
+   ],
+   "radius": 150,
+   "date": "2026-11-03",
+   "ongoing": true,
+   "expires": "2026-12-07",
+   "reasonKo": "피트 헤그세스(피트 헤그세스) 전쟁장관과 폴란드 부총리 및 회담 내용 전문 외 관련 보도 1건. (뉴스 자동 수집 · 2026-12-07까지 표시)",
+   "reasonEn": "Readout of Secretary of War Pete Hegseth's Meeting With Poland's Deputy Prime Minister and (+1 related report). (Auto-collected from news · shown until 2026-12-07)",
+   "link": "https://news.google.com/rss/articles/CBMi1AFBVV95cUxORWZ0RlpVdXhDU3VEUXN1T0pKci00Ym1BTHNFUjNFOTNJSlk2U1JuUWQwWXNWMlhVcC1MSjFIWF9sUU14NGFFdGtXZkFTOE80cG9OYlZZMjBXMi1Ya2xFWUxSMWs4YW50YVZFNXRaeEg3b2liMGZoVk9kVVpKVU9Jb2xqV3JjTWFLdFk2VjlhTVA1NlRYTW9ZQjRNN1FPTk1YNk8yVXlRVzNGcDlBMGxneEp5c2ZmVzBYTzBELUFnLVdmbkxSd00zQXRwMUk1a0xGalFKXw?oc=5"
+  },
+  {
+   "id": "war:fighting:MX-Jalisco",
+   "layer": "war",
+   "ko": "할리스코 교전",
+   "en": "Jalisco: fighting",
+   "coords": [
+    -103.35,
+    20.66
+   ],
+   "radius": 40,
+   "date": "2026-11-10",
+   "ongoing": true,
+   "expires": "2026-11-24",
+   "reasonKo": "El Mencho에서 R2까지: Jalisco New Generation Cartel에 대한 멕시코의 공세. (뉴스 자동 수집 · 2026-11-24까지 표시)",
+   "reasonEn": "From El Mencho to R2: Mexico’s offensive against the Jalisco New Generation Cartel. (Auto-collected from news · shown until 2026-11-24)",
+   "link": "https://news.google.com/rss/articles/CBMi0wFBVV95cUxNcWR6R3d4QUh3cEdVR09oYlc2Q0ZnTmgtSXpzY2hKeUlEWVpyQi1KWnY0VG9qdTBaU1pMUDZlRVJZNG03WFpaSzBXaXB2c0xQZFFwbWVobmZtVWMtaDVLWENlOC15eWJkazhPYm11eTNDVnBfYUZ6b24yV29WWGNPZ3R2RjNXN1RSLWRlRmRsUW1sS2xoczdwTi1hdElOZGg4Q280X1g2N3NzNzc5WjVUX1FIdUFqY1pjN3c1TjJfRU5ZUUZaY29BU2F0c1dtWjB5UnZv0gHnAUFVX3lxTE95aTIzbzd1bFM5WUtYZmdVTmkyZUdqTjBUTWdZY0ZtVzk1Z0VZdU51aWpWRVl3YzhJU3pjaXc3TEdGSlctZWxubHZSSEtWb0dRZS04bmxndnZDWGFISDhqMVFmeEJIOUJLNl9SbUx1dlE0WHJRYWhFTV96Y2prZmItLXpUczg4T2VzVENrOU5TYTU1cHduX29wbmZiWlV4VHh1dzZDLXRLUWZsdFpCTERpOUJOUzVaalIteXJrM2d0MTBLelJPZGRnelh4V2NMY3BubjhjNklFRHpUa0VaaFI5eWxxNXpzdw?oc=5"
+  },
+  {
+   "id": "war:war:EG",
+   "layer": "war",
+   "ko": "이집트 전쟁·무력 충돌",
+   "en": "Egypt: armed conflict",
+   "coords": [
+    30.8,
+    26.8
+   ],
+   "radius": 150,
+   "date": "2026-11-09",
+   "ongoing": true,
+   "expires": "2026-12-06",
+   "reasonKo": "이집트의 수단 난민: 전쟁, 국경, 유럽 돈 사이에 갇혔습니다 외 관련 보도 1건. (뉴스 자동 수집 · 2026-12-06까지 표시)",
+   "reasonEn": "Sudanese refugees in Egypt: caught between war, borders and European money (+1 related report). (Auto-collected from news · shown until 2026-12-06)",
+   "link": "https://news.google.com/rss/articles/CBMitgFBVV95cUxQanhrLUtCMHdoV25Xa09CYlhNckNyZkJ0M0Jrd29zNEVnT2NqanFWV2t2dHBlajFnX24zWi1GWTA3eGw1THBWSG93VWZ1UVFOVEZuczFGM3R4NEdDcWJ0c2pEcTZLdjZCTjdsaG5fNGVrQlQ3SW9YWG42eFRBQVJfZTdXOGFzZUdLdG9YdXE1NnYtbGh3RTFTMmU3NDlwVlBEYlloZS1BUV9XQnNwZmg5WElVNXNRdw?oc=5"
+  },
+  {
+   "id": "war:strikes:VE",
+   "layer": "war",
+   "ko": "베네수엘라 공습",
+   "en": "Venezuela: strikes",
+   "coords": [
+    -66.6,
+    6.4
+   ],
+   "radius": 150,
+   "date": "2026-11-05",
+   "ongoing": true,
+   "expires": "2026-11-19",
+   "reasonKo": "콜롬비아의 7차 공습으로 베네수엘라 국경 근처에서 FARC와의 전투에 새로운 전선이 열렸습니다 외 관련 보도 1건. (뉴스 자동 수집 · 2026-11-19까지 표시)",
+   "reasonEn": "Colombia's Seventh Airstrike Opens New Front in Fight Against FARC Near Venezuelan Border (+1 related report). (Auto-collected from news · shown until 2026-11-19)",
+   "link": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxOZ3hPdDJnaE1MYUFzVFpTVmxNNlhVaWVqTTlaeHFEMTk3NUlEa1M0QWlhZHp6ZkZZdkNGbnI1eXhpY3JqeWttTk9HRjF3akl4c2tGUDE4N2JwZVhiWHdQYkxWYnhHUmRCLUZ3dkVtUEdETktibkNzVFF4U3l3Y1VzaV9ZQ0dhdHZaS3JRSjhXeUFJZUwzLUNxMnpUQjV6YVpRMEpITHJ0amgwUmt4eWhoYWpwekFqNHE3MkZocmV5VFY4SDQ?oc=5"
+  },
+  {
+   "id": "war:strikes:UA-Crimea",
+   "layer": "war",
+   "ko": "크림반도 공습",
+   "en": "Crimea: strikes",
+   "coords": [
+    34.1,
+    45
+   ],
+   "radius": 40,
+   "date": "2026-11-05",
+   "ongoing": true,
+   "expires": "2026-11-18",
+   "reasonKo": "드론 공격 이후 도네츠크와 루한스크에서 대규모 정전이 발생했습니다. 크리미아와 러시아에서도 폭발음이 들렸다 외 관련 보도 1건. (뉴스 자동 수집 · 2026-11-18까지 표시)",
+   "reasonEn": "Large-scale power outages in Donetsk and Luhansk after a drone attack; explosions were also heard in Crimea and Russia (+1 related report). (Auto-collected from news · shown until 2026-11-18)",
+   "link": "https://news.google.com/rss/articles/CBMi1wFBVV95cUxPTVJ2NGV2U2p4blVZNmN4dHVreXpfT3dBeXk3LUZlOGlYRkN3b3Vxckwwa3laUzJFX1R0cE1nMVVsTlRaNlY4VU5EeVlFRER6eDNuU29tMkFWczFxOUI5X0VTOEFZWTVObzB6NmRTcXhyeEhqVFExWWNJMFpnWVBPQWc3Z2ZDdmpiM2pRQjdLUXphbE4wVmxudi1WcWtWeEVvRERKZ2M1Q2pmWjFJVHF3ZVRYQWExRzRxSmI4YklwdHJheGRRLWU4ZURhNHJuVWxrNTVKRTZCb9IB1gFBVV95cUxOdU8tV1pSYi1ydnRicklySXRYZ3VGOXk1NG5JeE5uSTlmemh0dlBYeEZVemtqWkxwRXJSS3NjUWM4TXNjbFg4NThmckVPUEJrazcxcGswWWRJN0N2eEhIRU03OUw0YTFQUmtKRmVXWVlJQ1hVQTNvQWd2UTJvTnJGSV92WFIxYnYzc3hXTkc4ZGhfY25jUk0zUlQ2ZzF2ZGROVEJXMHFGSElmRktCLTdFekZTR1YwNzJpZFhBSzNMT2gwX05ZcUNzQ0hYNHllWl9GaV9DQnlR?oc=5"
+  },
+  {
+   "id": "war:fighting:PL",
+   "layer": "war",
+   "ko": "폴란드 교전",
+   "en": "Poland: fighting",
+   "coords": [
+    19.1,
+    51.9
+   ],
+   "radius": 150,
+   "date": "2026-11-08",
+   "ongoing": true,
+   "expires": "2026-11-22",
+   "reasonKo": "크라쿠프 총기 난사 사건을 진압한 영웅 폴란드 경찰이 치명적인 테러 공격 이후 목숨을 걸고 싸우고 있다. (뉴스 자동 수집 · 2026-11-22까지 표시)",
+   "reasonEn": "Hero Polish cop who took down Krakow mass shooter is fighting for his life after deadly terror attack. (Auto-collected from news · shown until 2026-11-22)",
+   "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxQNC1wVXozR3ktUDF5RXNrSFI3dVdhNDhxNkxldlBLUWN6Z2NneWI0UFZEcS03R1otcjk3eEh5cVpIMmhaYndObUtnRlAtYldERGczZ21XcGxSd1NWWm1WVzZraGNNblBLcEpZQ2JzaUZmZVNJTEJ3QV9faHNvVzUwS092OEdQdTQzdWZNME1rSTNZVVlaVDFZeVMxWkZTeGdZQ2xCVnpENHhuN1M5TW5KLUd5OWU?oc=5"
+  },
+  {
+   "id": "war:fighting:ID",
+   "layer": "war",
+   "ko": "인도네시아 교전",
+   "en": "Indonesia: fighting",
+   "coords": [
+    106.8,
+    -6.2
+   ],
+   "radius": 150,
+   "date": "2026-11-08",
+   "ongoing": true,
+   "expires": "2026-11-22",
+   "reasonKo": "인도네시아 산불과 싸우다가 추락한 물폭탄 헬리콥터에 탑승한 호주인 2명. (뉴스 자동 수집 · 2026-11-22까지 표시)",
+   "reasonEn": "Two Australians on water-bombing helicopter that crashed fighting Indonesia blazes. (Auto-collected from news · shown until 2026-11-22)",
+   "link": "https://news.google.com/rss/articles/CBMixgFBVV95cUxPNnUwaFVDUHg1LXZ1R3lLbWczUHA0LUlsQlMyWTVwbFhkaXBuMFo5NEZlZmdSR0ZTNWMzdXBrOUJxeVNLaTdVNlhkSUxTSHJQNnhYRy01RGs5d3MzcnlrTDQtMHJWWk55YVlUWUVOVmZ4VHAyVDhjSHpZWlpaTTA1bnFMTXNhYlgzUjV2UHN4dVMzTHBpYXFMSzRUdGg0bWl5T00xNi1WUFBpQldQRGVIQmdjcnpIYU55QnpVUHhJekZmdFVmeXc?oc=5"
+  },
+  {
+   "id": "war:strikes:PH",
+   "layer": "war",
+   "ko": "필리핀 공습",
+   "en": "Philippines: strikes",
+   "coords": [
+    121.8,
+    12.9
+   ],
+   "radius": 150,
+   "date": "2026-11-03",
+   "ongoing": true,
+   "expires": "2026-11-20",
+   "reasonKo": "페르시아만 유조선에 대한 드론 공격으로 의심되는 필리핀 선원 사망 외 관련 보도 3건. (뉴스 자동 수집 · 2026-11-20까지 표시)",
+   "reasonEn": "Filipino seafarer killed in suspected drone attack on Persian Gulf tanker (+3 related reports). (Auto-collected from news · shown until 2026-11-20)",
+   "link": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxPOUxaczJpTFBEN3U4ODI4RnpqQjdsRjRKY2NaZFdrQXl5V0NUckh0d25oMm9LNDdfME5BaHE4OGl0RjI5bnhmUDA0SG82SV9CSzZOQldoQVQ2S3FxTDNXVUNFbUY2WHBsYmMwREdndlFUOGxCVFZYRFE0NlUxb2dxU1Q4RGItSmxybHc4UzBDaGFwWElBbUVEbzc0YUhNMWNQWlVLUEljNUdSVzdrQWw2VFgtSWZJYWxON0pxdVBPNkozWF90MnhLdjQxMUUtRi1aQmc?oc=5"
+  },
+  {
+   "id": "war:fighting:VN",
+   "layer": "war",
+   "ko": "베트남 교전",
+   "en": "Vietnam: fighting",
+   "coords": [
+    108.3,
+    14.1
+   ],
+   "radius": 150,
+   "date": "2026-11-07",
+   "ongoing": true,
+   "expires": "2026-11-21",
+   "reasonKo": "고등학교 스포츠 랠리: 미네소타 농구 아이콘, 베트남 전쟁 참전을 반영. (뉴스 자동 수집 · 2026-11-21까지 표시)",
+   "reasonEn": "High School Sports Rally: Minnesota basketball icon reflects on fighting in Vietnam War. (Auto-collected from news · shown until 2026-11-21)",
+   "link": "https://news.google.com/rss/articles/CBMixgFBVV95cUxPQWNDeGRsN0h0NkdqaldfYnQzaDJYdU44YktyeTQyemJ3WTVCQk1DQ3Y2aGhlWlM3T1JmTTR1UGVOYVdEcldYcUpNWXluMWE0Y21fX2ZsWGpaT3N2SkdHdzNyTmR5RDQ3M0RhVlg0TWgzVFU5cTc5YkxKMGNHb3hYRXhDcllNRkc5RE5CY2F6dVZwM3FuczFwUVphRmx3QVptQ3VpTGNiX2VZOHJ2ZW91c0oxZnJKQ1RFTjhsN3puV0U4YW1MbXc?oc=5"
+  },
+  {
+   "id": "war:war:SD-Darfur",
+   "layer": "war",
+   "ko": "다르푸르 전쟁·무력 충돌",
+   "en": "Darfur: armed conflict",
+   "coords": [
+    24,
+    13.5
+   ],
+   "radius": 40,
+   "date": "2026-10-27",
+   "ongoing": true,
+   "expires": "2026-12-19",
+   "reasonKo": "다르푸르 난민 위기: 기아와 전쟁으로 인해 수천 명이 타윌라로 이주 외 관련 보도 11건. (뉴스 자동 수집 · 2026-12-19까지 표시)",
+   "reasonEn": "Darfur Displacement Crisis: Hunger and War Drive Thousands to Tawila (+11 related reports). (Auto-collected from news · shown until 2026-12-19)",
+   "link": "https://news.google.com/rss/articles/CBMiUEFVX3lxTE9ISmhVd2d5M0REVWlJUjM4aFpOdVZmQXBody10QUZnN3ZXeGVjZGxWSy1DVUl6ZWgyWUllLTZNT2h6a2xuTklHd1NaOFpnTjls?oc=5"
+  },
+  {
+   "id": "war:strikes:TH",
+   "layer": "war",
+   "ko": "태국 공습",
+   "en": "Thailand: strikes",
+   "coords": [
+    100.99,
+    15.9
+   ],
+   "radius": 150,
+   "date": "2026-10-26",
+   "ongoing": true,
+   "expires": "2026-11-16",
+   "reasonKo": "미얀마군과 KNU, 태국 영토에 대한 포격 책임 교환 외 관련 보도 2건. (뉴스 자동 수집 · 2026-11-16까지 표시)",
+   "reasonEn": "Myanmar military and KNU exchange blame over shelling on Thai territory (+2 related reports). (Auto-collected from news · shown until 2026-11-16)",
+   "link": "https://news.google.com/rss/articles/CBMipwFBVV95cUxORjIxb3p2YjZBUW83VWh5bEV3Y3BWUTVJazJMVktUQW44VV9rZVBzd3U0MW9zdzhha01tWVdRTDV5aTJFbkpjeGVuXzl6YV9vTm84SXdxdFh3a2wzWUR5a3llbDJKWkdyOUhMVlpiRENZUF84NkhvcEo5enN0SG96cF9zQ01NS2tuaEIwMG9rYmtKMTVyN1JPSnFUV3B6eHlCS1hHczI5SQ?oc=5"
+  },
+  {
+   "id": "war:strikes:BE-Brussels",
+   "layer": "war",
+   "ko": "브뤼셀 공습",
+   "en": "Brussels: strikes",
+   "coords": [
+    4.35,
+    50.85
+   ],
+   "radius": 40,
+   "date": "2026-11-05",
+   "ongoing": true,
+   "expires": "2026-11-18",
+   "reasonKo": "브뤼셀에서 안보 회담이 재개됨에 따라 러시아와 우크라이나가 공습을 교환했습니다 외 관련 보도 3건. (뉴스 자동 수집 · 2026-11-18까지 표시)",
+   "reasonEn": "Russia, Ukraine exchange airstrikes as security talks resume in Brussels (+3 related reports). (Auto-collected from news · shown until 2026-11-18)",
+   "link": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxQWExZS2RIRVIxVDBiNWRXOEg0NWI2aG5zai03elFBaEZnQVpYWWVXV1ZpOXhGQnNGdnowNnJVRWhTemhyWVktenFXSTlmLUsteHJDTFdydERUS0lLNXZpRDBVSGhmLUp0ZFRxcm9lU2Z1X1VRbFBrRzJEcXFQVzlTS0lWZ1h5TXNoNkpsYjFoX0xjQ0RfZUxXNVRYZ25rRFlaWlBrcE9ZWU05N00?oc=5"
+  },
+  {
+   "id": "war:war:SD-Khartoum",
+   "layer": "war",
+   "ko": "하르툼 전쟁·무력 충돌",
+   "en": "Khartoum: armed conflict",
+   "coords": [
+    32.56,
+    15.5
+   ],
+   "radius": 40,
+   "date": "2026-11-03",
+   "ongoing": true,
+   "expires": "2026-12-02",
+   "reasonKo": "혁명 후, 전쟁 전: 하르툼의 시리아 공동체 추적 외 관련 보도 1건. (뉴스 자동 수집 · 2026-12-02까지 표시)",
+   "reasonEn": "After the Revolution, Before the War: Tracing Khartoum’s Syrian Community (+1 related report). (Auto-collected from news · shown until 2026-12-02)",
+   "link": "https://news.google.com/rss/articles/CBMirAFBVV95cUxPUDVzeWJzNW5IQVJzbkNhQ1c3Qi1LbkdHdTZZZnRvYjRFeDdEeGUzT3ZTczJVUTQ3WGdpZWs3b1QwRW5TNmhEbjdGSmo1aUhsdjdTSUszbFhNbHFKMVcwQkZRQnZrazRlZTFnVThBblNmTm1lVTZzTUlEZ2M4ZU1EQWRXY0NOVy0tanFHeUhSSnp0b0RhQmhNdzFIUGVsMXVzc1lRWjhkUUg0UjRf?oc=5"
+  },
+  {
+   "id": "war:war:IQ-Baghdad",
+   "layer": "war",
+   "ko": "바그다드 전쟁·무력 충돌",
+   "en": "Baghdad: armed conflict",
+   "coords": [
+    44.36,
+    33.31
+   ],
+   "radius": 40,
+   "date": "2026-11-06",
+   "ongoing": true,
+   "expires": "2026-12-12",
+   "reasonKo": "바그다드가 이란과의 전쟁을 중단하려고 하는 가운데 이라크의 알자이디가 트럼프와 대화하다 외 관련 보도 3건. (뉴스 자동 수집 · 2026-12-12까지 표시)",
+   "reasonEn": "Iraq’s al-Zaidi talks to Trump as Baghdad seeks to stay out of war on Iran (+3 related reports). (Auto-collected from news · shown until 2026-12-12)",
+   "link": "https://www.aljazeera.com/news/2026/11/6/iraqs-al-zaidi-talks-to-trump-as-baghdad-seeks-to-stay-out-of-war-on-iran?traffic_source=rss"
+  },
+  {
+   "id": "economy:trade:UA-Kyiv",
+   "layer": "economy",
+   "ko": "키이우 제재·관세·무역 갈등",
+   "en": "Kyiv: sanctions / tariffs",
+   "coords": [
+    30.52,
+    50.45
+   ],
+   "radius": 40,
+   "date": "2026-11-13",
+   "ongoing": true,
+   "expires": "2026-12-25",
+   "reasonKo": "미국 의회는 러시아 제재를 강화하고 키예프에 대한 군사 지원을 가속화할 것을 촉구했습니다 외 관련 보도 10건. (뉴스 자동 수집 · 2026-12-25까지 표시)",
+   "reasonEn": "U.S. Congress urged to tighten Russia sanctions, speed military aid to Kyiv (+10 related reports). (Auto-collected from news · shown until 2026-12-25)",
+   "link": "https://news.google.com/rss/articles/CBMirgFBVV95cUxNb21UYkxrWHVzRER2ZHdZNmxIeW1hcUlIQnoxVC1QYl9SMFRkSVA1dDA1bVlveFBrRkt3cnVKWm1FYUFBUU5fZkxhZTMwZHh2Q3gxdTR5Ymo5Q2NkX3F3Q2YwTmRuelpqbmJMZDlyVTg3UE5Cc05EQ2hPc2RoTDd0RWFtY3RtcThyUUlZdERrdm1Dcl9pQ09RU2tfVjBuZUlGR1R1WTY1OFZnWEZUT2c?oc=5"
+  },
+  {
+   "id": "economy:trade:YE",
+   "layer": "economy",
+   "ko": "예멘 제재·관세·무역 갈등",
+   "en": "Yemen: sanctions / tariffs",
+   "coords": [
+    48.5,
+    15.6
+   ],
+   "radius": 150,
+   "date": "2026-11-12",
+   "ongoing": true,
+   "expires": "2026-12-09",
+   "reasonKo": "유엔, 후티 파업 주장 속 예멘 제재 2027년까지 연장 외 관련 보도 1건. (뉴스 자동 수집 · 2026-12-09까지 표시)",
+   "reasonEn": "UN Extends Yemen Sanctions to 2027 Amid Houthi Strike Claims (+1 related report). (Auto-collected from news · shown until 2026-12-09)",
+   "link": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE01YlVxb0pqN3lYWHlhTXd3TjR4YVAxazVjRUE0X000VlBoU1N4THE4Q2RYZHR2NzVlcVFhTVF1R0tjbkJOTUE3cnJodkxzZENVZnp2UUFvckoxMjBQTVl4RTNTclJkZw?oc=5"
+  },
+  {
+   "id": "economy:trade:GB",
+   "layer": "economy",
+   "ko": "영국 제재·관세·무역 갈등",
+   "en": "United Kingdom: sanctions / tariffs",
+   "coords": [
+    -2,
+    54
+   ],
+   "radius": 150,
+   "date": "2026-10-14",
+   "ongoing": true,
+   "expires": "2026-12-24",
+   "reasonKo": "새로운 영국 제재, 러시아 주요 석유 생산업체 겨냥 외 관련 보도 6건. (뉴스 자동 수집 · 2026-12-24까지 표시)",
+   "reasonEn": "New UK Sanctions Target Major Russian Oil Producers (+6 related reports). (Auto-collected from news · shown until 2026-12-24)",
+   "link": "https://news.google.com/rss/articles/CBMilgFBVV95cUxPbksyY3NERVlFbkVPSTljR3RReE1keWNNbTEwbWhhMEQ2VW9TV0Vzc21KbEtuUjB5MjJWVlZnU3o0MzZmWm5qU2Z6YXR3M2RZNUtZNF9sb1duSjNQQ1JBcU02MHNnbmVhQWs4Yk90ZFBOaGpTbkJCazZWVmhIQW9MSlVWWDZXQXluSUtFQ3NvZE51TXlJaEHSAVZBVV95cUxPd2U5U0V5Z0htSVJIUnN0STB3S0trU1I3eVhTTjhDUnZ5NGVydllBWXpwRDlHZnB4aWlkd2pPSFpXTWdUQjVWbjhpNUlCZ2pIbFh0NXpzQQ?oc=5"
+  },
+  {
+   "id": "economy:trade:LA",
+   "layer": "economy",
+   "ko": "라오스 제재·관세·무역 갈등",
+   "en": "Laos: sanctions / tariffs",
+   "coords": [
+    102.5,
+    19.9
+   ],
+   "radius": 150,
+   "date": "2026-11-12",
+   "ongoing": true,
+   "expires": "2026-12-08",
+   "reasonKo": "CITES, 라오스에 대한 무역 제재 해제 외 관련 보도 1건. (뉴스 자동 수집 · 2026-12-08까지 표시)",
+   "reasonEn": "CITES lifts trade sanctions against Laos (+1 related report). (Auto-collected from news · shown until 2026-12-08)",
+   "link": "https://news.google.com/rss/articles/CBMikAFBVV95cUxQdWZZZlRwQ3g4YkZXU3J6NmdoSFE3VGRSVURqVFVFREtVLWdiX2JjbWhHTzEyOXZiZmxicldGUU5aT19YeXBPT3lJSzNHMVVmYWlnQXNSNVNtd2x2OTlkMjMtdEJ2Nk91NVZXSHpLeDFTazYzN21SWWhkTnFjcnV4SVh0aHJhWFJmdUdfTmlsaHI?oc=5"
+  },
+  {
+   "id": "economy:trade:IR",
+   "layer": "economy",
+   "ko": "이란 제재·관세·무역 갈등",
+   "en": "Iran: sanctions / tariffs",
+   "coords": [
+    53.7,
+    32.4
+   ],
+   "radius": 150,
+   "date": "2026-10-16",
+   "ongoing": true,
+   "expires": "2026-12-23",
+   "reasonKo": "캐나다, 이란 국영 유조선 회사에 10년 만에 제재 재개 외 관련 보도 19건. (뉴스 자동 수집 · 2026-12-23까지 표시)",
+   "reasonEn": "Canada reimposes sanctions on Iranian state tanker company after 10 years (+19 related reports). (Auto-collected from news · shown until 2026-12-23)",
+   "link": "https://news.google.com/rss/articles/CBMingFBVV95cUxOV0t4REdIbTRGX1ctZXVzOHF1YlN6ZHJYY2pqeFo1OUVFV1BuZDNkTXhMUFNWUy1mRHc3Q21XdEZyQzJBY18wT2gzQTJZOTFRQkF5dVVrbnhoWVZ0RFFKM0xza2JIVmpqYWtGbUR1VEJxZzh4YWJFRXluZXhVRzk0TlJ0N25PMmd6U3h5czBzejQ1ODUxYlBYeXl3dG01Zw?oc=5"
+  },
+  {
+   "id": "economy:banking:CL-Santiago",
+   "layer": "economy",
+   "ko": "산티아고 금융 불안",
+   "en": "Santiago: financial stress",
+   "coords": [
+    -70.67,
+    -33.45
+   ],
+   "radius": 40,
+   "date": "2026-11-05",
+   "ongoing": true,
+   "expires": "2026-12-02",
+   "reasonKo": "파라과이 은행 위기로 산티아고 페냐가 무너지고 파라과이의 정치적 혼란이 촉발되었습니다 외 관련 보도 2건. (뉴스 자동 수집 · 2026-12-02까지 표시)",
+   "reasonEn": "Paraguay Banking Crisis Topples Santiago Peña, Sparks Political Turmoil in Paraguay (+2 related reports). (Auto-collected from news · shown until 2026-12-02)",
+   "link": "https://news.google.com/rss/articles/CBMirgFBVV95cUxNYzMzV1dGUG1uSkdqTzJBQ3NNdnlncVAtamgybDViSk5QUEIxV3E2QTZpb2R2eFVRSXQ5Q1N2TWgwSlU4czhvQ0ZWenR4bjl5MjVfTmxPQzR3VDZjNDBiUXM2VHdGUWctdkZFNjdrMURLajJjdnoxU3k2RkNoRXVTTWNISTZfU0taM3ZQejFzTjFQRUlNQ3lmNmxSZ3ZMVUN1dUJ3dTM1V3NWNnFHMFE?oc=5"
+  },
+  {
+   "id": "economy:trade:TW",
+   "layer": "economy",
+   "ko": "대만 제재·관세·무역 갈등",
+   "en": "Taiwan: sanctions / tariffs",
+   "coords": [
+    121,
+    23.7
+   ],
+   "radius": 150,
+   "date": "2026-10-12",
+   "ongoing": true,
+   "expires": "2026-12-22",
+   "reasonKo": "미국의 수출 통제가 칩에서 광학 및 기판으로 확산되어 대만이 십자선에 놓이게 되었습니다 외 관련 보도 7건. (뉴스 자동 수집 · 2026-12-22까지 표시)",
+   "reasonEn": "US Export Controls Spread From Chips to Optics and Substrates, Putting Taiwan in the Crosshairs (+7 related reports). (Auto-collected from news · shown until 2026-12-22)",
+   "link": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE5uY1cyWjF3Y0w2TUptckJGRmpoN1BkeGJqMjBfcmlmVVYyMmY2UjVaZ3JiZ0FteUFJQTNkYnlRY0FVNE5XVDVhSkF5SHZYRDBVTTJzb0lRXzlRdEJJckJ5MlExR25laEk?oc=5"
+  },
+  {
+   "id": "economy:supply:KE",
+   "layer": "economy",
+   "ko": "케냐 공급 차질",
+   "en": "Kenya: supply disruption",
+   "coords": [
+    37.9,
+    -0.02
+   ],
+   "radius": 150,
+   "date": "2026-11-10",
+   "ongoing": true,
+   "expires": "2026-11-20",
+   "reasonKo": "#Video_News:- 케냐 모얄레 시계로 이주한 에티오피아 가족의 71%가 식량 부족에 시달렸습니다. (뉴스 자동 수집 · 2026-11-20까지 표시)",
+   "reasonEn": "#Video_News:- Food shortages hit 71% of Ethiopian families displaced into Kenya’s Moyale watch. (Auto-collected from news · shown until 2026-11-20)",
+   "link": "https://news.google.com/rss/articles/CBMi3wFBVV95cUxNYXNFdUlNa1N6N3RjZ2RqVkRNNVY1ZUJKR2NaZXJLVlpnTXN3dEtSNjgwSE05Qk9CVDBpbjU3Q1Y3aGFsaF8wd01VS2h4WkdySjhfSGtYUS1IUTFiMVJVZ3daSXVtc0g4UkJ2MHVyMWJEMEZrLXoxRzl6VEZXNHVuMzMwZ0JsX3gtWEIyYWU1ODhkY2VYZW55SWt6R19iNWlYODVyOE1EN0pHSUxVTk1WMjBnYVN0U1VvV2NhWnNGNmpic3YzTVZCNEV0UnVIZDIxX1ZwRklrVHZLS0JoTlM0?oc=5"
+  },
+  {
+   "id": "economy:supply:GB",
+   "layer": "economy",
+   "ko": "영국 공급 차질",
+   "en": "United Kingdom: supply disruption",
+   "coords": [
+    -2,
+    54
+   ],
+   "radius": 150,
+   "date": "2026-11-10",
+   "ongoing": true,
+   "expires": "2026-11-20",
+   "reasonKo": "영국에서 국가 정전이 발생한 적이 있습니까? 아니요, 하지만 2019년 정전으로 인해 백만 명이 넘는 고객이 피해를 입었습니다. (뉴스 자동 수집 · 2026-11-20까지 표시)",
+   "reasonEn": "Has the UK ever had a national blackout? No, but the 2019 power cut hit more than a million customers. (Auto-collected from news · shown until 2026-11-20)",
+   "link": "https://news.google.com/rss/articles/CBMiswFBVV95cUxPUjl3V3pCOUhIZndSd1BxLU41NVF1T0RYRVZGSlFqeDB6TVZVYTF0S3Mwb0d2dVk2aHRVWEFPQ2VvRWhEcXJBNHFtRjdmWTlacnRjVllHUW1fUGFOZEt3T3NpblBvRE1nbnFkUExhT2FPY3pRUm1XbjN3MkdydktvRVJtcl9XNFdrZlc0VnZlQU45N1FfSG9ZLUFhMl8wb013VFZGcXQ1X0lMUXU0N3NOQXVyaw?oc=5"
+  },
+  {
+   "id": "economy:supply:ET",
+   "layer": "economy",
+   "ko": "에티오피아 공급 차질",
+   "en": "Ethiopia: supply disruption",
+   "coords": [
+    40.5,
+    9.1
+   ],
+   "radius": 150,
+   "date": "2026-11-09",
+   "ongoing": true,
+   "expires": "2026-11-19",
+   "reasonKo": "에티오피아는 연료 위기를 완화하기 위해 세계은행 자금에서 최대 5억 4300만 달러를 전용할 예정입니다. (뉴스 자동 수집 · 2026-11-19까지 표시)",
+   "reasonEn": "Ethiopia to redirect up to $543mn in World Bank funding to cushion fuel crisis. (Auto-collected from news · shown until 2026-11-19)",
+   "link": "https://news.google.com/rss/articles/CBMiswFBVV95cUxQc0pIZ21jRjhOVzRRd2lidDNsYmdCbDhEZjF3bjdrS09UbjVzZi1qZVNuaHBHeU5halBGRHBreC1tX3JVeFdqcE9hVU5JQlpQQ3VSZ0FEVzBlSlFWUUNRMksyYzZUWFc2a2JSNXJueXZyN0ZxYi1WRHVmNjVxOVJQNnhBT256ZjlWUm5hU1c5a3NpbGRGdWM1X2dWZ2VocnViUFV3bmN2Rlp2WnJ3VzRaNGMyWQ?oc=5"
+  },
+  {
+   "id": "economy:banking:TW",
+   "layer": "economy",
+   "ko": "대만 금융 불안",
+   "en": "Taiwan: financial stress",
+   "coords": [
+    121,
+    23.7
+   ],
+   "radius": 150,
+   "date": "2026-11-03",
+   "ongoing": true,
+   "expires": "2026-11-26",
+   "reasonKo": "당국이 시장 패배를 막기 위해 움직이면서 대만 주식은 급등했습니다 외 관련 보도 1건. (뉴스 자동 수집 · 2026-11-26까지 표시)",
+   "reasonEn": "Taiwan Stocks Jump as Authorities Move to Stem Market Rout (+1 related report). (Auto-collected from news · shown until 2026-11-26)",
+   "link": "https://news.google.com/rss/articles/CBMirgFBVV95cUxQSVpxMUpXWUxmQ0NHb0xYc2tyS014ZnE4Q21KUm5ia210dVhRSTJoQXpoTG9qLXBReU9xUHhGSlFudzJIYlpra1VuLTE4VHl1SVM0YVFla2NqYkpiVnhiQWZGWnJGdzJsR3EyN1Q5UXdJM3J6SUppNFMtaEhnS29zVEJ1eWJWejVJNVZvUjJ5dUFvd1dFNmJzVTV6SWhTeG1OeC1WQ0pxaTBLekZ4SUE?oc=5"
+  },
+  {
+   "id": "economy:trade:US-California",
+   "layer": "economy",
+   "ko": "캘리포니아 제재·관세·무역 갈등",
+   "en": "California: sanctions / tariffs",
+   "coords": [
+    -119.4,
+    36.8
+   ],
+   "radius": 40,
+   "date": "2026-11-09",
+   "ongoing": true,
+   "expires": "2026-12-21",
+   "reasonKo": "캘리포니아주, 코인플립에 비트코인 ​​ATM 사기 피해자들에게 480만 달러를 상환하라고 명령하고 제재 부과 외 관련 보도 21건. (뉴스 자동 수집 · 2026-12-21까지 표시)",
+   "reasonEn": "California Orders CoinFlip to Repay $4.8 Million to Bitcoin ATM Scam Victims, Imposes Sanctions (+21 related reports). (Auto-collected from news · shown until 2026-12-21)",
+   "link": "https://news.google.com/rss/articles/CBMiVEFVX3lxTE1maDBaS0pFSWowNERvWGJieC02QmpDT1ZDdEhWY2NsRmlpT3d2clBUYzdhS2lJTFFsNjRlS3lpRnFKX2pVUEZSYzVzdXhFM1JWd3dPTg?oc=5"
+  },
+  {
+   "id": "economy:supply:PE",
+   "layer": "economy",
+   "ko": "페루 공급 차질",
+   "en": "Peru: supply disruption",
+   "coords": [
+    -75,
+    -9.2
+   ],
+   "radius": 150,
+   "date": "2026-11-08",
+   "ongoing": true,
+   "expires": "2026-11-18",
+   "reasonKo": "페루 교통장관은 우카얄리의 연료 부족을 부인했다. (뉴스 자동 수집 · 2026-11-18까지 표시)",
+   "reasonEn": "Peru’s transport minister denies fuel shortage in Ucayali. (Auto-collected from news · shown until 2026-11-18)",
+   "link": "https://news.google.com/rss/articles/CBMirAFBVV95cUxNMzhpWnY2Z2ZaLXJLbzAteEhkNDFNM1ZOQzlqNWJmcWh1NGFGZjlPUXlKbnozY2NSWmd4Mk82c3dSdXEtVnJPcERQQ0U0REZOWklfeHRkMmJtYXRDQUpGdHdrRUxpczZyNlhxVmJ6UHdUS2dQU0g5R2pZNzJ0S0l4N3p2SWliTDVUdFJaU0k3ZWltd1NxRnUtc2N5UEhvMEFoZW5LX2FrMm4zdkti?oc=5"
+  },
+  {
+   "id": "economy:trade:CU",
+   "layer": "economy",
+   "ko": "쿠바 제재·관세·무역 갈등",
+   "en": "Cuba: sanctions / tariffs",
+   "coords": [
+    -77.8,
+    21.5
+   ],
+   "radius": 150,
+   "date": "2026-10-15",
+   "ongoing": true,
+   "expires": "2026-12-20",
+   "reasonKo": "국무장관, 불법 쿠바 수익 네트워크에 대한 추가 제재 발표 외 관련 보도 16건. (뉴스 자동 수집 · 2026-12-20까지 표시)",
+   "reasonEn": "Secretary of State Announces Further Sanctions on Illicit Cuban Revenue Networks (+16 related reports). (Auto-collected from news · shown until 2026-12-20)",
+   "link": "https://news.google.com/rss/articles/CBMiywFBVV95cUxPSDFmY0F0VGxQVjNHNGVFMU0zZ2hvNmlicFFJZUxJNm90WnpLczFtYVQ1WTBVR2x2WlEwUXhPNFpMRXNkNEdObUtQajdrWkFoRzJaYm02NWh2MEZubER0X3Z1RF9zbmZWc243VHlqbzFIZUFjTF9SZFdRVWduN3ZsVHY3UjljVENXZnQxZ2hRSmllTGxLbG9fVUpENFlhdHNnSFE5ekppS1JKU3pBbEVjUWhCeDlEODczTVg3bzlNSUpWLUx6cl9QSk5RTQ?oc=5"
+  },
+  {
+   "id": "economy:supply:UA-Kyiv",
+   "layer": "economy",
+   "ko": "키이우 공급 차질",
+   "en": "Kyiv: supply disruption",
+   "coords": [
+    30.52,
+    50.45
+   ],
+   "radius": 40,
+   "date": "2026-10-30",
+   "ongoing": true,
+   "expires": "2026-11-20",
+   "reasonKo": "러시아가 우크라이나의 에너지 그리드를 공격한 후 키예프에서 정전과 물 부족이 발생했습니다 외 관련 보도 1건. (뉴스 자동 수집 · 2026-11-20까지 표시)",
+   "reasonEn": "Blackouts and water shortages in Kyiv after Russia strikes Ukraine’s energy grid (+1 related report). (Auto-collected from news · shown until 2026-11-20)",
+   "link": "https://news.google.com/rss/articles/CBMirAFBVV95cUxQM0lpek9iZm84OUZ4RVJHWUVLWGFjdTByQnkycDB2dzB3cVFSczVDcjNXVmRTUmZabFZNTTFkUjRKbzROalFFbGpxUzd5SmdzeXdFMnB1WUx3UVQ3SEJtY0UzQnAtTEdwWWNXXzlLZm9vMDIyZS1iT3pia2VNelZJbTFzaXYyQkF1eUUyNkh4cklVZ0hSeWFoekVWUG9XWl8tdnE5ck5nRHA3Y3dD?oc=5"
+  },
+  {
+   "id": "economy:trade:KH",
+   "layer": "economy",
+   "ko": "캄보디아 제재·관세·무역 갈등",
+   "en": "Cambodia: sanctions / tariffs",
+   "coords": [
+    105,
+    12.6
+   ],
+   "radius": 150,
+   "date": "2026-11-06",
+   "ongoing": true,
+   "expires": "2026-12-03",
+   "reasonKo": "미국, 온라인 사기 혐의로 캄보디아 프린스그룹 제재 외 관련 보도 1건. (뉴스 자동 수집 · 2026-12-03까지 표시)",
+   "reasonEn": "US slaps sanctions on Cambodia's Prince Group over online scams (+1 related report). (Auto-collected from news · shown until 2026-12-03)",
+   "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxQdjgxejg4TXptODFqNzd1bjF6U1VsaHBnbENOaERHTVdkYTdVV0VaR3g2Vlpyd3J4bDZYT1k1enZtSmdoMzZ5NTNiTWRkZWVzakdzTlZHYUNHWlJkQnlFWFZjaVl1VE1HU0Ywc0c4czk0SHBZSmt2T3hWWUwzT0I5cTBmMm5adGFLdU51S3A5NmtqR3VvUTBXMm9WWDVUeVN1R1F4NFhoaDgwTjF1ckt2ag?oc=5"
+  },
+  {
+   "id": "economy:supply:SD",
+   "layer": "economy",
+   "ko": "수단 공급 차질",
+   "en": "Sudan: supply disruption",
+   "coords": [
+    30.2,
+    12.9
+   ],
+   "radius": 150,
+   "date": "2026-10-10",
+   "ongoing": true,
+   "expires": "2026-11-25",
+   "reasonKo": "심각한 연료 위기로 수단이 질식하고 기근과 경제 붕괴 위협 외 관련 보도 5건. (뉴스 자동 수집 · 2026-11-25까지 표시)",
+   "reasonEn": "Severe fuel crisis suffocates Sudan, threatens famine and economic collapse (+5 related reports). (Auto-collected from news · shown until 2026-11-25)",
+   "link": "https://news.google.com/rss/articles/CBMiUEFVX3lxTE1FY2VtTjl6dHRxOTBlRXZheVpYa1N4Zlp3OF9RZDFfc2llMTR1U3BWUkdacUwtUTB3TXVyNlVnRVliMklFR2NzUVpDRDByNFNG?oc=5"
+  },
+  {
+   "id": "economy:currency:PK",
+   "layer": "economy",
+   "ko": "파키스탄 통화 불안",
+   "en": "Pakistan: currency turmoil",
+   "coords": [
+    69.3,
+    30.4
+   ],
+   "radius": 150,
+   "date": "2026-11-05",
+   "ongoing": true,
+   "expires": "2026-11-23",
+   "reasonKo": "파키스탄의 반복적인 평가절하로 경제적 성과를 달성하지 못함: 보고서 외 관련 보도 1건. (뉴스 자동 수집 · 2026-11-23까지 표시)",
+   "reasonEn": "Pakistan’s repeated devaluations fail to deliver economic performance: Report (+1 related report). (Auto-collected from news · shown until 2026-11-23)",
+   "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxNdkJ5U2FKU25uZGFRVjFZaGtsYUpDTjRGYkVHR21HcnEyOUx3V1dyc0NTelMwMGdybzVuNjFjZGxhVW13U3JwS0owb1hqb1ZSVjNNQV9FazQ3UW94dUt3eU9hYmRhZUVobDRGLUxBUUxrbVZWQy11b3dWNGkxQnYzZ2JkMTg3RzRYcEQ3U3JhdnA5RDJGR1V6X0tIRWRIM1hZWXFfOEpSR3ZibVNVeXJTeVhIOFrSAbQBQVVfeXFMTXZCeVNhSlNubmRhUVYxWWhrbGFKQ040RmJFR0dtR3JxMjlMd1dXcnNDU3pTMDBncm81bjYxY2RsYVVtd1NycEtKMG9Yam9WUlYzTUFfRWs0N1FveHVLd3lPYWJkYWVFaGw0Ri1MQVFMa21WVkMtdW93VjRpMUJ2M2diZDE4N0c0WHBEN1NyYXZwOUQyRkdVel9LSEVkSDNYWVlxXzhKUkd2Ym1TVXlyU3lYSDha?oc=5"
+  },
+  {
+   "id": "economy:supply:UA-Crimea",
+   "layer": "economy",
+   "ko": "크림반도 공급 차질",
+   "en": "Crimea: supply disruption",
+   "coords": [
+    34.1,
+    45
+   ],
+   "radius": 40,
+   "date": "2026-10-24",
+   "ongoing": true,
+   "expires": "2026-11-22",
+   "reasonKo": "영상: 광범위한 정전으로 인해 점령된 크림 반도에서 학교 방학이 연장되었습니다 외 관련 보도 3건. (뉴스 자동 수집 · 2026-11-22까지 표시)",
+   "reasonEn": "Video: School breaks have been extended in occupied Crimea due to a widespread blackout (+3 related reports). (Auto-collected from news · shown until 2026-11-22)",
+   "link": "https://news.google.com/rss/articles/CBMirwFBVV95cUxPaUw1dWREaU8tZ0NQaVpJb0pDVXVvQUpuUzNaOXpIdWtteWhsTExMY3hHT1U1Mm1GUGJDcjB2WTA4OUlSVnEzTnZIRU9EZ05wT2VEc3l5TWNhMnlqUVFKY3htbUlSaS1JQXhyUUdrTUVwRThPcGNOU2dKaXNWS25WS2o3T0dEYXR2MVY3elhPYnR3U0JES19nSzVzTXhKZWxvYUZpR2dzRzZ0c0JsLWJv?oc=5"
+  },
+  {
+   "id": "economy:trade:AE",
+   "layer": "economy",
+   "ko": "아랍에미리트 제재·관세·무역 갈등",
+   "en": "United Arab Emirates: sanctions / tariffs",
+   "coords": [
+    53.8,
+    23.4
+   ],
+   "radius": 150,
+   "date": "2026-11-03",
+   "ongoing": true,
+   "expires": "2026-12-16",
+   "reasonKo": "저스틴 선, 숨겨진 UAE 시민권 때문에 세계 자유에 대한 제재 요청 외 관련 보도 4건. (뉴스 자동 수집 · 2026-12-16까지 표시)",
+   "reasonEn": "Justin Sun seeks sanctions on World Liberty over hidden UAE citizenship (+4 related reports). (Auto-collected from news · shown until 2026-12-16)",
+   "link": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxQUVdELVVjMmdwbVNJWS15RTBQQW5RQzNiZ0d1MkNEcDlDdXd1MVNLWWlueGtSRTYtREJnNEZrVHY3ZzFQSjZ5VWtWWXh6VzF1TVlabjFka0VKZU55cDB5VllGNkQySXNPUjNxenZGWU1fYUdEV3lqSUNUSFFMUTNZNloxeE5HbWNa?oc=5"
+  },
+  {
+   "id": "economy:trade:ID",
+   "layer": "economy",
+   "ko": "인도네시아 제재·관세·무역 갈등",
+   "en": "Indonesia: sanctions / tariffs",
+   "coords": [
+    106.8,
+    -6.2
+   ],
+   "radius": 150,
+   "date": "2026-11-04",
+   "ongoing": true,
+   "expires": "2026-11-30",
+   "reasonKo": "인도네시아 규제당국, 주식시장 위반 혐의에 대한 제재 발표 외 관련 보도 1건. (뉴스 자동 수집 · 2026-11-30까지 표시)",
+   "reasonEn": "Indonesia regulator announces sanctions for alleged stock market violations (+1 related report). (Auto-collected from news · shown until 2026-11-30)",
+   "link": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxQYXhKbkRuX3FiNzNWT2lrTmEzYm1KaGxTSERPWW53T0xWQnd6M0g3QlZoYlZaRWs5Zm5uVWdmV0VnWm1pQXFPU2pkS3lJZHQ3LXFsUl9HTkZJaUVKUXVMYVdMM09tcXMwdWJJTE5kNUE4Z2VBb1N0OHlGNERLNHptTFJCaFF5aS1oX2hYNTFvNm9iS2RITFR1MXJfNGFMZ2JsNjlOLTgxX3hIbE5XTEVsNG41SmpIQWpObWxiLUJ2OTVZTmVTbkZfaUhqOHk4MV9OcmpZeGZubjlpdW9NY0E?oc=5"
+  },
+  {
+   "id": "economy:trade:VN",
+   "layer": "economy",
+   "ko": "베트남 제재·관세·무역 갈등",
+   "en": "Vietnam: sanctions / tariffs",
+   "coords": [
+    108.3,
+    14.1
+   ],
+   "radius": 150,
+   "date": "2026-11-01",
+   "ongoing": true,
+   "expires": "2026-12-15",
+   "reasonKo": "테슬라, 삼성, 조사 마감일이 다가옴에 따라 베트남에 대한 미국의 새로운 관세에 반대 외 관련 보도 10건. (뉴스 자동 수집 · 2026-12-15까지 표시)",
+   "reasonEn": "Tesla, Samsung oppose new US tariffs on Vietnam as probe deadline nears (+10 related reports). (Auto-collected from news · shown until 2026-12-15)",
+   "link": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxOTUJxSGZ6aEZSWjV4VHFHeVBzTXMxVDFKcEg5OG1sbEdjTkliSDZSS2NvYmlRbUxfQks0eUVUbjJRSktzZVFqWnZTWlplTHM5YjVnUkNESHd4ZmgyRk5ib2lHdlNKYlZlQ3VqUHdvcHZvMjAzYXE2NDZLbnFnel9CZ1FoSHI5Nk1zY3NiTy1tSjhrZ1hZdVRnNVB3eHBfVUticXc1ejZ2cWlhUjR6ajRhTGRsVWVDVV9I?oc=5"
+  },
+  {
+   "id": "economy:trade:RW",
+   "layer": "economy",
+   "ko": "르완다 제재·관세·무역 갈등",
+   "en": "Rwanda: sanctions / tariffs",
+   "coords": [
+    29.9,
+    -1.9
+   ],
+   "radius": 150,
+   "date": "2026-10-28",
+   "ongoing": true,
+   "expires": "2026-12-14",
+   "reasonKo": "미국, 동부 콩고 분쟁으로 르완다에 제재 부과 외 관련 보도 9건. (뉴스 자동 수집 · 2026-12-14까지 표시)",
+   "reasonEn": "US Imposes Sanctions On Rwanda Over Eastern Congo Conflict (+9 related reports). (Auto-collected from news · shown until 2026-12-14)",
+   "link": "https://news.google.com/rss/articles/CBMiowFBVV95cUxQdHpSLTAyWEtSRnNQOF85SExVTXNEaFJNVk1yMWNaZmZDNFQ1N2QwMFgtdTJJc0lPUTZmUUtvRWQyVERzMVNLdnBRWFNuZGRMa3dWQVhzQ2JWeW1Zc0ZJclZFdnBpZW82ZjNVaDVFWkxFOTV5Q0Jocm5QdGd5aU9FbC1ZTFNCNlY0R3RFZkg2czBnY2k3WnNHSTRsTWdYa296ZTVV?oc=5"
+  },
+  {
+   "id": "economy:trade:RS",
+   "layer": "economy",
+   "ko": "세르비아 제재·관세·무역 갈등",
+   "en": "Serbia: sanctions / tariffs",
+   "coords": [
+    21,
+    44
+   ],
+   "radius": 150,
+   "date": "2026-10-30",
+   "ongoing": true,
+   "expires": "2026-11-26",
+   "reasonKo": "미국, 정권교체로 세르비아 러시아 소유 석유회사에 대한 제재 면제 연장 외 관련 보도 1건. (뉴스 자동 수집 · 2026-11-26까지 표시)",
+   "reasonEn": "US extends sanctions waiver for Serbia's Russian-owned oil firm amid power shift (+1 related report). (Auto-collected from news · shown until 2026-11-26)",
+   "link": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxOZ3dxdXFkRHNZVUhlOHdPbUFZX0NmeXp0WlV4REtWRHVTWEZRcTNCaE5HLUt1TDY4cTVBVHU2dDdVV0VmRU5NV1h3QzF6SEpEVU1BcURmS1VxMFpqLXlXaHlONGQ4YXlOZnNseUtoUk5lWkZIbzZXTU0xbUFTcU51ZHowdmtJRkdaWWZhLUJMNTJDaU1fRzRiSTdBSDJxTm8zakdrbHdIelFOSzFWeHRhWmI1VHJUMHhfLVMySnJiS0o?oc=5"
+  },
+  {
+   "id": "economy:trade:MY",
+   "layer": "economy",
+   "ko": "말레이시아 제재·관세·무역 갈등",
+   "en": "Malaysia: sanctions / tariffs",
+   "coords": [
+    102,
+    4.2
+   ],
+   "radius": 150,
+   "date": "2026-10-30",
+   "ongoing": true,
+   "expires": "2026-11-25",
+   "reasonKo": "말레이시아, 희토류 수출 금지가 트럼프 무역 협정에도 존속함을 확인 외 관련 보도 1건. (뉴스 자동 수집 · 2026-11-25까지 표시)",
+   "reasonEn": "Malaysia confirms its raw rare earth export ban survives the Trump trade deal (+1 related report). (Auto-collected from news · shown until 2026-11-25)",
+   "link": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxOd1VGRWlVaGh4STJUMTFpQ1FZUm40clhlWG9iM2xGakhQMzdsejhjdk9PTHdmQnl2bGRrY29pM0F0eklDcF92MWotZFZkQVg1UHZrT1Z0UkFob0hDb2lxTmJ4NmpUOWQ0Y3N0UE1fdERWYmplU2RmWXRjaXZNRzBjN21fRnVTbTZmTXo4WF9VMGZ2VmJtZW9uSkVYRGZrbFdrQnlqNWJJaDI?oc=5"
+  },
+  {
+   "id": "economy:currency:UG",
+   "layer": "economy",
+   "ko": "우간다 통화 불안",
+   "en": "Uganda: currency turmoil",
+   "coords": [
+    32.3,
+    1.4
+   ],
+   "radius": 150,
+   "date": "2026-10-22",
+   "ongoing": true,
+   "expires": "2026-11-17",
+   "reasonKo": "우간다 인플레이션, 통화 폭락 이후 3년래 최고치로 상승 외 관련 보도 1건. (뉴스 자동 수집 · 2026-11-17까지 표시)",
+   "reasonEn": "Uganda's inflation rises to 3-year high after currency slump (+1 related report). (Auto-collected from news · shown until 2026-11-17)",
+   "link": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxOWW5EWF9SS2oyYnhSVzl3VTN1OGRSbDZ0ZWFZQ3JSbHNkYmlsZExxdllwT3JYcG5sTGVjUUczaUZyZF9yN1BWdktUZDA3WTZOVUp4eGVrRDdINDViSWl2Z0k5c2ZQZ0ZxWnRqcGw0eGRINTJWMUU0ejZObnFJZmY5MEtHNEJZWlZZODZUZ2haVDltQUIyUFdCbjZVZWVmR2lrRmtLSVIwaVc?oc=5"
+  },
+  {
+   "id": "economy:supply:CH",
+   "layer": "economy",
+   "ko": "스위스 공급 차질",
+   "en": "Switzerland: supply disruption",
+   "coords": [
+    8.2,
+    46.8
+   ],
+   "radius": 150,
+   "date": "2026-10-15",
+   "ongoing": true,
+   "expires": "2026-11-17",
+   "reasonKo": "스위스, 연료 부족으로 고속도로 속도 제한 80km/h 고려 외 관련 보도 3건. (뉴스 자동 수집 · 2026-11-17까지 표시)",
+   "reasonEn": "Switzerland considers 80km/h motorway speed limit amid fuel shortage (+3 related reports). (Auto-collected from news · shown until 2026-11-17)",
+   "link": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQZEVKSU5STDNxYXFMVzN6aVNkTTNtVXYtWGs1LXlUQUJRQUpzYmhRc1FIX1E5YXduZnpLTGRDNzlvU0VIVUp5UXk3ZnJsX253QWtqZ2JRak5WTFlRZ1VvNWs5MUY0dmRaZi0tWmNzbEtCUHlIaTM3Uzl1d0hUaHJjc2xKMFR5MHJDQUtOWk1FOVBHWGQyQ1dJcW5pclZqdUk?oc=5"
+  },
+  {
+   "id": "economy:trade:KP",
+   "layer": "economy",
+   "ko": "북한 제재·관세·무역 갈등",
+   "en": "North Korea: sanctions / tariffs",
+   "coords": [
+    127.5,
+    40.3
+   ],
+   "radius": 150,
+   "date": "2026-10-12",
+   "ongoing": true,
+   "expires": "2026-11-23",
+   "reasonKo": "미국, 외교 회담 중단에 새로운 대북 제재 부과 외 관련 보도 1건. (뉴스 자동 수집 · 2026-11-23까지 표시)",
+   "reasonEn": "U.S. imposes new North Korea sanctions amid stalled diplomatic talks (+1 related report). (Auto-collected from news · shown until 2026-11-23)",
+   "link": "https://news.google.com/rss/articles/CBMiugFBVV95cUxOVUp3MTYtWkhjR0NvVndNRlFvQmNMdG9Sczc0TF9uUnh1NEJ4aWRiaHBLUDZ3SkNWbDAtR1pGSVprN0hsbUFCdXJyQ0g1WWlmNVI0QnZVMlBmZWNkVnpwbG52UWJBQkZBX0p2MXBoNWpQTG80bWRzYklCcWhGWFdPdHdMSXFnMElOY21CSnUxRjRMTUpRQzYzaHRzdEFhVTZ0YlQ0U3JDZTdnT09rQnlzSG9QbFE4MmFvRUE?oc=5"
+  },
+  {
+   "id": "economy:trade:US-Florida",
+   "layer": "economy",
+   "ko": "플로리다 제재·관세·무역 갈등",
+   "en": "Florida: sanctions / tariffs",
+   "coords": [
+    -81.7,
+    27.8
+   ],
+   "radius": 40,
+   "date": "2026-10-19",
+   "ongoing": true,
+   "expires": "2026-11-28",
+   "reasonKo": "플로리다주, 파인뷰 교사에 대한 제재 요청 외 관련 보도 2건. (뉴스 자동 수집 · 2026-11-28까지 표시)",
+   "reasonEn": "Florida Seeks Sanctions Against Pine View Teacher (+2 related reports). (Auto-collected from news · shown until 2026-11-28)",
+   "link": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxPc01ULUdGeTNBR2N1ejhjU2NQQjNmRVR0SDZtWmhOMnRpQ2pNZG80QTV6TnBpNzY3UDVTTVEwVzl3dDJpM1pvLVRrb0pPZXFhSGRSWi1ES2pPZnZhRjVhNHhqMG5UUlc5UDA4dXBsYWhJcF8zREJXV2dHV1AyVHNJMGJFWnVveDVhdGJ6V3N1MWpxb3cwNFM3b3Bjd2RrX3Q3SG1tM01KMmpYVUdLcmhJUDNJaU83UGlndUVzdkJtaHFBcmdMRXJkMng1TFdoMmhDUEE?oc=5"
+  },
+  {
+   "id": "economy:trade:BY-Minsk",
+   "layer": "economy",
+   "ko": "민스크 제재·관세·무역 갈등",
+   "en": "Minsk: sanctions / tariffs",
+   "coords": [
+    27.56,
+    53.9
+   ],
+   "radius": 40,
+   "date": "2026-10-27",
+   "ongoing": true,
+   "expires": "2026-11-27",
+   "reasonKo": "민스크가 EU에 도움을 요청함에 따라 미국은 벨로루시 칼륨 수장에 대한 제재를 해제했습니다 외 관련 보도 2건. (뉴스 자동 수집 · 2026-11-27까지 표시)",
+   "reasonEn": "US lifts sanctions on Belarus potash chief as Minsk seeks help with EU (+2 related reports). (Auto-collected from news · shown until 2026-11-27)",
+   "link": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxPV0lqQ0xtZVZrNWpTUjhEaE11YWt5T1FMejlZWk1YMXVvRndLUlFQanZBN0wtM1hDcjJWbzRmcUdVRXpuOG9XSkhudWxLa3hpUUZGMlpSbGNqQnZtajFFYUlLZ2VDdjZ3VFh4SDlpUmdxc3dGbS02alZYMWd6RFpQdFp6akFBLXJxcnd6YTZ6UXhtb2RvVFkxNTRTNzh3SnJZM2Y0enhCR2V0dw?oc=5"
+  },
+  {
+   "id": "social:attack:US-Washington DC",
+   "layer": "social",
+   "ko": "워싱턴 D.C. 테러·총격",
+   "en": "Washington DC: attack",
+   "coords": [
+    -77.04,
+    38.9
+   ],
+   "radius": 40,
+   "date": "2026-11-12",
+   "ongoing": true,
+   "expires": "2026-11-24",
+   "reasonKo": "워싱턴 DC 총격 사건으로 용의자 사망 외 관련 보도 3건. (뉴스 자동 수집 · 2026-11-24까지 표시)",
+   "reasonEn": "Suspected gunman dead in Washington DC mass shooting (+3 related reports). (Auto-collected from news · shown until 2026-11-24)",
+   "link": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE50Vy1ERWo3QUZXS2VsNzVnX2RUNmlMZkpHbElCd0ZYTno0THo5OUtSYnAwMjRHc0wzdWF6cmhQUFN0UDlMeDlMNUJQa1Y0QmFXMC1KSzVpNXBUem5wWUxwSU01UVrSAWpBVV95cUxNc0dkd0JJQTg5QUdiejdlZEgzd2pHdGVVY1VUX2wxVzcxdDZaM3dFZW1lQU9qdWFIbmVQdkVrMFltSUtmRnhLVGpVYlBaN2hlSDZ6LWx4RkFrSXVZZFFfN1cyMlp6WG1GanpB?oc=5"
+  },
+  {
+   "id": "social:labor:ES-Barcelona",
+   "layer": "social",
+   "ko": "바르셀로나 파업",
+   "en": "Barcelona: strike action",
+   "coords": [
+    2.17,
+    41.39
+   ],
+   "radius": 40,
+   "date": "2026-11-11",
+   "ongoing": true,
+   "expires": "2026-11-20",
+   "reasonKo": "수천 명이 스페인 총파업에 합류한 후 바르셀로나에서 충돌이 발생했습니다 외 관련 보도 1건. (뉴스 자동 수집 · 2026-11-20까지 표시)",
+   "reasonEn": "Clashes erupt in Barcelona after thousands join Spain general strike (+1 related report). (Auto-collected from news · shown until 2026-11-20)",
+   "link": "https://www.bbc.co.uk/news/articles/cwvg25nypmrvo?at_medium=RSS&at_campaign=rss"
+  },
+  {
+   "id": "social:displacement:YE",
+   "layer": "social",
+   "ko": "예멘 난민·대규모 이주",
+   "en": "Yemen: displacement / migration",
+   "coords": [
+    48.5,
+    15.6
+   ],
+   "radius": 150,
+   "date": "2026-10-10",
+   "ongoing": true,
+   "expires": "2026-12-23",
+   "reasonKo": "KSrelief, 예멘 라지의 실향민과 취약계층에게 안전한 식수 제공 외 관련 보도 9건. (뉴스 자동 수집 · 2026-12-23까지 표시)",
+   "reasonEn": "KSrelief Provides Safe Drinking Water to Displaced People and Vulnerable Families in Yemen’s Lahj (+9 related reports). (Auto-collected from news · shown until 2026-12-23)",
+   "link": "https://news.google.com/rss/articles/CBMiSkFVX3lxTE56SzRNYkVFRHNxTk1fN3NxdFR6ekVfVkI4VXRDakRSOUF4S2o2UE1HakEwazFnZ2t0bVhpNVlJWkJoZGVSR2hFbmZn?oc=5"
+  },
+  {
+   "id": "social:displacement:PS-West Bank",
+   "layer": "social",
+   "ko": "요르단강 서안 난민·대규모 이주",
+   "en": "West Bank: displacement / migration",
+   "coords": [
+    35.25,
+    32
+   ],
+   "radius": 40,
+   "date": "2026-10-24",
+   "ongoing": true,
+   "expires": "2026-12-23",
+   "reasonKo": "이스라엘 군사 작전으로 난민이 된 헤브론 가족들은 언제 돌아올지 모른다 외 관련 보도 16건. (뉴스 자동 수집 · 2026-12-23까지 표시)",
+   "reasonEn": "Hebron families displaced by Israel’s military operation don’t know when they’ll return (+16 related reports). (Auto-collected from news · shown until 2026-12-23)",
+   "link": "https://news.google.com/rss/articles/CBMi1AFBVV95cUxQTE9ma0lmdV9SUVFQVWNxM3REcUxhS3FrSGJoTXdDcXo4Z1ZhbjF2emtqMDlIRU0zUUd1S3NlYTVlelphTDFOQmJxZXAycTROUEk4SmhKaVNjb2ZEVl9BemRUbHNuLUNVVXBVSzltWDBHeUlyUXN3OHEwdWRmdDR0aUxVTi13WXp6ZnBROHlqclJXUDJsQXAycWlXaWh0VTFRdlJCQXRlSVpBemZKWF9xU0t2WTAxYTFfZVBoNG1qM3VQSEZWblRpY0NPUVpWMlQwT1ljVQ?oc=5"
+  },
+  {
+   "id": "social:protest:CL-Santiago",
+   "layer": "social",
+   "ko": "산티아고 시위·소요",
+   "en": "Santiago: protests / unrest",
+   "coords": [
+    -70.67,
+    -33.45
+   ],
+   "radius": 40,
+   "date": "2026-11-08",
+   "ongoing": true,
+   "expires": "2026-11-18",
+   "reasonKo": "Kast는 연료 위기를 해결하기 위해 고군분투하고 있습니다: 산티아고에서 계속되는 트럭 운전자의 파업과 시위 폭발 외 관련 보도 2건. (뉴스 자동 수집 · 2026-11-18까지 표시)",
+   "reasonEn": "Kast Struggles to Address Fuel Crisis: Ongoing Truckers' Strike and Protests Erupt in Santiago (+2 related reports). (Auto-collected from news · shown until 2026-11-18)",
+   "link": "https://news.google.com/rss/articles/CBMiygFBVV95cUxNOE9wb1pLRUlyMEwwV1lMNHAySFdsR1lkZDY1cEpmSzh0c2xqdUhWeUkzSG1tQkw1Z3lva2YyWVRlTW1zenVuSHZUNVBQYmdKbUcxd21veHVOUlNhTFNaTjhLV1duWk9VRFpiMWMwanBjM0RYbXVMdFJYQ0VYaUJKbjdzczFUZS1pTmZDX0djUjU4aUxFZ0tXZkY1RnpwZjk5OXVuZGpIaUR0QWpxcTBNTFozNE5ONTZnYktaRzMtYUlfOVNUTlRTb2RB?oc=5"
+  },
+  {
+   "id": "social:protest:US-Portland",
+   "layer": "social",
+   "ko": "포틀랜드 시위·소요",
+   "en": "Portland: protests / unrest",
+   "coords": [
+    -122.68,
+    45.52
+   ],
+   "radius": 40,
+   "date": "2026-11-10",
+   "ongoing": true,
+   "expires": "2026-11-21",
+   "reasonKo": "항소 법원 패널, 포틀랜드 ICE 건물 근처 최루탄 임시 금지 종료 외 관련 보도 9건. (뉴스 자동 수집 · 2026-11-21까지 표시)",
+   "reasonEn": "Appeals court panel ends temporary ban on tear gas near Portland ICE building (+9 related reports). (Auto-collected from news · shown until 2026-11-21)",
+   "link": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQN0JObGhoa1JrSDQxZFRER0E0eXJvZmczVVdLZ09NOUdaU1NySl9XR3FkSURRWnA4Q3BfQTNLYXJNTjZzTm9PZnYyb3kyTmdmQTRFaloySDBtbzlIdGVBMGtHS2FnVTItWTlFVWM5aFFoNmJhdTVkWFI0VDhwajllUmo4XzNaY29LQTA2UWJHOEZreUJMZVViOHBlRGRtTkU?oc=5"
+  },
+  {
+   "id": "social:protest:UA",
+   "layer": "social",
+   "ko": "우크라이나 시위·소요",
+   "en": "Ukraine: protests / unrest",
+   "coords": [
+    31.2,
+    48.4
+   ],
+   "radius": 150,
+   "date": "2026-11-03",
+   "ongoing": true,
+   "expires": "2026-11-18",
+   "reasonKo": "허위 정보와 불만: 우크라이나 징병 센터 폭동 외 관련 보도 2건. (뉴스 자동 수집 · 2026-11-18까지 표시)",
+   "reasonEn": "Disinformation and discontent: Ukraine’s draft centre riot (+2 related reports). (Auto-collected from news · shown until 2026-11-18)",
+   "link": "https://news.google.com/rss/articles/CBMijAFBVV95cUxPekY2VzE1aWpUajVndDYzbDZ1OXpaSjM2dGlzU0dZOGQyeThJRkl6SnpnTjFMOVJrakZFUHQ0ZlFyNS1lS29vZWFPNDA1eThWR3NEY1FvOE5yQmhYOUEtUHo1elhHNmdZTV83VGtzdVIzbmdxdDNjUVJKQ1kxb0NsVmJBSl9uY1RKdzlYSg?oc=5"
+  },
+  {
+   "id": "social:displacement:SN",
+   "layer": "social",
+   "ko": "세네갈 난민·대규모 이주",
+   "en": "Senegal: displacement / migration",
+   "coords": [
+    -14.5,
+    14.5
+   ],
+   "radius": 150,
+   "date": "2026-11-08",
+   "ongoing": true,
+   "expires": "2026-12-22",
+   "reasonKo": "동영상. 세네갈: 39명이 사망한 치명적인 이주 보트의 잔해가 담긴 영상 외 관련 보도 37건. (뉴스 자동 수집 · 2026-12-22까지 표시)",
+   "reasonEn": "Video. Senegal: Footage reveals wreckage of deadly migrant boat in which 39 people died (+37 related reports). (Auto-collected from news · shown until 2026-12-22)",
+   "link": "https://news.google.com/rss/articles/CBMivgFBVV95cUxQblk1XzFQdmg3cm9seHZyZ1dKR0MteFYyVGEzNXhWN2l4NXRmSi11Z0Fzbmw5cWJZOXRuNVRjclJuNHByTEVnSW5CMU5OWUI0bVlLU3lnS2F5YkVsblFyc2V5V0g5ckVZajZXZHZWZjlYZFVzMHRFQ1lueDdqY3dVbWZPWkRLUWVGcVlLdllJSVl2UUFnN2FNNTUtenlNb1psbXZTVU5pZ3ZELTNCOTlsU19CLXRJZlBycVBqd3R3?oc=5"
+  },
+  {
+   "id": "social:displacement:PS-Gaza",
+   "layer": "social",
+   "ko": "가자지구 난민·대규모 이주",
+   "en": "Gaza: displacement / migration",
+   "coords": [
+    34.36,
+    31.42
+   ],
+   "radius": 40,
+   "date": "2026-10-15",
+   "ongoing": true,
+   "expires": "2026-12-22",
+   "reasonKo": "홍수로 인해 수천 명의 가자 난민 상황이 악화됨: IOM 외 관련 보도 9건. (뉴스 자동 수집 · 2026-12-22까지 표시)",
+   "reasonEn": "Floods worsen conditions for thousands of displaced people in Gaza: IOM (+9 related reports). (Auto-collected from news · shown until 2026-12-22)",
+   "link": "https://news.google.com/rss/articles/CBMipAFBVV95cUxNZzVOQUFUVzNoNi05eUNrQjhZSGlIMDl6OE55RWRsdlB4WnNVUmVvX1ZjQXV1cnVfNkFrTTFMWDF2TWZtNG9nc3lNR1E3c1p5VExjdWJzUXlGZldCcHRMbDBnVlFvZzQyYnhmdU9ReXpKZDdCRWRFN3lIcU5GeHpRSTRHbW82XzNURG5ialE3SzdVQnpmZHVaUlVsQUV6UGdGMzJyRA?oc=5"
+  },
+  {
+   "id": "social:protest:CA-Toronto",
+   "layer": "social",
+   "ko": "토론토 시위·소요",
+   "en": "Toronto: protests / unrest",
+   "coords": [
+    -79.38,
+    43.65
+   ],
+   "radius": 40,
+   "date": "2026-11-08",
+   "ongoing": true,
+   "expires": "2026-11-18",
+   "reasonKo": "토론토 여성, 유대인 동네에서 열린 반이스라엘 시위에서 석방 조건 위반 혐의로 체포 외 관련 보도 3건. (뉴스 자동 수집 · 2026-11-18까지 표시)",
+   "reasonEn": "Toronto woman arrested for violating release conditions at anti-Israel protest in Jewish neighborhood (+3 related reports). (Auto-collected from news · shown until 2026-11-18)",
+   "link": "https://news.google.com/rss/articles/CBMizAFBVV95cUxQekNpRDJQckUzWkg5eFo0VDY1ZjFHQUJjcW9EQXRSQi1OVDhCTFZmdkp1RUVmb0kwbUY2RnNjZUdISE02Q1c4ZW9fQkZaalMwVXBoMzh0c0ZDdVVRVFZHemI0ZWNHejJVd3o5TUs1OWtVZEl3Y3puVnhhb2NoMjNvZG9venZkVHkyWjVzVlhEdVlWeXc4TnNpSmJSelFadE5UVE9pQ2FvMTA4Q24zSDhZRHcxWFE5UTNGd1Q5UW5QUmpiUWNkY2o5dTVoYW4?oc=5"
+  },
+  {
+   "id": "social:attack:US-New York",
+   "layer": "social",
+   "ko": "뉴욕 테러·총격",
+   "en": "New York: attack",
+   "coords": [
+    -74.01,
+    40.71
+   ],
+   "radius": 40,
+   "date": "2026-11-09",
+   "ongoing": true,
+   "expires": "2026-11-16",
+   "reasonKo": "뉴욕 타임즈. . 폴란드 주민과 관광객들은 크라쿠프에서 최소 9명이 숨진 총격 사건의 희생자들을 애도했습니다. 경찰은 총격범이 24세 폴란드 남성인 것으로 추정된다고 밝혔다. (뉴스 자동 수집 · 2026-11-16까지 표시)",
+   "reasonEn": "The New York Times. . Residents and tourists in Poland mourned the victims of a mass shooting that left at least nine people dead in Krakow. Officials said the gunman was believed to be a 24-year-old Polish man, who was shot by the police. (Auto-collected from news · shown until 2026-11-16)",
+   "link": "https://news.google.com/rss/articles/CBMi1AFBVV95cUxQMEZoMjBzOW13emVObDl2a0U4eHNXWjZMeUFvY2Y5NkxiN1ZoOTlZRFlGaFlJY2NkbDNhMW4xV3VuS25YdWd5enh2VXNNS1cwRHh3dDAxNHc3OG1oV1NpN0VodzNXalN6YXNKdUw1a09FR1NtaVdPdUtnN2ZoQTBHa2duZER4NG1sRW41U0U5RXdHWnlYdGh2V1I2TUV6dk1fYTVyMm5CcEp0N1Q1V0tRZXhoMkY4R2tpS1BXU3FXRFNFT3NHZ19peFhkbmxmLUtBQU5YWA?oc=5"
+  },
+  {
+   "id": "social:protest:IL",
+   "layer": "social",
+   "ko": "이스라엘 시위·소요",
+   "en": "Israel: protests / unrest",
+   "coords": [
+    34.9,
+    31
+   ],
+   "radius": 150,
+   "date": "2026-11-08",
+   "ongoing": true,
+   "expires": "2026-11-16",
+   "reasonKo": "친이스라엘 레스토랑에 반대하는 필라델피아 자전거 시위가 역효과를 낳고 수백 명이 유대인 소유 기업을 지원하기 위해 줄을 섰습니다 외 관련 보도 1건. (뉴스 자동 수집 · 2026-11-16까지 표시)",
+   "reasonEn": "Philly Bike Protest Against Pro-Israel Restaurants Backfires, Hundreds Line Up to Support Jewish-Owned Businesses (+1 related report). (Auto-collected from news · shown until 2026-11-16)",
+   "link": "https://news.google.com/rss/articles/CBMi1wFBVV95cUxQbGt5Wjgyb1hrV2FqcEtsSDlvdmFJenBMMXNyenhmOWVkdWM0OWxFTUJmTWt6OHJQcE1QbXd4NFljTVJpUE5oWXdRYzNKNjUxcm0zbGVQX2ExR2NMdG9BaHRoREVUbm1QV2gyb0gtMThIZDhMRFQ1UndVckZXSjlMY3J0SDhNZGxsc3NUTkJaWjNMQXFVcE84TzB3cTZVck01eTh6NEJ2V0RDbDFNbWdhbTB5N2dkS3lNbjVydW12eU51TWFtY1hKT1Bqc1JtbWFnX2ZoOU5sQQ?oc=5"
+  },
+  {
+   "id": "social:displacement:GR",
+   "layer": "social",
+   "ko": "그리스 난민·대규모 이주",
+   "en": "Greece: displacement / migration",
+   "coords": [
+    21.8,
+    39.1
+   ],
+   "radius": 150,
+   "date": "2026-10-15",
+   "ongoing": true,
+   "expires": "2026-12-21",
+   "reasonKo": "그리스 남부에서 시신이 발견된 이주 보트 사망자 수는 14명으로 증가 외 관련 보도 7건. (뉴스 자동 수집 · 2026-12-21까지 표시)",
+   "reasonEn": "Death toll from migrant boat found with bodies on board south of Greece increases to 14 (+7 related reports). (Auto-collected from news · shown until 2026-12-21)",
+   "link": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxOQjh1WlI3MUtnZGRPaXRiM2dFcXhfcllPbmNXRGhVOE5VZnh5YmZnY1V3YnpuTXlqZXhaaVQxUFlDcmdXZC0tWmw4dG1NVW50V3VuVGp4bGpETF9EWXVGTEJ5bUlVZUFPOFZGN2hLbWl1MFJuY0lRT0VDU3F1MGdWblB2NUFiMHlW?oc=5"
+  },
+  {
+   "id": "social:protest:BD",
+   "layer": "social",
+   "ko": "방글라데시 시위·소요",
+   "en": "Bangladesh: protests / unrest",
+   "coords": [
+    90.4,
+    23.7
+   ],
+   "radius": 150,
+   "date": "2026-11-02",
+   "ongoing": true,
+   "expires": "2026-11-19",
+   "reasonKo": "방글라데시 의류 노동자들은 임금 항의로 수백 개의 공장이 폐쇄되면서 최루탄에 직면했습니다 외 관련 보도 4건. (뉴스 자동 수집 · 2026-11-19까지 표시)",
+   "reasonEn": "Garment workers in Bangladesh face tear gas as wage protests shut hundreds of factories (+4 related reports). (Auto-collected from news · shown until 2026-11-19)",
+   "link": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOeXEtclY3Tl83RUUwZkota0ZDc3FGOUJYMnE4eERyZW1UcnhoeFdEZEVGcm95ME9SdG5vbDJBbDh4YzdtWHZSdlhhN2Zkbm9mTFlVQ01zclozMjRKVThUeEk2SWhkcGZYSUFRZ0c2VXpBNW8zNVJacXo0d3hseGFYbnJISjZIYi0xU0VxTnVaaGk2TlVTX3EyMQ?oc=5"
+  },
+  {
+   "id": "social:attack:IL",
+   "layer": "social",
+   "ko": "이스라엘 테러·총격",
+   "en": "Israel: attack",
+   "coords": [
+    34.9,
+    31
+   ],
+   "radius": 150,
+   "date": "2026-10-11",
+   "ongoing": true,
+   "expires": "2026-11-22",
+   "reasonKo": "요약: 이스라엘의 아이젠코트가 처음으로 정부 구성에 성공했습니다. 총격범, 크라쿠프서 6명 사살 외 관련 보도 7건. (뉴스 자동 수집 · 2026-11-22까지 표시)",
+   "reasonEn": "World in Brief: Israel’s Eisenkot gets first crack at forming government; gunman kills six in Krakow (+7 related reports). (Auto-collected from news · shown until 2026-11-22)",
+   "link": "https://news.google.com/rss/articles/CBMilwFBVV95cUxNR0lOTUhjMFh2OGZscUFFYnRpNlYxSGVvcERWTzlmTG5hTnUwQ0E3VG1vX0x4bjdja2hvSlZjTk1lLWNfNjRRYUFyZk45SjF2UmQzd2Y4LXdUdFpGNDU0ZjBkbWx6NFNnSDFqVXY1YjdJbnJwaVp0UlFaQ0xDWHNtalBFa2UxRDFZcmR5ZW1IOFdGVWJvbE5B?oc=5"
+  },
+  {
+   "id": "social:attack:GB",
+   "layer": "social",
+   "ko": "영국 테러·총격",
+   "en": "United Kingdom: attack",
+   "coords": [
+    -2,
+    54
+   ],
+   "radius": 150,
+   "date": "2026-11-08",
+   "ongoing": true,
+   "expires": "2026-11-15",
+   "reasonKo": "크라쿠프 총격 사건: '테러 공격'으로 사망한 6명 중 영국인. (뉴스 자동 수집 · 2026-11-15까지 표시)",
+   "reasonEn": "Krakow shooting: British man among six killed in ‘terror attack’. (Auto-collected from news · shown until 2026-11-15)",
+   "link": "https://news.google.com/rss/articles/CBMipAFBVV95cUxQQk0tQXVQODlSY0J1Y1lLVGJ2QlhQTEJmNnVHTEpBNllaYmhLX3pacjZKbkhubmpSaXR0Vkp2MFdncjY0LWFEZGpza3pGSjZzaFJ1a3g0Y05ZYmNHekVYelVHLWtCTGQ2TmhJbXE1dS1BSUtsb29CNjk0bWE0ZThVRWdZZWdDX1NaNUNSNWw2UU5JbHhLUnpneEQ4am1TNXIxOTBPUQ?oc=5"
+  },
+  {
+   "id": "social:protest:DE",
+   "layer": "social",
+   "ko": "독일 시위·소요",
+   "en": "Germany: protests / unrest",
+   "coords": [
+    10.5,
+    51.2
+   ],
+   "radius": 150,
+   "date": "2026-10-31",
+   "ongoing": true,
+   "expires": "2026-11-15",
+   "reasonKo": "독일의 Z세대 항의 폭동, 통합과 편견에 대한 논쟁 촉발 외 관련 보도 12건. (뉴스 자동 수집 · 2026-11-15까지 표시)",
+   "reasonEn": "Germany’s Gen Z protest riots spark debate on integration and bias (+12 related reports). (Auto-collected from news · shown until 2026-11-15)",
+   "link": "https://news.google.com/rss/articles/CBMinwFBVV95cUxNOFNqeVJ6WUR0djhwWDZoTkRWLUVaOXZxRDFOeVBaRjZHZFd2WTk3S3pvd20yOXJhcTBaU0Y5Z2pia2lERlRiSWdpenkyUHEzZHgwcG4ydkNMcHhhRko1WE5nckhXWGw1ODVXbmhXbXpVSkE5LTBLZ3N4UkFDemo2b0pybjgxUndoMFgwQldqYWp1SEJ6bmJwZzBaN01EejTSAZ8BQVVfeXFMTThTanlSellEdHY4cFg2aE5EVi1FWjl2cUQxTnlQWkY2R2RXdlk5N0t6b3dtMjlyYXEwWlNGOWdqYmtpREZUYklnaXp5MlBxM2R4MHBuMnZDTHB4YUZKNVhOZ3JIV1hsNTg1V25oV216VUpBOS0wS2dzeFJBQ3pqNm9Kcm44MVJ3aDBYMEJXamFqdUhCem5icGcwWjdNRHo0?oc=5"
+  },
+  {
+   "id": "social:displacement:KE",
+   "layer": "social",
+   "ko": "케냐 난민·대규모 이주",
+   "en": "Kenya: displacement / migration",
+   "coords": [
+    37.9,
+    -0.02
+   ],
+   "radius": 150,
+   "date": "2026-11-02",
+   "ongoing": true,
+   "expires": "2026-12-01",
+   "reasonKo": "케냐: 모얄레 난민의 인도주의적 상황, 마르사비트 카운티 긴급 업데이트 2호(11월 5일) 외 관련 보도 1건. (뉴스 자동 수집 · 2026-12-01까지 표시)",
+   "reasonEn": "Kenya: Humanitarian situation of displaced people in Moyale, Marsabit County Flash Update No. 2 (5 November) (+1 related report). (Auto-collected from news · shown until 2026-12-01)",
+   "link": "https://news.google.com/rss/articles/CBMizAFBVV95cUxOYmVoTE56dmdPenBYczFocGlQQXRMUjFhTGhVR21ZemowY3dJaVVGWkhIaDhYbnIwdFA3N2dZdmhLVnlXeXJ4bE5wQTI0UlZLUHFzMUxRcU1zRFgxNUdjaUQtYTRwRGNwT3BZczBZY0luVHp2ZXE3NTVTZWRiekV6eS1VR2k3Z1VUbEp3Vmpnaldlc0VQRlc2OFhfeUhiNGRoSzVDSF9nNTZhb29vSi1NQXNaZU1TTlZUM1YwZEREeTRtM0tSaF9HZThmY0I?oc=5"
+  },
+  {
+   "id": "social:attack:JO",
+   "layer": "social",
+   "ko": "요르단 테러·총격",
+   "en": "Jordan: attack",
+   "coords": [
+    36.2,
+    30.6
+   ],
+   "radius": 150,
+   "date": "2026-10-23",
+   "ongoing": true,
+   "expires": "2026-11-19",
+   "reasonKo": "요르단 \"암만에서 보안요원 칼부림 테러로 사망\" 외 관련 보도 8건. (뉴스 자동 수집 · 2026-11-19까지 표시)",
+   "reasonEn": "Jordan says security officer killed in Amman in stabbing terror attack (+8 related reports). (Auto-collected from news · shown until 2026-11-19)",
+   "link": "https://news.google.com/rss/articles/CBMitwFBVV95cUxQVjEwLW5QUnVxUTU3OGxHb3JQdjFHb1lndGdLZEZzRXlUZEJXNHBQdTlMTzcyTTJIT29hUFhhYzNPX0VSUl9uM2x5MWROeTd1bFNGNkNmU3ljX2ZNNTd6VGEwZUZYTG5XSWh0eGtmOXJhdVhrc2hMbk44VERETllIQmlISU5NWk9IeUxkVl9QY1pRWWtHYkdRNk9TTng3ZVJxTF9FN0FhcXBZb0NYQVlhcWpyZEs5MzA?oc=5"
+  },
+  {
+   "id": "social:attack:RU",
+   "layer": "social",
+   "ko": "러시아 테러·총격",
+   "en": "Russia: attack",
+   "coords": [
+    37.6,
+    55.75
+   ],
+   "radius": 150,
+   "date": "2026-11-01",
+   "ongoing": true,
+   "expires": "2026-11-14",
+   "reasonKo": "미국이 모스크바 테러 가능성을 경고하자 러시아 경찰이 10대를 체포했다 외 관련 보도 3건. (뉴스 자동 수집 · 2026-11-14까지 표시)",
+   "reasonEn": "Russian police arrest teenager after U.S. warning of possible Moscow terror attack (+3 related reports). (Auto-collected from news · shown until 2026-11-14)",
+   "link": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxNWXAwTm5fNG9tXzFuZ01WWmhuNURmVVNlbmswWmNEa1FxbExwVVRMTGp6dS1Pc2Jsem56aE1oQnJXZm5jdldReGRma2p5NXRibGg1ODBCcXRfdDhtcHFXMEgxTjNkTHRGb1J3UmVDSG0xbnhncG5ydko4dmt0dEtWdWFxVG5VMmdOcjJmRnRhQU1CZ1FLWjhOTXZudzJEQW5NN0hHZllRR1FIQkZjQVFmT3Rlay1fY2F4aWJN?oc=5"
+  },
+  {
+   "id": "social:displacement:LB",
+   "layer": "social",
+   "ko": "레바논 난민·대규모 이주",
+   "en": "Lebanon: displacement / migration",
+   "coords": [
+    35.9,
+    33.9
+   ],
+   "radius": 150,
+   "date": "2026-10-13",
+   "ongoing": true,
+   "expires": "2026-11-26",
+   "reasonKo": "세계 뉴스 요약: 레바논에서 난민 30만 명, 터키는 노바야 가제타 폐쇄, 5천만 달러 난민 호소, 세계 도시의 날에 대해 '심각한 우려' 외 관련 보도 1건. (뉴스 자동 수집 · 2026-11-26까지 표시)",
+   "reasonEn": "World News in Brief: 300,000 displaced in Lebanon, Türk ‘deeply concerned’ over Novaya Gazeta closure, $50 million refugee appeal, World Cities Day (+1 related report). (Auto-collected from news · shown until 2026-11-26)",
+   "link": "https://news.google.com/rss/articles/CBMiV0FVX3lxTE9Za2hHdnpsM3QzSElwS1E0TUlCUzh3NmpvZnFIeGozMTRNeWwxaFh0T1MxLXN3c2Uydlo2N1VnSWZHdDRjOXZKS0xCNVlPRVFDMVlrcThzdw?oc=5"
+  },
+  {
+   "id": "social:displacement:SD-Darfur",
+   "layer": "social",
+   "ko": "다르푸르 난민·대규모 이주",
+   "en": "Darfur: displacement / migration",
+   "coords": [
+    24,
+    13.5
+   ],
+   "radius": 40,
+   "date": "2026-10-18",
+   "ongoing": true,
+   "expires": "2026-12-07",
+   "reasonKo": "그들은 소년 시절 다르푸르를 탈출했습니다. 이제 그들의 아이들은 같은 난민캠프에서 성장하고 있습니다 외 관련 보도 5건. (뉴스 자동 수집 · 2026-12-07까지 표시)",
+   "reasonEn": "They fled Darfur as boys. Now their children are growing up in the same refugee camp (+5 related reports). (Auto-collected from news · shown until 2026-12-07)",
+   "link": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxPSW9id3M0T01CRUtpM19JSXNpd1c4QXlCM29iQnVOaHlDT0tBajRCU2lwYzhndDRSbGJTUXdpcXBRNTR0US1BeV96S1pZMEZZa0NYM3RLU1Nuam41US1nbzRONFhxVlFZSWYzeXRwTEMySWlMUlNhaW1xRW5yaE5ab1BuSll2NG5OM3J4eUVXMVczclRIc0tWSER5cV9BcWlGVldvcjhUdnkydWxpOVdIWENldHRLZEo1RklCLUpsNEhFZw?oc=5"
+  },
+  {
+   "id": "social:displacement:PR",
+   "layer": "social",
+   "ko": "푸에르토리코 난민·대규모 이주",
+   "en": "Puerto Rico: displacement / migration",
+   "coords": [
+    -66.5,
+    18.2
+   ],
+   "radius": 150,
+   "date": "2026-10-12",
+   "ongoing": true,
+   "expires": "2026-11-15",
+   "reasonKo": "해안경비대가 푸에르토리코에서 또 다른 과적된 이주 보트를 멈추다 외 관련 보도 1건. (뉴스 자동 수집 · 2026-11-15까지 표시)",
+   "reasonEn": "Coast Guard stops another overloaded migrant boat off Puerto Rico (+1 related report). (Auto-collected from news · shown until 2026-11-15)",
+   "link": "https://news.google.com/rss/articles/CBMiigFBVV95cUxNWWUxclBSNVhXdU5ZM2c2YWdkWDlWVDFOYVdTTEx3VXNWMUZCQnliQ3pPRDFRSG1KTWdkMmVhb1laaXdEY3FiYVdDV2JYTHpTV0VwcHprVHFQdjlpUnAtcUNScVI4S3RPMHVlVFp1QXBka2xkS3R4S1NZa3YyNkdOd3ZTV3BQcmtLWHfSAYoBQVVfeXFMTUwtajI3cHdOQ1NCc3lvc3F5MVQ5M0FXcWl3V1pOV08xTlhQZlgxeTVQbXN0OUhmZ29MUDFVUzRLUjBSbi1rdG1uMzRRQl9NQVE0SGQzaTFBVVdBM09kUm8xTWlVbjA0TlNmYkdhWGNwcTN5UWpKc0owc1NrdERjV1JkR2JNLU0tSWVB?oc=5"
+  },
+  {
+   "id": "social:displacement:DJ",
+   "layer": "social",
+   "ko": "지부티 난민·대규모 이주",
+   "en": "Djibouti: displacement / migration",
+   "coords": [
+    42.6,
+    11.8
+   ],
+   "radius": 150,
+   "date": "2026-10-11",
+   "ongoing": true,
+   "expires": "2026-11-23",
+   "reasonKo": "예멘으로 향하던 이주민 보트가 지부티에서 전복돼 139명이 사망했다 외 관련 보도 36건. (뉴스 자동 수집 · 2026-11-23까지 표시)",
+   "reasonEn": "139 dead as Yemen-bound migrant boat capsizes off Djibouti (+36 related reports). (Auto-collected from news · shown until 2026-11-23)",
+   "link": "https://news.google.com/rss/articles/CBMiY0FVX3lxTE95ZE5NdkJ0dnF3QkQwZzR3alI1UFFXMExxZ3B1TVU5NVNBaUhwQnl6SDdXOTRRU3lnVUcwV0xSYWlfSHExSlpxOU4wcldiT3FiZjR6RkFtVVZrS3d1QW82NnlTQQ?oc=5"
+  }
+ ],
+ "calendarValues": {
+  "2026-08-26|US|pce|US July PCE Price Index": {
+   "valueKo": "3.7%",
+   "valueEn": "3.7%",
+   "source": "news",
+   "sourceTitle": "US PCE in July higher than expected at 3.7%, but core PCE matches forecast",
+   "agreeing": 6,
+   "prevKo": "이전 3.7%",
+   "prevEn": "Prev 3.7%",
+   "filledAt": "2026-10-10T22:47:49.662Z"
+  },
+  "2026-08-26|US|gdp|US Q2 GDP (Second Estimate)": {
+   "valueKo": "+1.5%",
+   "valueEn": "+1.5%",
+   "source": "news",
+   "sourceTitle": "US Q2 GDP Growth Unchanged at 1.5% in Second Estimate",
+   "agreeing": 11,
+   "prevKo": "이전 +1.5%",
+   "prevEn": "Prev +1.5%",
+   "filledAt": "2026-10-10T22:47:49.662Z"
+  },
+  "2026-08-31|CN|pmi|China August NBS Manufacturing PMI": {
+   "valueKo": "49.8",
+   "valueEn": "49.8",
+   "source": "news",
+   "sourceTitle": "China’s August manufacturing PMI ticks up to 49.8, beats estimates despite second month of contraction",
+   "agreeing": 3,
+   "prevKo": "이전 49.2",
+   "prevEn": "Prev 49.2",
+   "filledAt": "2026-10-10T22:47:49.662Z"
+  },
+  "2026-09-01|US|pmi|US August ISM Manufacturing PMI": {
+   "valueKo": "54.6",
+   "valueEn": "54.6",
+   "source": "news",
+   "sourceTitle": "US ISM Manufacturing Slows to 54.6 as Orders and Hiring Lose Momentum",
+   "agreeing": 2,
+   "prevKo": "이전 55.6",
+   "prevEn": "Prev 55.6",
+   "filledAt": "2026-10-10T22:47:49.662Z"
+  },
+  "2026-09-01|EU|cpi|Eurozone August HICP (Flash)": {
+   "valueKo": "3.3%",
+   "valueEn": "3.3%",
+   "source": "news",
+   "sourceTitle": "Eurozone inflation jumps to 3.3% in August as energy prices surge",
+   "agreeing": 3,
+   "prevKo": "이전 2.9%",
+   "prevEn": "Prev 2.9%",
+   "filledAt": "2026-10-10T22:47:49.662Z"
+  },
+  "2026-09-01|EU|employment|Eurozone July Unemployment Rate": {
+   "valueKo": "6.4%",
+   "valueEn": "6.4%",
+   "source": "news",
+   "sourceTitle": "Eurozone unemployment rate holds steady at 6.4% in July",
+   "agreeing": 4,
+   "filledAt": "2026-10-10T22:47:49.662Z"
+  },
+  "2026-09-01|KR|trade|Korea August Trade Statistics": {
+   "valueKo": "수출 +68.7%",
+   "valueEn": "Exports +68.7% YoY",
+   "source": "news",
+   "sourceTitle": "South Korea's Exports Grow 68.7% in August 2026",
+   "agreeing": 4,
+   "prevKo": "이전 +62.8%, +303.2억달러",
+   "prevEn": "Prev +62.8% YoY, +$30.32bn",
+   "filledAt": "2026-10-10T22:47:49.662Z"
+  },
+  "2026-09-01|CN|pmi|China August Caixin Manufacturing PMI": {
+   "valueKo": "51.5",
+   "valueEn": "51.5",
+   "source": "news",
+   "sourceTitle": "China’s RatingDog Manufacturing PMI climbs to 51.5 in August, beating forecasts",
+   "agreeing": 3,
+   "prevKo": "이전 50.9",
+   "prevEn": "Prev 50.9",
+   "filledAt": "2026-10-10T22:47:49.662Z"
+  },
+  "2026-09-02|KR|cpi|Korea August CPI": {
+   "valueKo": "3.1%",
+   "valueEn": "3.1%",
+   "prevKo": "이전 2.8%",
+   "prevEn": "Prev 2.8%",
+   "source": "official",
+   "filledAt": "2026-10-10T22:47:49.662Z"
+  },
+  "2026-09-04|US|employment|US August Jobs Report": {
+   "valueKo": "+13.3만 명, 4.1%",
+   "valueEn": "+133K, 4.1%",
+   "prevKo": "이전 -1.0만 명, 4.1%",
+   "prevEn": "Prev -10K, 4.1%",
+   "source": "official",
+   "filledAt": "2026-10-10T22:47:49.662Z"
+  },
+  "2026-09-10|US|ppi|US August PPI": {
+   "valueKo": "5.4%",
+   "valueEn": "5.4%",
+   "prevKo": "이전 4.8%",
+   "prevEn": "Prev 4.8%",
+   "source": "official",
+   "filledAt": "2026-10-10T22:47:49.662Z"
+  },
+  "2026-09-10|CN|cpi|China August CPI": {
+   "valueKo": "0.8%",
+   "valueEn": "0.8%",
+   "source": "news",
+   "sourceTitle": "China’s Consumer Inflation Accelerates To 0.8% In August, Factory Gate Prices Rise",
+   "agreeing": 2,
+   "prevKo": "이전 0.5%",
+   "prevEn": "Prev 0.5%",
+   "filledAt": "2026-10-10T22:47:49.662Z"
+  },
+  "2026-09-10|CN|ppi|China August PPI": {
+   "valueKo": "3.8%",
+   "valueEn": "3.8%",
+   "source": "news",
+   "sourceTitle": "China PPI rises 3.8% YoY in August on higher input costs",
+   "agreeing": 2,
+   "filledAt": "2026-10-10T22:47:49.662Z"
+  },
+  "2026-09-11|US|cpi|US August CPI": {
+   "valueKo": "3.4%",
+   "valueEn": "3.4%",
+   "prevKo": "이전 3.4%",
+   "prevEn": "Prev 3.4%",
+   "source": "official",
+   "filledAt": "2026-10-10T22:47:49.662Z"
+  },
+  "2026-09-11|GB|gdp|UK July Monthly GDP": {
+   "valueKo": "+0.4%",
+   "valueEn": "+0.4%",
+   "source": "news",
+   "sourceTitle": "UK GDP Beats Forecast at 0.4% M/M as Services and Manufacturing Drive July Growth",
+   "agreeing": 7,
+   "prevKo": "이전 +0.3%",
+   "prevEn": "Prev +0.3%",
+   "filledAt": "2026-10-10T22:47:49.662Z"
+  },
+  "2026-09-16|US|retail|US August Retail Sales": {
+   "valueKo": "+1.2%",
+   "valueEn": "+1.2%",
+   "source": "news",
+   "sourceTitle": "US' retail sales rise 1.2% in August after July dip",
+   "agreeing": 6,
+   "filledAt": "2026-10-10T22:47:49.662Z"
+  },
+  "2026-09-16|GB|cpi|UK August CPI": {
+   "valueKo": "3.1%",
+   "valueEn": "3.1%",
+   "prevKo": "이전 2.9%",
+   "prevEn": "Prev 2.9%",
+   "source": "official",
+   "filledAt": "2026-10-10T22:47:49.662Z"
+  },
+  "2026-09-18|JP|rate|Bank of Japan September Decision": {
+   "valueKo": "1.25%",
+   "valueEn": "1.25%",
+   "prevKo": "이전 1.00%",
+   "prevEn": "Prev 1.00%",
+   "source": "official",
+   "filledAt": "2026-10-10T22:47:49.662Z"
+  },
+  "2026-09-21|CN|rate|PBOC LPR September": {
+   "valueKo": "3.00% (1년 LPR)",
+   "valueEn": "3.00% (1Y LPR)",
+   "prevKo": "이전 3.00%",
+   "prevEn": "Prev 3.00%",
+   "source": "official",
+   "filledAt": "2026-10-10T22:47:49.662Z"
+  },
+  "2026-09-30|US|gdp|US Q2 GDP (Third Estimate)": {
+   "valueKo": "+2.2%",
+   "valueEn": "+2.2%",
+   "source": "news",
+   "sourceTitle": "US economy grows 2.2% in Q2, up sharply from earlier 1.5% estimate",
+   "agreeing": 7,
+   "prevKo": "이전 +1.5%",
+   "prevEn": "Prev +1.5%",
+   "filledAt": "2026-10-10T22:47:49.662Z"
+  },
+  "2026-09-30|CN|pmi|China September NBS Manufacturing PMI": {
+   "valueKo": "50.1",
+   "valueEn": "50.1",
+   "source": "news",
+   "sourceTitle": "China's manufacturing PMI returns to expansion at 50.1 in September after two months below 50",
+   "agreeing": 5,
+   "prevKo": "이전 49.8",
+   "prevEn": "Prev 49.8",
+   "filledAt": "2026-10-10T22:47:49.662Z"
+  },
+  "2026-10-01|US|pmi|US September ISM Manufacturing PMI": {
+   "valueKo": "54.5",
+   "valueEn": "54.5",
+   "source": "news",
+   "sourceTitle": "US ISM manufacturing PMI eases to 54.5 in September",
+   "agreeing": 4,
+   "prevKo": "이전 54.6",
+   "prevEn": "Prev 54.6",
+   "filledAt": "2026-10-10T22:47:49.662Z"
+  },
+  "2026-10-01|EU|employment|Eurozone August Unemployment Rate": {
+   "valueKo": "6.4%",
+   "valueEn": "6.4%",
+   "source": "news",
+   "sourceTitle": "Euro area unemployment at 6.4%",
+   "agreeing": 6,
+   "prevKo": "이전 6.4%",
+   "prevEn": "Prev 6.4%",
+   "filledAt": "2026-10-10T22:47:49.662Z"
+  },
+  "2026-10-02|US|employment|US September Jobs Report": {
+   "valueKo": "+2.9만 명, 4.2%",
+   "valueEn": "+29K, 4.2%",
+   "prevKo": "이전 +13.3만 명, 4.1%",
+   "prevEn": "Prev +133K, 4.1%",
+   "source": "official",
+   "filledAt": "2026-10-10T22:47:49.662Z"
+  },
+  "2026-10-02|KR|cpi|Korea September CPI": {
+   "valueKo": "2.9%",
+   "valueEn": "2.9%",
+   "prevKo": "이전 3.1%",
+   "prevEn": "Prev 3.1%",
+   "source": "official",
+   "filledAt": "2026-10-10T22:47:49.662Z"
+  },
+  "2026-10-05|US|pmi|US September ISM Services PMI": {
+   "valueKo": "54.9",
+   "valueEn": "54.9",
+   "source": "news",
+   "sourceTitle": "Breaking: US ISM Services PMI declines to 54.9 in September",
+   "agreeing": 5,
+   "filledAt": "2026-10-10T22:47:49.662Z"
+  },
+  "2026-10-02|EU|cpi|Eurozone September HICP (Flash)": {
+   "valueKo": "3.8%",
+   "valueEn": "3.8%",
+   "source": "news",
+   "sourceTitle": "Eurozone Inflation Set to Hit 3.8% in September; Greece’s Inflation Seen at 5.1%",
+   "agreeing": 2,
+   "prevKo": "이전 3.3%",
+   "prevEn": "Prev 3.3%",
+   "filledAt": "2026-10-11T06:10:31.612Z"
+  },
+  "2026-10-14|CN|cpi|China September CPI": {
+   "valueKo": "0.9%",
+   "valueEn": "0.9%",
+   "source": "news",
+   "sourceTitle": "China's September CPI rises 0.9% Y",
+   "agreeing": 4,
+   "prevKo": "이전 0.8%",
+   "prevEn": "Prev 0.8%",
+   "filledAt": "2026-10-14T05:11:58.048Z"
+  },
+  "2026-10-14|CN|trade|China September Trade": {
+   "valueKo": "수출 +36.3%",
+   "valueEn": "Exports +36.3% YoY",
+   "source": "news",
+   "sourceTitle": "China’s exports surge 36.3% in September from a year ago, as pressure ramps up from trading partners to rebalance trade",
+   "agreeing": 3,
+   "filledAt": "2026-10-14T05:11:58.048Z"
+  },
+  "2026-09-18|US|industrial|US August Industrial Production": {
+   "valueKo": "0.0%",
+   "valueEn": "0.0%",
+   "source": "news",
+   "sourceTitle": "US AUGUST INDUSTRIAL PRODUCTION 0.0% VS +0.3% EXPECTED AND +0.2% IN JULY",
+   "agreeing": 2,
+   "filledAt": "2026-10-15T04:59:21.019Z"
+  },
+  "2026-10-14|US|cpi|US September CPI": {
+   "valueKo": "3.7%",
+   "valueEn": "3.7%",
+   "prevKo": "이전 3.4%",
+   "prevEn": "Prev 3.4%",
+   "source": "official",
+   "filledAt": "2026-10-15T04:59:21.019Z"
+  },
+  "2026-10-14|CN|ppi|China September PPI": {
+   "valueKo": "5.0%",
+   "valueEn": "5.0%",
+   "source": "news",
+   "sourceTitle": "China's PPI rises 5% in September",
+   "agreeing": 4,
+   "prevKo": "이전 3.8%",
+   "prevEn": "Prev 3.8%",
+   "filledAt": "2026-10-15T04:59:21.019Z"
+  },
+  "2026-09-16|EU|industrial|Eurozone July Industrial Production": {
+   "valueKo": "-0.3%",
+   "valueEn": "-0.3%",
+   "source": "news",
+   "sourceTitle": "Industrial production in the EU fell by 0.3% m/m in July",
+   "agreeing": 3,
+   "filledAt": "2026-10-16T04:49:10.567Z"
+  },
+  "2026-10-05|EU|ppi|Eurozone August PPI": {
+   "valueKo": "1.9%",
+   "valueEn": "1.9%",
+   "source": "news",
+   "sourceTitle": "Eurozone Producer Price Index (MoM) meets expectations (1.9%) in August",
+   "agreeing": 2,
+   "filledAt": "2026-10-16T04:49:10.567Z"
+  },
+  "2026-10-15|US|retail|US September Retail Sales": {
+   "valueKo": "+0.8%",
+   "valueEn": "+0.8%",
+   "source": "news",
+   "sourceTitle": "Economic buzz: US retail sales up by 0.8% in September",
+   "agreeing": 7,
+   "prevKo": "이전 +1.2%",
+   "prevEn": "Prev +1.2%",
+   "filledAt": "2026-10-16T04:49:10.567Z"
+  },
+  "2026-10-15|US|ppi|US September PPI": {
+   "valueKo": "6.3%",
+   "valueEn": "6.3%",
+   "prevKo": "이전 5.6%",
+   "prevEn": "Prev 5.6%",
+   "source": "official",
+   "filledAt": "2026-10-16T04:49:10.567Z"
+  },
+  "2026-10-15|GB|gdp|UK August Monthly GDP": {
+   "valueKo": "+0.1%",
+   "valueEn": "+0.1%",
+   "source": "news",
+   "sourceTitle": "UK Economy Beats Forecasts Again to Grow 0.1% in August",
+   "agreeing": 9,
+   "prevKo": "이전 +0.4%",
+   "prevEn": "Prev +0.4%",
+   "filledAt": "2026-10-16T04:49:10.567Z"
+  },
+  "2026-09-30|US|pce|US August PCE Price Index": {
+   "valueKo": "3.4%",
+   "valueEn": "3.4%",
+   "source": "news",
+   "sourceTitle": "US PCE inflation rises 3.4% in August, below expectations as economy stays resilient",
+   "agreeing": 2,
+   "prevKo": "이전 3.7%",
+   "prevEn": "Prev 3.7%",
+   "filledAt": "2026-10-17T04:49:17.592Z"
+  },
+  "2026-10-15|EU|industrial|Eurozone August Industrial Production": {
+   "valueKo": "-0.3%",
+   "valueEn": "-0.3%",
+   "source": "news",
+   "sourceTitle": "EU industrial production fell by 0.3% in August, while Romania posted a monthly rebound but remained below last year’s level",
+   "agreeing": 3,
+   "prevKo": "이전 -0.3%",
+   "prevEn": "Prev -0.3%",
+   "filledAt": "2026-10-17T04:49:17.592Z"
+  },
+  "2026-10-16|US|industrial|US September Industrial Production": {
+   "valueKo": "+0.7%",
+   "valueEn": "+0.7%",
+   "source": "news",
+   "sourceTitle": "U.S. industrial production rises 0.7% in September, Federal Reserve says",
+   "agreeing": 4,
+   "prevKo": "이전 0.0%",
+   "prevEn": "Prev 0.0%",
+   "filledAt": "2026-10-17T04:49:17.592Z"
+  },
+  "2026-10-06|EU|retail|Eurozone August Retail Sales": {
+   "valueKo": "+0.1%",
+   "valueEn": "+0.1%",
+   "source": "news",
+   "sourceTitle": "Economic buzz: Eurozone's retail sales up by 0.1% in August",
+   "agreeing": 2,
+   "filledAt": "2026-10-19T05:04:41.500Z"
+  },
+  "2026-10-19|CN|gdp|China Q3 GDP": {
+   "valueKo": "+4.5%",
+   "valueEn": "+4.5%",
+   "source": "news",
+   "sourceTitle": "China Posts 4.5% Q3 Growth, Annual Target Near",
+   "agreeing": 15,
+   "prevKo": "이전 4.3%",
+   "prevEn": "Prev 4.3%",
+   "filledAt": "2026-10-19T05:04:41.500Z"
+  },
+  "2026-10-19|CN|retail|China September Retail Sales": {
+   "valueKo": "+1.1%",
+   "valueEn": "+1.1%",
+   "source": "news",
+   "sourceTitle": "China's economy shows signs of recovery as September retail sales jump 1.1%",
+   "agreeing": 3,
+   "filledAt": "2026-10-20T05:07:10.570Z"
+  },
+  "2026-10-19|CN|industrial|China September Industrial Production": {
+   "valueKo": "+4.5%",
+   "valueEn": "+4.5%",
+   "source": "news",
+   "sourceTitle": "China GDP growth slows to 4.5% in Q3, misses estimates; industrial output, investment disappoint",
+   "agreeing": 2,
+   "filledAt": "2026-10-20T05:07:10.570Z"
+  },
+  "2026-09-03|US|pmi|US August ISM Services PMI": {
+   "valueKo": "55.4",
+   "valueEn": "55.4",
+   "source": "news",
+   "sourceTitle": "Breaking: US ISM Services PMI improves to 55.4 in August",
+   "agreeing": 2,
+   "prevKo": "이전 54.1",
+   "prevEn": "Prev 54.1",
+   "filledAt": "2026-10-21T05:08:07.332Z"
+  },
+  "2026-10-20|GB|employment|UK October Labour Market Report": {
+   "valueKo": "4.7%",
+   "valueEn": "4.7%",
+   "source": "news",
+   "sourceTitle": "UK temp workforce grows to 1.60 million, jobless rate dips to 4.7%",
+   "agreeing": 2,
+   "filledAt": "2026-10-21T05:08:07.332Z"
+  },
+  "2026-10-21|GB|cpi|UK September CPI": {
+   "valueKo": "3.5%",
+   "valueEn": "3.5%",
+   "prevKo": "이전 3.1%",
+   "prevEn": "Prev 3.1%",
+   "source": "official",
+   "filledAt": "2026-10-22T05:10:49.254Z"
+  },
+  "2026-09-04|EU|retail|Eurozone July Retail Sales": {
+   "valueKo": "-0.6%",
+   "valueEn": "-0.6%",
+   "source": "news",
+   "sourceTitle": "Eurozone Retail Sales Slide -0.6% mom as Discretionary Spending Weakens",
+   "agreeing": 2,
+   "filledAt": "2026-10-23T05:11:16.353Z"
+  },
+  "2026-10-23|GB|retail|UK September Retail Sales": {
+   "valueKo": "-0.4%",
+   "valueEn": "-0.4%",
+   "source": "news",
+   "sourceTitle": "UK retail sales fall 0.4% in September, sterling steady",
+   "agreeing": 4,
+   "filledAt": "2026-10-24T04:53:45.821Z"
+  },
+  "2026-10-23|JP|cpi|Japan September CPI": {
+   "valueKo": "2.1%",
+   "valueEn": "2.1%",
+   "source": "news",
+   "sourceTitle": "Japan core inflation in September surges to its highest this year at 2.1%",
+   "agreeing": 2,
+   "prevKo": "이전 1.8%",
+   "prevEn": "Prev 1.8%",
+   "filledAt": "2026-10-26T05:08:25.986Z"
+  },
+  "2026-10-29|US|pce|US September PCE Price Index": {
+   "valueKo": "3.6%",
+   "valueEn": "3.6%",
+   "source": "news",
+   "sourceTitle": "The PCE inflation in the U.S. reaches 3.6% and real disposable income falls in September",
+   "agreeing": 3,
+   "prevKo": "이전 3.4%",
+   "prevEn": "Prev 3.4%",
+   "filledAt": "2026-10-30T06:12:55.756Z"
+  },
+  "2026-10-29|US|gdp|US Q3 GDP (Advance Estimate)": {
+   "valueKo": "+3.4%",
+   "valueEn": "+3.4%",
+   "source": "news",
+   "sourceTitle": "US economy grows at 3.4% in Q3, beating estimates",
+   "agreeing": 18,
+   "prevKo": "이전 +2.2%",
+   "prevEn": "Prev +2.2%",
+   "filledAt": "2026-10-30T06:12:55.756Z"
+  },
+  "2026-10-30|EU|gdp|Eurozone Q3 GDP (Preliminary Flash)": {
+   "valueKo": "+0.4%",
+   "valueEn": "+0.4%",
+   "source": "news",
+   "sourceTitle": "Euro Zone Economy Grows 0.4% in Third Quarter as French Output Contracts",
+   "agreeing": 5,
+   "filledAt": "2026-10-31T06:06:22.292Z"
+  },
+  "2026-10-30|EU|employment|Eurozone September Unemployment Rate": {
+   "valueKo": "6.5%",
+   "valueEn": "6.5%",
+   "source": "news",
+   "sourceTitle": "Unemployment Rate Eurozone September Keluar sebesar 6.5%, di Atas Prakiraan 6.4%",
+   "agreeing": 3,
+   "prevKo": "이전 6.4%",
+   "prevEn": "Prev 6.4%",
+   "filledAt": "2026-10-31T06:06:22.292Z"
+  },
+  "2026-10-31|CN|pmi|China October NBS Manufacturing PMI": {
+   "valueKo": "49.3",
+   "valueEn": "49.3",
+   "source": "news",
+   "sourceTitle": "China: NBS Manufacturing PMI erreichte im Oktober 49.3, verfehlt die Erwartungen 50",
+   "agreeing": 2,
+   "prevKo": "이전 50.1",
+   "prevEn": "Prev 50.1",
+   "filledAt": "2026-10-31T06:06:22.292Z"
+  },
+  "2026-10-22|KR|rate|Bank of Korea October Decision": {
+   "valueKo": "3.00%",
+   "valueEn": "3.00%",
+   "prevKo": "이전 3.00%",
+   "prevEn": "Prev 3.00%",
+   "source": "official",
+   "filledAt": "2026-11-01T06:36:47.790Z"
+  },
+  "2026-11-02|US|pmi|US October ISM Manufacturing PMI": {
+   "valueKo": "55.5",
+   "valueEn": "55.5",
+   "source": "news",
+   "sourceTitle": "US Manufacturing PMI Rises to 55.5 in October, Marks 10th Month of Expansion",
+   "agreeing": 4,
+   "prevKo": "이전 54.5",
+   "prevEn": "Prev 54.5",
+   "filledAt": "2026-11-03T07:06:12.216Z"
+  },
+  "2026-11-03|KR|cpi|Korea October CPI": {
+   "valueKo": "2.8%",
+   "valueEn": "2.8%",
+   "source": "news",
+   "sourceTitle": "Inflation in South Korea slowed to 2.8% in October",
+   "agreeing": 5,
+   "prevKo": "이전 2.9%",
+   "prevEn": "Prev 2.9%",
+   "filledAt": "2026-11-03T07:06:12.216Z"
+  },
+  "2026-10-29|EU|rate|ECB October Policy Meeting": {
+   "valueKo": "2.65%",
+   "valueEn": "2.65%",
+   "prevKo": "이전 2.65%",
+   "prevEn": "Prev 2.65%",
+   "source": "official",
+   "filledAt": "2026-11-05T07:10:27.732Z"
+  },
+  "2026-11-04|US|pmi|US October ISM Services PMI": {
+   "valueKo": "54.5",
+   "valueEn": "54.5",
+   "source": "news",
+   "sourceTitle": "US Services PMI Slips to 54.5 in October as New Orders Cool and Input Prices Remain Elevated",
+   "agreeing": 3,
+   "prevKo": "이전 54.9",
+   "prevEn": "Prev 54.9",
+   "filledAt": "2026-11-05T07:10:27.732Z"
+  },
+  "2026-11-04|EU|cpi|Eurozone October HICP (Flash)": {
+   "valueKo": "4.0%",
+   "valueEn": "4.0%",
+   "source": "news",
+   "sourceTitle": "Eurozone flash HICP grows faster by 4% YoY in October, as expected",
+   "agreeing": 2,
+   "prevKo": "이전 3.8%",
+   "prevEn": "Prev 3.8%",
+   "filledAt": "2026-11-05T07:10:27.732Z"
+  },
+  "2026-10-20|CN|rate|PBOC LPR October": {
+   "valueKo": "3.00% (1년 LPR)",
+   "valueEn": "3.00% (1Y LPR)",
+   "prevKo": "이전 3.00%",
+   "prevEn": "Prev 3.00%",
+   "source": "official",
+   "filledAt": "2026-11-06T07:10:15.758Z"
+  },
+  "2026-11-06|US|employment|US October Jobs Report": {
+   "valueKo": "+16.5만 명, 4.1%",
+   "valueEn": "+165K, 4.1%",
+   "prevKo": "이전 +6.0만 명, 4.2%",
+   "prevEn": "Prev +60K, 4.2%",
+   "source": "official",
+   "filledAt": "2026-11-07T06:22:02.063Z"
+  },
+  "2026-11-06|EU|retail|Eurozone September Retail Sales": {
+   "valueKo": "-0.7%",
+   "valueEn": "-0.7%",
+   "source": "news",
+   "sourceTitle": "Eurozone retail sales fall 0.7% in September",
+   "agreeing": 2,
+   "prevKo": "이전 +0.1%",
+   "prevEn": "Prev +0.1%",
+   "filledAt": "2026-11-07T06:22:02.063Z"
+  },
+  "2026-11-09|CN|cpi|China October CPI": {
+   "valueKo": "0.7%",
+   "valueEn": "0.7%",
+   "source": "news",
+   "sourceTitle": "China's October CPI Rises 0.7% Year-on-Year, Missing Expectations; PPI Jumps to 5.7% on Energy Surge",
+   "agreeing": 4,
+   "prevKo": "이전 0.9%",
+   "prevEn": "Prev 0.9%",
+   "filledAt": "2026-11-09T06:59:53.509Z"
+  },
+  "2026-11-09|CN|ppi|China October PPI": {
+   "valueKo": "5.7%",
+   "valueEn": "5.7%",
+   "source": "news",
+   "sourceTitle": "SunSirs: China’s October PPI Rises 5.7% Year-on-Year, Hitting a 52-Month High",
+   "agreeing": 5,
+   "prevKo": "이전 5.0%",
+   "prevEn": "Prev 5.0%",
+   "filledAt": "2026-11-10T07:36:53.988Z"
+  },
+  "2026-11-10|US|cpi|US October CPI": {
+   "valueKo": "0.4%",
+   "valueEn": "0.4%",
+   "source": "news",
+   "sourceTitle": "US Consumer Prices Rise 0.4% in October, Exceeding Economists’ Forecasts",
+   "agreeing": 6,
+   "prevKo": "이전 3.7%",
+   "prevEn": "Prev 3.7%",
+   "filledAt": "2026-11-11T06:55:06.914Z"
+  },
+  "2026-11-12|GB|gdp|UK September Monthly GDP": {
+   "valueKo": "+0.7%",
+   "valueEn": "+0.7%",
+   "source": "news",
+   "sourceTitle": "UK economic growth speeds up to 0.7% in third quarter amid AI buildout",
+   "agreeing": 4,
+   "prevKo": "이전 +0.1%",
+   "prevEn": "Prev +0.1%",
+   "filledAt": "2026-11-12T07:31:38.754Z"
+  },
+  "2026-10-28|US|rate|October FOMC Rate Decision": {
+   "valueKo": "3.75–4.00%",
+   "valueEn": "3.75–4.00%",
+   "prevKo": "이전 3.75–4.00%",
+   "prevEn": "Prev 3.75–4.00%",
+   "source": "official",
+   "filledAt": "2026-11-13T07:03:00.818Z"
+  },
+  "2026-10-30|JP|rate|Bank of Japan October Decision": {
+   "valueKo": "1.25%",
+   "valueEn": "1.25%",
+   "prevKo": "이전 1.25%",
+   "prevEn": "Prev 1.25%",
+   "source": "official",
+   "filledAt": "2026-11-13T07:03:00.818Z"
+  },
+  "2026-11-12|GB|gdp|UK Q3 GDP (First Estimate)": {
+   "valueKo": "+0.7%",
+   "valueEn": "+0.7%",
+   "source": "news",
+   "sourceTitle": "UK GDP Grows 0.7% in Q3 as Services Outpace Construction",
+   "agreeing": 7,
+   "prevKo": "이전 +0.4%",
+   "prevEn": "Prev +0.4%",
+   "filledAt": "2026-11-13T07:03:00.818Z"
+  },
+  "2026-11-13|US|ppi|US October PPI": {
+   "valueKo": "6.5%",
+   "valueEn": "6.5%",
+   "prevKo": "이전 6.3%",
+   "prevEn": "Prev 6.3%",
+   "source": "official",
+   "filledAt": "2026-11-14T06:52:16.596Z"
+  }
+ }
+}
