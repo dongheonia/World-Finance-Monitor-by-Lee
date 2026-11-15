@@ -90,8 +90,8 @@ const WAR_EVENTS = [
       reasonEn: "The conflict has escalated into an open declaration of war, with Pakistan relying on air strikes; talks in Moscow only exposed the rift. Border clashes have continued into November — Pakistan said airstrikes killed 28 militants, though Kabul said three civilians died, and Islamabad rejected a ceasefire announcement reportedly issued by Afghanistan's foreign ministry." },
     { ko: "미얀마 내전", en: "Myanmar civil war", coords: [96.0, 20.0], radius: 400,
       date: "2021-02-01", ongoing: true,
-      reasonKo: "군정이 카렌주 코카레익 일대에 사흘간 집중 공습을 가했고, 라카인주 대피소도 공습해 민간인 피해가 이어지고 있습니다.",
-      reasonEn: "The junta carried out three days of heavy airstrikes around Kawkareik in Karen State and has bombed shelters in Rakhine." },
+      reasonKo: "군정이 카렌주 코카레익 일대에 사흘간 집중 공습을 가했고, 라카인주 대피소도 공습해 민간인 피해가 이어지고 있습니다. 11월 10일에는 군정이 타닌타리 지역에서 대규모 공세를 벌여 저항군의 핵심 거점과 야영지 10곳을 장악했다고 주장했고, 라웅론 타운십 인근 교전으로 주민들이 대피했습니다.",
+      reasonEn: "The junta carried out three days of heavy airstrikes around Kawkareik in Karen State and has bombed shelters in Rakhine. On November 10, the junta launched a major offensive in the Tanintharyi region, claiming to have seized a key resistance headquarters and ten opposition camps, while fighting near Launglon Township forced villagers to flee." },
     { ko: "콩고민주공화국 동부 (북키부·남키부)", en: "Eastern DR Congo (North and South Kivu)", coords: [29.2, -1.5], radius: 200,
       date: "2024-10-01", ongoing: true,
       reasonKo: "반군과의 교전이 계속되는 가운데, 에릭 프린스가 이끄는 용병 부대가 매복 공격을 받아 사상자를 냈습니다. 11월 6일에는 이슬람국가(IS) 연계 반군 ADF가 북키부 캉틴알로야 마을을 야간에 급습해 최소 33명을 살해하고 보건소에 불을 질러 에볼라 확진·의심 환자들까지 대피시켰습니다.",
@@ -452,7 +452,15 @@ const SOCIAL_EVENTS = [
     { ko: "프랑스 슈퍼마켓 냉동고 사이버공격 (이란 혁명수비대 지목)", en: "France: cyberattack on supermarket refrigeration systems (Iran's IRGC blamed)", coords: [2.35, 48.86], radius: 550,
       date: "2026-10-11", ongoing: true,
       reasonKo: "10월 11~12일 밤 사이 프랑스 전역 주요 유통매장 약 700곳의 냉동·냉장 제어장치가 해킹당해 온도 설정이 조작되면서 최소 15건의 화재가 발생했습니다. 프랑스 외교장관 장노엘 바로는 11월 초 이란 혁명수비대(IRGC) 산하 사이버부대 '샤히드 카베'를 공격 주체로 지목하며 이란 대사를 초치했고, 파리 검찰은 수사에 착수했습니다. 바로 장관은 유럽연합(EU) 차원의 추가 제재를 추진하는 동시에 '모든 대응 수단을 배제하지 않겠다'고 밝혔으며, 이란 측은 관련성을 부인하고 있습니다.",
-      reasonEn: "Overnight on October 11-12, hackers compromised refrigeration controllers at roughly 700 major retail sites across France, overriding temperature settings and sparking at least 15 fires. French Foreign Minister Jean-Noël Barrot blamed Iran's Revolutionary Guard Corps cyber unit, known as Shahid Kaveh, in early November, summoning Iran's ambassador, and Paris prosecutors opened an investigation. Barrot said France would push for further EU sanctions while ruling nothing out in its response; Iran denies involvement." }
+      reasonEn: "Overnight on October 11-12, hackers compromised refrigeration controllers at roughly 700 major retail sites across France, overriding temperature settings and sparking at least 15 fires. French Foreign Minister Jean-Noël Barrot blamed Iran's Revolutionary Guard Corps cyber unit, known as Shahid Kaveh, in early November, summoning Iran's ambassador, and Paris prosecutors opened an investigation. Barrot said France would push for further EU sanctions while ruling nothing out in its response; Iran denies involvement." },
+    { ko: "알바니아 반정부 시위 (라마 총리 퇴진 요구)", en: "Albania: anti-government protests (demanding PM Rama's resignation)", coords: [19.82, 41.33], radius: 130,
+      date: "2026-05-23", ongoing: true,
+      reasonKo: "나르타 라군 인근 즈베르네츠 리조트 개발에 반대하는 지역 시위에서 시작된 운동이 라마 총리 퇴진을 요구하는 전국적 반부패 시위로 확산돼 150일 넘게 이어지고 있습니다. 10월 들어 경찰이 고무탄을 발사하고 10월 29일에는 야당 의원들이 의회에서 조명탄과 연막탄을 터뜨리는 등 충돌이 격화했으며, 라마 총리는 사퇴 요구를 거부한 채 저소득층 학생 장학금 인상 등 일부 양보안을 내놓았습니다.",
+      reasonEn: "A local protest against a resort development near Narta Lagoon in Zvërnec has grown into a nationwide anti-corruption movement demanding Prime Minister Edi Rama's resignation, now in its sixth month. Clashes escalated in October, with police firing rubber bullets and opposition lawmakers setting off flares and smoke bombs inside parliament on October 29; Rama has refused to step down, offering concessions such as higher stipends for low-income students." },
+    { ko: "스페인 카나리아 엘이에로 섬 이주민 급증 비상사태", en: "Spain: migrant surge emergency on El Hierro, Canary Islands", coords: [-17.9, 27.75],
+      date: "2026-11-01", ongoing: true,
+      reasonKo: "11월 들어 소형 선박(카유코)을 이용한 이주민 유입이 급증해 11월 1~9일 사이 인구 약 1만 2천 명의 엘이에로 섬에 6,665명(66척)이 도착하자 섬 당국은 사회적 비상사태를 선포하고 마드리드 중앙정부에 지원을 요청했습니다. 카나리아 자치정부 수반 페르난도 클라비호는 유입 속도가 2024년 기록적 수준에 근접하거나 이를 넘어섰다고 밝혔으며, 중앙정부는 11월 10일 적십자를 통한 의료·통역 인력 추가 지원을 약속했습니다.",
+      reasonEn: "A surge in cayuco boat arrivals pushed El Hierro — an island of about 12,000 people — into crisis, with roughly 6,665 migrants on 66 boats landing between November 1 and 9; island authorities declared a social emergency and asked Madrid for help. Canary Islands president Fernando Clavijo said the pace was nearing, or on some days exceeding, the record levels of 2024, and the central government pledged additional medical and interpreting staff via the Red Cross on November 10." }
 ];
 
 // ============================ MARKET DATA ============================
