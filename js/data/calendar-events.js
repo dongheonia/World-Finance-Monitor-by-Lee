@@ -349,7 +349,11 @@ const DISASTER_EVENTS = [
     { ko: "사이클론 무라수 인도 안드라프라데시 상륙", en: "Cyclone Murasu lands on Andhra Pradesh coast, India", coords: [80.05, 15.5], radius: 250,
       date: "2026-11-03", ongoing: false, endDate: "2026-11-04",
       reasonKo: "사이클론 아르나브에 이어 일주일 만에 두 번째로 강한 사이클론 무라수가 11월 3일 새벽 안드라프라데시 온골레 인근(넬로르-나르사푸람 사이)에 상륙해 최고 시속 120km의 강풍을 몰고 왔습니다. 안드라프라데시에서 2명이 숨지고 농경지 약 5만 2천 헥타르가 피해를 입었으며, 오디샤·텔랑가나·타밀나두 등에도 비 피해가 이어졌지만 폭풍은 상륙 당일 저압부로 약화됐습니다.",
-      reasonEn: "Cyclone Murasu, the second severe cyclonic storm to hit India's east coast in a week after Cyclone Arnab, made landfall near Ongole, Andhra Pradesh (between Nellore and Narasapuram) in the early hours of November 3 with winds up to 120 km/h. At least two people were killed and roughly 52,000 hectares of cropland were damaged in Andhra Pradesh, with heavy rain also affecting Odisha, Telangana, Tamil Nadu and other states, before the storm weakened into a depression later the same day." }
+      reasonEn: "Cyclone Murasu, the second severe cyclonic storm to hit India's east coast in a week after Cyclone Arnab, made landfall near Ongole, Andhra Pradesh (between Nellore and Narasapuram) in the early hours of November 3 with winds up to 120 km/h. At least two people were killed and roughly 52,000 hectares of cropland were damaged in Andhra Pradesh, with heavy rain also affecting Odisha, Telangana, Tamil Nadu and other states, before the storm weakened into a depression later the same day." },
+    { ko: "스페인 우르다 고속철도 충돌 사고 (톨레도)", en: "High-speed train collision near Urda, Toledo, Spain", coords: [-3.73, 39.44], radius: 30,
+      date: "2026-10-28", ongoing: false,
+      reasonKo: "마드리드-세비야 고속철도 노선의 톨레도주 우르다 인근에서 렌페와 이료 소속 고속열차 두 대가 충돌해 최소 69명이 숨지고 100명 넘게 다쳤습니다. 스페인 교통부는 통제센터의 '설명할 수 없는' 지시와 안전시스템 오류가 겹쳤다고 밝혔으며, 2013년 이후 스페인 최악의 고속철도 사고로 산체스 총리는 3일간의 국가 애도기간을 선포했습니다.",
+      reasonEn: "Two high-speed trains operated by Renfe and Iryo collided near Urda in Toledo province on the Madrid-Seville high-speed line, killing at least 69 people and injuring more than 100 others. Spain's transport ministry cited an 'inexplicable' order from a control center combined with a safety-system failure, and Prime Minister Pedro Sánchez declared three days of national mourning for the country's deadliest high-speed rail disaster since 2013." }
 ];
 
 // Major social-impact situations — protests and unrest, terrorism, mass shootings,
