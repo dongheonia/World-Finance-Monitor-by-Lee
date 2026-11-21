@@ -500,7 +500,11 @@ const SOCIAL_EVENTS = [
     { ko: "남아공 프리스테이트 보츠하벨로 총기난사", en: "Botshabelo shooting, Free State, South Africa", coords: [26.73, -29.22],
       date: "2026-11-18", ongoing: false,
       reasonKo: "11월 18일 프리스테이트주 보츠하벨로의 한 주택에서 복면을 쓴 남성 등 괴한 3명이 성인식 참가 여성들이 머물던 오두막에 침입해 총기를 난사해 여성 5명과 2살 남아 등 6명이 숨지고 48세 여성 1명이 다쳤습니다. 범인들은 도주했으며 경찰이 추적하고 있습니다.",
-      reasonEn: "Gunmen, some wearing balaclavas, stormed a hut in a home in Botshabelo, Free State, on November 18 where women undergoing a traditional initiation ceremony were staying, opening fire and killing six people — five women and a two-year-old boy — and wounding a 48-year-old woman; the three suspects fled on foot and police are searching for them." }
+      reasonEn: "Gunmen, some wearing balaclavas, stormed a hut in a home in Botshabelo, Free State, on November 18 where women undergoing a traditional initiation ceremony were staying, opening fire and killing six people — five women and a two-year-old boy — and wounding a 48-year-old woman; the three suspects fled on foot and police are searching for them." },
+    { ko: "세네갈 해상 유럽행 이주민 보트 참사", en: "Migrant-boat disasters off Senegal's coast (Europe-bound route)", coords: [-17.15, 14.52],
+      date: "2026-11-08", ongoing: true,
+      reasonKo: "11월 8일 세네갈 케베메르 인근 해상에서 유럽행 이주민을 태운 보트가 침몰해 최소 21~35명이 숨졌고, 10일 뒤인 11월 18~19일에는 다카르 남쪽 옌 인근에서 또 다른 보트가 뒤집혀 생존자 증언으로는 약 100명이 타고 있었다고 전해졌으나 수색에서는 시신 몇 구만 확인되고 수십 명이 실종 상태로 남았습니다. 국제이주기구(IOM)는 올해 서아프리카 대서양 해상로에서 숨지거나 실종된 사람이 10월 집계로 이미 454명을 넘었다고 밝혔습니다.",
+      reasonEn: "A boat carrying Europe-bound migrants sank off Kébémer, Senegal, on November 8, killing at least 21-35 people, and ten days later, on November 18-19, another boat capsized off Yenne, south of Dakar, with roughly 100 people reportedly aboard according to a survivor's account; only a handful of bodies have been recovered and dozens remain missing. The IOM says deaths and disappearances along the West African Atlantic migrant route had already exceeded 454 this year as of its October count." }
 ];
 
 // ============================ MARKET DATA ============================
